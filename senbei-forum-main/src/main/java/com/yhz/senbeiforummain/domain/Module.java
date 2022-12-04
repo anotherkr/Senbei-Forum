@@ -23,7 +23,7 @@ import lombok.experimental.Accessors;
 @Accessors(chain = true)
 @AllArgsConstructor
 @NoArgsConstructor
-public class Module implements Serializable {
+public class Module extends BaseEntity implements Serializable {
     /**
      * 
      */
@@ -56,6 +56,11 @@ public class Module implements Serializable {
     private Long userId;
 
     /**
+     * 背景图片
+     */
+    private String backgroundImgUrl;
+
+    /**
      * 模块描述
      */
     private String statement;
@@ -65,37 +70,7 @@ public class Module implements Serializable {
      */
     private Integer heat;
 
-    /**
-     * 创建时间
-     */
-    private Date createTime;
 
-    /**
-     * 创建者
-     */
-    private String createBy;
-
-    /**
-     * 更新时间
-     */
-    private Date updateTime;
-
-    /**
-     * 逻辑删除（0-删除，1-不删除)
-     */
-    @TableLogic
-    private Integer isDeleted;
-
-    /**
-     * 版本号
-     */
-    @Version
-    private Integer version;
-
-    /**
-     * 更新者
-     */
-    private String updateBy;
 
     @TableField(exist = false)
     private static final long serialVersionUID = 1L;

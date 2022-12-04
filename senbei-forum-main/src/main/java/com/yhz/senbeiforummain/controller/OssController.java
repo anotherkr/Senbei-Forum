@@ -1,7 +1,7 @@
 package com.yhz.senbeiforummain.controller;
 
-import com.yhz.commonutil.BaseResponse;
-import com.yhz.commonutil.ResultUtils;
+import com.yhz.commonutil.common.BaseResponse;
+import com.yhz.commonutil.common.ResultUtils;
 import com.yhz.senbeiforummain.domain.third.OssRequestParam;
 import com.yhz.senbeiforummain.exception.BusinessException;
 import com.yhz.senbeiforummain.service.IOssService;

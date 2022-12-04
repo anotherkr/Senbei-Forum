@@ -1,4 +1,4 @@
-package com.yhz.commonutil;
+package com.yhz.commonutil.common;
 
 import lombok.Data;
 

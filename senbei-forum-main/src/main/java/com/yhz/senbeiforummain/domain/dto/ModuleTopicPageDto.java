@@ -26,6 +26,7 @@ public class ModuleTopicPageDto {
      */
     @ApiModelProperty("模块id")
     public Long moduleId;
+
     /**
      * 主贴标题(模糊查询)
      */

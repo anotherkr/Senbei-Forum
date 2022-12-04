@@ -2,6 +2,8 @@ package com.yhz.senbeiforummain.mapper;
 
 import com.yhz.senbeiforummain.domain.ModuleTopic;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.yhz.senbeiforummain.domain.vo.TopicDetailVo;
+import org.springframework.stereotype.Repository;
 
 /**
 * @author 吉良吉影
@@ -9,7 +11,9 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 * @createDate 2022-11-13 16:08:53
 * @Entity com.yhz.senbeiforummain.domain.ModuleTopic
 */
+@Repository
 public interface ModuleTopicMapper extends BaseMapper<ModuleTopic> {
+
 
 }
 

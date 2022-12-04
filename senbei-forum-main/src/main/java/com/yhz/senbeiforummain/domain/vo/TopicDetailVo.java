@@ -1,5 +1,12 @@
 package com.yhz.senbeiforummain.domain.vo;
 
+/**
+ * 展示主贴所有内容
+ *
+ * @author yanhuanzhan
+ * @date 2022/11/27 - 15:04
+ */
+
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -7,27 +14,15 @@ import lombok.Data;
 import java.util.Date;
 import java.util.List;
 
-/**
- * @author yanhuanzhan
- * @date 2022/11/25 - 19:13
- */
+@ApiModel("展示主贴所有内容")
 @Data
-@ApiModel("主贴展示项")
-public class ModuleTopicVo {
+public class TopicDetailVo {
+    @ApiModelProperty("主贴id")
+    private Long topicId;
 
-    private Long id;
-
-    /**
-     * 模块id
-     */
     @ApiModelProperty("模块id")
     private Long moduleId;
 
-    @ApiModelProperty("模块名")
-    public String moduleName;
-    /**
-     * 主贴标题
-     */
     @ApiModelProperty("主贴标题")
     private String title;
 
@@ -40,6 +35,11 @@ public class ModuleTopicVo {
     @ApiModelProperty("用户基本信息")
     private UserInfoVo userInfoVo;
 
+    @ApiModelProperty
+    private List<TopicReplyVo> topicReplyVoList;
+
+    @ApiModelProperty("访问量")
+    private Long clickNum;
 
     @ApiModelProperty("回复数")
     private Integer replyNum;

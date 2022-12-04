@@ -1,9 +1,9 @@
 package com.yhz.senbeiforummain.controller;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
-import com.yhz.commonutil.BaseResponse;
+import com.yhz.commonutil.common.BaseResponse;
 import com.yhz.senbeiforummain.domain.dto.ModulePageDto;
-import com.yhz.commonutil.ResultUtils;
+import com.yhz.commonutil.common.ResultUtils;
 import com.yhz.senbeiforummain.domain.Module;
 import com.yhz.senbeiforummain.service.IModuleService;
 import io.swagger.annotations.Api;
@@ -35,9 +35,9 @@ public class ModuleController {
      */
     @ApiOperation("分页查询接口")
     @PostMapping("/page")
-    public BaseResponse pageList(@RequestBody ModulePageDto modulePageDto) {
-
+    public BaseResponse<IPage<Module>> pageList(@RequestBody ModulePageDto modulePageDto) {
         IPage<Module> page = moduleService.pageList(modulePageDto);
         return ResultUtils.success(page);
     }
+
 }

@@ -2,6 +2,10 @@ package com.yhz.senbeiforummain.mapper;
 
 import com.yhz.senbeiforummain.domain.ReplySecond;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.yhz.senbeiforummain.domain.vo.ReplySecondVo;
+import org.apache.ibatis.annotations.Param;
+
+import java.util.List;
 
 /**
 * @author 吉良吉影
@@ -10,7 +14,12 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 * @Entity com.yhz.senbeiforummain.domain.ReplySecond
 */
 public interface ReplySecondMapper extends BaseMapper<ReplySecond> {
-
+    /**
+     * 根据主贴回复表id查询二级回复vo
+     * @param topicReplyId
+     * @return
+     */
+    List<ReplySecondVo> getReplySecondVoListByTopicReplyId(@Param("topicReplyId")Long topicReplyId);
 }
 
 

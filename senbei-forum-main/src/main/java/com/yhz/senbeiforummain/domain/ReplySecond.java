@@ -13,24 +13,23 @@ import lombok.Data;
 
 /**
  * 二级回复表
+ * @author 吉良吉影
  * @TableName reply_second
  */
 @TableName(value ="reply_second")
 @Data
-public class ReplySecond implements Serializable {
-    /**
-     * 
-     */
+public class ReplySecond extends BaseEntity implements Serializable {
+
     @TableId
     private Long id;
 
     /**
-     * 主贴回复表id
+     * 一级回复id
      */
-    private Long modelTopicReplyId;
+    private Long topicReplyId;
 
     /**
-     * 主贴回复的回复内容
+     * 二级回复的回复内容
      */
     private String content;
 
@@ -49,37 +48,6 @@ public class ReplySecond implements Serializable {
      */
     private Integer unsupportNum;
 
-    /**
-     * 创建时间
-     */
-    private Date createTime;
-
-    /**
-     * 创建者
-     */
-    private String createBy;
-
-    /**
-     * 更新时间
-     */
-    private Date updateTime;
-
-    /**
-     * 更新者
-     */
-    private String updateBy;
-
-    /**
-     * 逻辑删除(0-不删除 , 1-删除)
-     */
-    @TableLogic
-    private Integer isDeleted;
-
-    /**
-     * 版本号
-     */
-    @Version
-    private Integer version;
 
     @TableField(exist = false)
     private static final long serialVersionUID = 1L;

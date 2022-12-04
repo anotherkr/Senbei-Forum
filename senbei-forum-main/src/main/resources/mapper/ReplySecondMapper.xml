@@ -6,7 +6,7 @@
 
     <resultMap id="BaseResultMap" type="com.yhz.senbeiforummain.domain.ReplySecond">
             <id property="id" column="id" jdbcType="BIGINT"/>
-            <result property="modelTopicReplyId" column="model_topic_reply_id" jdbcType="BIGINT"/>
+            <result property="topicReplyId" column="topic_reply_id" jdbcType="BIGINT"/>
             <result property="content" column="content" jdbcType="VARCHAR"/>
             <result property="userId" column="user_id" jdbcType="BIGINT"/>
             <result property="supportNum" column="support_num" jdbcType="INTEGER"/>
@@ -25,4 +25,22 @@
         create_time,create_by,update_time,
         update_by,is_deleted,version
     </sql>
+    <resultMap id="ReplySecondVoResultMap" type="replySecondVo">
+        <id column="id" property="id"></id>
+        <result property="content" column="content"></result>
+        <result property="supportNum" column="support_num"></result>
+        <result property="unsupportNum" column="unsupport_num"></result>
+        <result property="createTime" column="create_time"></result>
+        <association property="userInfoVo" select="com.yhz.senbeiforummain.mapper.UserMapper.getUserInfoVoById"
+                     column="user_id"></association>
+    </resultMap>
+    <select id="getReplySecondVoListByTopicReplyId" resultMap="ReplySecondVoResultMap">
+        SELECT  id,content,
+                user_id,support_num,unsupport_num,
+                create_time
+        FROM reply_second
+        WHERE topic_reply_id=#{topicReplyId}
+        ORDER BY create_time ASC
+    </select>
+
 </mapper>

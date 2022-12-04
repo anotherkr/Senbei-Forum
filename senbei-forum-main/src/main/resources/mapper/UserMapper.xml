@@ -25,4 +25,25 @@
         phone,description,create_time,
         create_by,update_time,update_by
     </sql>
+    <resultMap id="userInfoVoresultMap" type="userInfoVo">
+        <id property="id" column="user_id"></id>
+        <result property="nickname" column="nickname"></result>
+        <result property="username" column="username"></result>
+        <result property="point" column="point"></result>
+        <result property="level" column="level"></result>
+        <result property="roleId" column="role_id"></result>
+        <result property="phone" column="phone"></result>
+        <result property="description" column="description"></result>
+        <result property="sex" column="sex"></result>
+        <result property="headUrl" column="head_url"></result>
+        <result property="createTime" column="create_time"></result>
+    </resultMap>
+    <select id="getUserInfoVoById" resultType="UserInfoVo">
+        SELECT id,nickname,username,
+               point,`level`,role_id,
+               phone,description,sex,head_url,create_time
+        FROM   t_user
+        WHERE id=#{userId}
+    </select>
+
 </mapper>

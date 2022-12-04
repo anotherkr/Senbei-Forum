@@ -37,7 +37,11 @@ public class UserInfoVo {
      */
     @ApiModelProperty("积分")
     private Long point;
-
+    /**
+     * 用户等级(1-6)
+     */
+    @ApiModelProperty("用户等级(1-6)")
+    private Integer level;
     /**
      * 角色id
      */

@@ -1,4 +1,7 @@
-package com.yhz.commonutil;
+package com.yhz.commonutil.common;
+
+import com.yhz.commonutil.common.BaseResponse;
+import com.yhz.commonutil.common.ErrorCode;
 
 /**
  * 返回工具类
@@ -14,9 +17,17 @@ public class ResultUtils {
      * @return
      */
     public static <T> BaseResponse<T> success(T data) {
-        return new BaseResponse<>(0, data, "ok");
+        return new BaseResponse<>(200, data, "ok");
     }
-
+    /**
+     * 成功
+     *
+     * @param <T>
+     * @return
+     */
+    public static <T> BaseResponse<T> success() {
+        return new BaseResponse<>(200, null, "ok");
+    }
     /**
      * 失败
      *

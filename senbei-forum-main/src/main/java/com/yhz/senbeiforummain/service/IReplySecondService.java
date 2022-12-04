@@ -2,6 +2,7 @@ package com.yhz.senbeiforummain.service;
 
 import com.yhz.senbeiforummain.domain.ReplySecond;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.yhz.senbeiforummain.domain.dto.ReplySecondDto;
 
 /**
 * @author 吉良吉影
@@ -10,4 +11,5 @@ import com.baomidou.mybatisplus.extension.service.IService;
 */
 public interface IReplySecondService extends IService<ReplySecond> {
 
+    void reply(ReplySecondDto replySecondDto);
 }

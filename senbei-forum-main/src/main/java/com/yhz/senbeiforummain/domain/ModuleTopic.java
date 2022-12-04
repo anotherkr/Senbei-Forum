@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableLogic;
 import com.baomidou.mybatisplus.annotation.TableName;
+
 import java.io.Serializable;
 import java.util.Date;
 
@@ -13,13 +14,14 @@ import lombok.Data;
 
 /**
  * 主贴表
+ *
  * @TableName module_topic
  */
-@TableName(value ="module_topic")
+@TableName(value = "module_topic")
 @Data
-public class ModuleTopic implements Serializable {
+public class ModuleTopic extends BaseEntity implements Serializable {
     /**
-     * 
+     *
      */
     @TableId(type = IdType.AUTO)
     private Long id;
@@ -28,7 +30,14 @@ public class ModuleTopic implements Serializable {
      * 模块id
      */
     private Long moduleId;
-
+    /**
+     * 主贴内容(5-2000字)
+     */
+    private String content;
+    /**
+     * 图片地址(0-3张图片)
+     */
+    private String imgUrls;
     /**
      * 用户id
      */
@@ -43,7 +52,10 @@ public class ModuleTopic implements Serializable {
      * 主贴标题
      */
     private String title;
-
+    /**
+     * 访问量
+     */
+    private Long clickNum;
     /**
      * 点赞数
      */
@@ -59,37 +71,7 @@ public class ModuleTopic implements Serializable {
      */
     private Integer heat;
 
-    /**
-     * 创建时间
-     */
-    private Date createTime;
 
-    /**
-     * 创建者
-     */
-    private String createBy;
-
-    /**
-     * 更新时间
-     */
-    private Date updateTime;
-
-    /**
-     * 更新者
-     */
-    private String updateBy;
-
-    /**
-     * 逻辑删除（0-删除，1-不删除)
-     */
-    @TableLogic
-    private Integer isDeleted;
-
-    /**
-     * 版本号
-     */
-    @Version
-    private Integer version;
 
     @TableField(exist = false)
     private static final long serialVersionUID = 1L;

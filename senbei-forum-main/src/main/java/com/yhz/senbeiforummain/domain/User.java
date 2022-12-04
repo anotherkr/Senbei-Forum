@@ -13,11 +13,12 @@ import lombok.Data;
 
 /**
  * 
+ * @author 吉良吉影
  * @TableName t_user
  */
 @TableName(value ="t_user")
 @Data
-public class User implements Serializable {
+public class User extends BaseEntity implements Serializable {
     /**
      * 用户id
      */
@@ -68,35 +69,10 @@ public class User implements Serializable {
      */
     private String headUrl;
     /**
-     * 创建时间
+     * 用户等级(1-6)
      */
-    private Date createTime;
+    private Integer level;
 
-    /**
-     * 创建者
-     */
-    private String createBy;
-
-    /**
-     * 更新时间
-     */
-    private Date updateTime;
-
-    /**
-     * 更新者
-     */
-    private String updateBy;
-    /**
-     * 逻辑删除(0-不删除 , 1-删除)
-     */
-    @TableLogic
-    private Integer isDeleted;
-
-    /**
-     * 版本号
-     */
-    @Version
-    private Integer version;
 
     @TableField(exist = false)
     private static final long serialVersionUID = 1L;

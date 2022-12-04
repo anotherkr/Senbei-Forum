@@ -1,6 +1,6 @@
 package com.yhz.senbeiforummain.exception;
 
-import com.yhz.commonutil.ErrorCode;
+import com.yhz.commonutil.common.ErrorCode;
 
 /**
  * 自定义异常类
