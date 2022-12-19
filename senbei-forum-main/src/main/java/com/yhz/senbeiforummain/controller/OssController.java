@@ -2,7 +2,7 @@ package com.yhz.senbeiforummain.controller;
 
 import com.yhz.commonutil.common.BaseResponse;
 import com.yhz.commonutil.common.ResultUtils;
-import com.yhz.senbeiforummain.domain.third.OssRequestParam;
+import com.yhz.senbeiforummain.domain.oos.OssRequestParam;
 import com.yhz.senbeiforummain.exception.BusinessException;
 import com.yhz.senbeiforummain.service.IOssService;
 import io.swagger.annotations.Api;

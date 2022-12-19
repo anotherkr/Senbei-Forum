@@ -6,7 +6,7 @@ import com.aliyun.oss.model.MatchMode;
 import com.aliyun.oss.model.PolicyConditions;
 import com.yhz.commonutil.common.ErrorCode;
 
-import com.yhz.senbeiforummain.domain.third.OssRequestParam;
+import com.yhz.senbeiforummain.domain.oos.OssRequestParam;
 import com.yhz.senbeiforummain.exception.BusinessException;
 import com.yhz.senbeiforummain.service.IOssService;
 import lombok.extern.slf4j.Slf4j;

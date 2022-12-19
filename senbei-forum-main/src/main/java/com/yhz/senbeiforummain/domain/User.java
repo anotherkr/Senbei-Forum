@@ -10,14 +10,16 @@ import java.util.Date;
 
 import com.baomidou.mybatisplus.annotation.Version;
 import lombok.Data;
+import lombok.experimental.Accessors;
 
 /**
  * 
  * @author 吉良吉影
  * @TableName t_user
  */
-@TableName(value ="t_user")
+@TableName(value ="user")
 @Data
+@Accessors(chain = true)
 public class User extends BaseEntity implements Serializable {
     /**
      * 用户id
@@ -49,7 +51,10 @@ public class User extends BaseEntity implements Serializable {
      * 角色id
      */
     private Long roleId;
-
+    /**
+     * 邮箱
+     */
+    private String email;
     /**
      * 手机号
      */

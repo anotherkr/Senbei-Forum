@@ -1,4 +1,4 @@
-package com.yhz.senbeiforummain.constant;
+package com.yhz.senbeiforummain.common.constant;
 
 /**
  * 排序类型

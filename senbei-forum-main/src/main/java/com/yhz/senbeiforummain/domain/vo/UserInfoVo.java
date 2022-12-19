@@ -48,6 +48,8 @@ public class UserInfoVo {
     @ApiModelProperty("角色id")
     private Long roleId;
 
+    @ApiModelProperty("邮箱")
+    private String email;
     /**
      * 手机号
      */

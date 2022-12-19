@@ -4,7 +4,7 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.yhz.senbeiforummain.constant.SortType;
+import com.yhz.senbeiforummain.common.constant.SortType;
 import com.yhz.senbeiforummain.domain.dto.ModulePageDto;
 import com.yhz.senbeiforummain.domain.Module;
 import com.yhz.senbeiforummain.service.IModuleService;

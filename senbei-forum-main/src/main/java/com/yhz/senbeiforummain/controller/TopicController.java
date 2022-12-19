@@ -11,6 +11,7 @@ import com.yhz.senbeiforummain.exception.BusinessException;
 import com.yhz.senbeiforummain.service.IModuleTopicService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -41,6 +42,7 @@ public class TopicController {
 
     @PostMapping("/publish")
     @ApiOperation("主贴发布接口")
+    @PreAuthorize("hasRole('user')")
     public BaseResponse publish( @RequestBody @Valid PublishTopicDto publishTopicDto) {
         moduleTopicService.publish(publishTopicDto);
         return ResultUtils.success();

@@ -10,9 +10,11 @@ import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.redis.core.RedisTemplate;
 
 import javax.annotation.Resource;
 import java.util.Date;
+import java.util.concurrent.TimeUnit;
 
 import static ch.qos.logback.classic.db.names.ColumnName.LOGGER_NAME;
 
@@ -21,7 +23,8 @@ import static ch.qos.logback.classic.db.names.ColumnName.LOGGER_NAME;
 class SenbeiForumMainApplicationTests {
     @Resource
     IModuleService moduleService;
-
+    @Resource
+    private RedisTemplate redisTemplate;
     @Test
     void contextLoads() {
         for (int i = 1; i < 10; i++) {
@@ -53,7 +56,7 @@ class SenbeiForumMainApplicationTests {
 
         // 要加密的数据（如数据库的用户名或密码）
         String username = encrypt("LTAI5tJDM22qfwYiyDzZPAEG");
-        String password = encrypt("ZJfVn3nrZ05PZUyxtfVdTKaV0TBS5L");
+        String password = encrypt("wbxvzzgjpxbsecdh");
         log.info("username:{}",username);
         System.out.println("加密：password:" + password);
     }
@@ -77,6 +80,9 @@ class SenbeiForumMainApplicationTests {
         return ciphertext;
     }
 
-
+    @Test
+    public void test02() {
+        redisTemplate.opsForValue().set("test", "test", 100L,TimeUnit.SECONDS);
+    }
 
 }

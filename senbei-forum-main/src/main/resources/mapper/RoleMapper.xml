@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.yhz.senbeiforummain.mapper.RoleMapper">
+
+    <resultMap id="BaseResultMap" type="com.yhz.senbeiforummain.domain.Role">
+            <id property="id" column="id" jdbcType="BIGINT"/>
+            <result property="roleName" column="role_name" jdbcType="VARCHAR"/>
+            <result property="roleDecription" column="role_decription" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,role_name,role_decription
+    </sql>
+    <insert id="attachRoleByUserId">
+        INSERT INTO user_role(role_id,user_id) VALUES(#{roleId},#{userId})
+    </insert>
+    <select id="getRolesByUserName" resultType="com.yhz.senbeiforummain.domain.Role">
+        SELECT r.id,r.role_name,r.role_decription
+        FROM (SELECT id FROM user WHERE username=#{username}) AS u
+        LEFT JOIN user_role AS ur on (u.id=ur.user_id)
+        LEFT JOIN role AS r on (r.id=ur.role_id)
+    </select>
+</mapper>

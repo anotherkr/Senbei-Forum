@@ -6,6 +6,7 @@ import com.yhz.senbeiforummain.domain.dto.ReplySecondDto;
 import com.yhz.senbeiforummain.service.IReplySecondService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -25,6 +26,7 @@ public class ReplySecondController {
     @Resource
     private IReplySecondService replySecondService;
     @PostMapping("/reply")
+    @PreAuthorize("hasRole('user')")
     @ApiOperation("二级回复的回复接口")
     public BaseResponse reply(@RequestBody @Valid ReplySecondDto replySecondDto) {
         replySecondService.reply(replySecondDto);

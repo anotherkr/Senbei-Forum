@@ -6,7 +6,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.yhz.commonutil.common.ErrorCode;
 import com.yhz.commonutil.util.ImgUrlUtil;
-import com.yhz.senbeiforummain.constant.SortType;
+import com.yhz.senbeiforummain.common.constant.SortType;
 import com.yhz.senbeiforummain.domain.Module;
 import com.yhz.senbeiforummain.domain.ModuleTopic;
 import com.yhz.senbeiforummain.domain.ModuleTopicReply;

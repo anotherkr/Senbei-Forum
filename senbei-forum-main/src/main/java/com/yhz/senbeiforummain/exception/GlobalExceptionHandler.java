@@ -4,6 +4,8 @@ import com.yhz.commonutil.common.BaseResponse;
 import com.yhz.commonutil.common.ErrorCode;
 import com.yhz.commonutil.common.ResultUtils;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
@@ -48,4 +50,26 @@ public class GlobalExceptionHandler {
         log.error("runtimeException", e);
         return ResultUtils.error(ErrorCode.SYSTEM_ERROR, e.getMessage(), "");
     }
+    @ExceptionHandler(Exception.class)
+    public BaseResponse ExceptionHandler(Exception e) {
+        log.error("Exception", e);
+        return ResultUtils.error(ErrorCode.SYSTEM_ERROR, e.getMessage(), "");
+    }
+    /**
+     * @Description: 将 AuthenticationException 异常往上抛，让认证处理器去处理
+     */
+    @ExceptionHandler(value = AuthenticationException.class)
+    public void accountExpiredExceptionHandler(AuthenticationException authException){
+        throw authException;
+    }
+
+    /**
+     * 将 AccessDeniedException 异常往上抛，让授权处理器去处理
+     * @param accDenException
+     */
+    @ExceptionHandler(value = AccessDeniedException.class)
+    public void accessDeniedExceptionHandler(AccessDeniedException accDenException){
+        throw accDenException;
+    }
+
 }

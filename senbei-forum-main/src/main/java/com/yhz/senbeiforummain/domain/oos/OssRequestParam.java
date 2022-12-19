@@ -1,4 +1,4 @@
-package com.yhz.senbeiforummain.domain.third;
+package com.yhz.senbeiforummain.domain.oos;
 
 import lombok.Data;
 

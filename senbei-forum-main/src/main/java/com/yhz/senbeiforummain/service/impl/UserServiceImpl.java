@@ -1,5 +1,6 @@
 package com.yhz.senbeiforummain.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.rabbitmq.client.Channel;
 import com.yhz.senbeiforummain.domain.ModuleTopic;
@@ -26,7 +27,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
     /**
      * queues:声明需要监听的所有队列
      * 参数可以写以下类型：
-     * 1，Message message :原神消息详细信息
+     * 1，Message message :消息详细信息
      * 2，T<发送的消息的类型>
      * 3,Channel channel:当前传输数据的通道
      *
@@ -48,6 +49,14 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
         } catch (IOException e) {
             //网络中断
         }
+    }
+
+    @Override
+    public User getUserByUserName(String username) {
+        QueryWrapper<User> wrapper = new QueryWrapper<>();
+        wrapper.eq("username", username);
+        User user = baseMapper.selectOne(wrapper);
+        return user;
     }
 }
 

@@ -35,13 +35,46 @@ jasypt:
     # 配置加密算法
     algorithm: PBEWithMD5AndDES
     iv-generator-classname: org.jasypt.iv.NoIvGenerator
-    password: yhz
+    password:
     property:
       # 算法识别前缀(当算法发现配置文件中的值以这前缀开始，后缀结尾时，会使用指定算法解密)
       prefix: IT(
       # 算法识别后缀
       suffix: )
 spring:
+  #邮箱发送配置
+  mail:
+    default-encoding: UTF-8
+    host: smtp.qq.com
+    username: 1983890621@qq.com
+    password: IT(Trvz1DIRaGmTkHnRZ4puJh1XA1mOsdrluY2OYAJm2/w=)
+    smtp:
+      auth: true
+      starttls:
+        enable: true
+        request: true
+  #redis配置
+  redis:
+    #服务器地址
+    host: 192.168.0.193
+    #端口
+    port: 6379
+    #redis密码
+    password: yhz2000
+    #数据库，默认是0
+    database: 0
+    #超时时间
+    timeout: 1209600000ms
+    lettuce:
+      pool:
+        #最大链接数，默认8
+        max-active: 8
+        #最大连接阻塞等待时间，默认-1
+        max-wait: 10000ms
+        #最大空闲连接，默认8
+        max-idle: 200
+        #最小空闲连接，默认0
+        min-idle: 5
   cloud:
     alicloud:
       access-key: IT(J9Zz9tGmGctFR6K61Jvq5KB4FsMjtLshGCoqhkCRx8HsthCTS6vmXw==)
@@ -50,7 +83,7 @@ spring:
         endpoint: oss-cn-guangzhou.aliyuncs.com
         bucket: mail-yhz
   rabbitmq:
-    host: 192.168.10.128
+    host: 192.168.0.193
     port: 5672
     virtual-host: /
     publisher-returns: true #开启发送端确认
@@ -60,3 +93,24 @@ spring:
     listener:
       simple:
         acknowledge-mode: manual #手动确认消息
+
+jwt:
+  # JWT存储的请求头
+  tokenHeader: authorization
+  # JWT 加解密使用的密钥
+  secret: lzdwtl
+  # JWT的超期限时间（1000*60*60*24*14）14天，即两周
+  expiration: 1209600000
+  # JWT 负载中拿到开头
+  tokenHead: Bearer
+
+
+role:
+  roleid: 1
+
+oauth:
+  github:
+    clientId: 59375e93fc8678305556
+    clientSecret: a4b68da8aa28877a7713e51fff0a524e72ef6017
+    redirectUri: http://localhost:8800/oauth/github/redirect
+    frontRedirectUrl:
