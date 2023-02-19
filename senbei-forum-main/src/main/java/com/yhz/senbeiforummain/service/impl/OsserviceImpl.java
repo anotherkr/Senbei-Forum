@@ -6,7 +6,7 @@ import com.aliyun.oss.model.MatchMode;
 import com.aliyun.oss.model.PolicyConditions;
 import com.yhz.commonutil.common.ErrorCode;
 
-import com.yhz.senbeiforummain.domain.oos.OssRequestParam;
+import com.yhz.senbeiforummain.model.dto.oos.OssRequest;
 import com.yhz.senbeiforummain.exception.BusinessException;
 import com.yhz.senbeiforummain.service.IOssService;
 import lombok.extern.slf4j.Slf4j;
@@ -34,13 +34,13 @@ public class OsserviceImpl implements IOssService {
         @Value("${spring.cloud.alicloud.access-key}")
         private String accessId;
         @Override
-        public OssRequestParam policy() throws BusinessException {
+        public OssRequest policy() throws BusinessException {
             // 填写Host名称，格式为https://bucketname.endpoint。
             String host = "https://"+bucket+"."+endpoint;
             String format = new SimpleDateFormat("yyyy-MM-dd").format(new Date());
             // 设置上传到OSS文件的前缀，可置空此项。置空后，文件将上传至Bucket的根目录下。
             String dir = format+"/";
-            OssRequestParam ossRequestParam;
+            OssRequest ossRequest;
             try {
                 long expireTime = 300;
                 long expireEndTime = System.currentTimeMillis() + expireTime * 1000;
@@ -54,20 +54,20 @@ public class OsserviceImpl implements IOssService {
                 byte[] binaryData = postPolicy.getBytes("utf-8");
                 String encodedPolicy = BinaryUtil.toBase64String(binaryData);
                 String postSignature = ossClient.calculatePostSignature(postPolicy);
-                ossRequestParam = new OssRequestParam();
-                ossRequestParam.setAccessid(accessId);
-                ossRequestParam.setPolicy(encodedPolicy);
-                ossRequestParam.setSignature(postSignature);
-                ossRequestParam.setDir(dir);
-                ossRequestParam.setHost(host);
-                ossRequestParam.setExpire(String.valueOf(expireEndTime / 1000));
+                ossRequest = new OssRequest();
+                ossRequest.setAccessid(accessId);
+                ossRequest.setPolicy(encodedPolicy);
+                ossRequest.setSignature(postSignature);
+                ossRequest.setDir(dir);
+                ossRequest.setHost(host);
+                ossRequest.setExpire(String.valueOf(expireEndTime / 1000));
             } catch (Exception e) {
                 log.error("exception:{}",e);
                 throw new BusinessException(ErrorCode.SYSTEM_ERROR);
             } finally {
                 ossClient.shutdown();
             }
-            return ossRequestParam;
+            return ossRequest;
         }
 
 

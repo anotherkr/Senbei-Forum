@@ -2,7 +2,7 @@ package com.yhz.senbeiforummain.controller;
 
 import com.yhz.commonutil.common.BaseResponse;
 import com.yhz.commonutil.common.ResultUtils;
-import com.yhz.senbeiforummain.common.enums.LoginChannelEnum;
+import com.yhz.senbeiforummain.model.enums.LoginChannelEnum;
 import com.yhz.senbeiforummain.service.ILoginService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;

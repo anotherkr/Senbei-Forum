@@ -2,8 +2,8 @@ package com.yhz.senbeiforummain.service.impl;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.yhz.commonutil.common.ErrorCode;
-import com.yhz.senbeiforummain.domain.ReplySecond;
-import com.yhz.senbeiforummain.domain.dto.ReplySecondDto;
+import com.yhz.senbeiforummain.model.entity.ReplySecond;
+import com.yhz.senbeiforummain.model.dto.replysecond.ReplySecondQueryRequst;
 import com.yhz.senbeiforummain.exception.BusinessException;
 import com.yhz.senbeiforummain.service.IReplySecondService;
 import com.yhz.senbeiforummain.mapper.ReplySecondMapper;
@@ -20,9 +20,9 @@ public class ReplySecondServiceImpl extends ServiceImpl<ReplySecondMapper, Reply
     implements IReplySecondService {
 
     @Override
-    public void reply(ReplySecondDto replySecondDto) {
+    public void reply(ReplySecondQueryRequst replySecondQueryRequst) {
         ReplySecond replySecond = new ReplySecond();
-        BeanUtils.copyProperties(replySecondDto, replySecond);
+        BeanUtils.copyProperties(replySecondQueryRequst, replySecond);
         boolean save = this.save(replySecond);
         if (!save) {
             throw new BusinessException(ErrorCode.SAVE_ERROR);

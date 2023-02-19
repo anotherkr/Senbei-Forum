@@ -2,7 +2,7 @@ package com.yhz.senbeiforummain.controller;
 
 import com.yhz.commonutil.common.BaseResponse;
 import com.yhz.commonutil.common.ResultUtils;
-import com.yhz.senbeiforummain.domain.oos.OssRequestParam;
+import com.yhz.senbeiforummain.model.dto.oos.OssRequest;
 import com.yhz.senbeiforummain.exception.BusinessException;
 import com.yhz.senbeiforummain.service.IOssService;
 import io.swagger.annotations.Api;
@@ -26,8 +26,8 @@ public class OssController {
     private IOssService ossService;
     @ApiOperation("客户端签名直传接口")
     @GetMapping("/policy")
-    public BaseResponse<OssRequestParam> policy() throws BusinessException {
-        OssRequestParam policy = ossService.policy();
+    public BaseResponse<OssRequest> policy() throws BusinessException {
+        OssRequest policy = ossService.policy();
         return ResultUtils.success(policy);
     }
 }

@@ -1,8 +1,8 @@
 package com.yhz.senbeiforummain.mapper;
 
-import com.yhz.senbeiforummain.domain.User;
+import com.yhz.senbeiforummain.model.entity.User;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import com.yhz.senbeiforummain.domain.vo.UserInfoVo;
+import com.yhz.senbeiforummain.model.vo.UserInfoVo;
 import org.apache.ibatis.annotations.Param;
 
 /**

@@ -1,6 +1,6 @@
 package com.yhz.senbeiforummain.security.domain;
 
-import com.yhz.senbeiforummain.domain.User;
+import com.yhz.senbeiforummain.model.entity.User;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;

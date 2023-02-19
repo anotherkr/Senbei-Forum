@@ -1,6 +1,6 @@
 package com.yhz.senbeiforummain.handler;
 
-import com.yhz.senbeiforummain.common.enums.LoginChannelEnum;
+import com.yhz.senbeiforummain.model.enums.LoginChannelEnum;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;

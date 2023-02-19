@@ -4,7 +4,7 @@ import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.ObjectUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.yhz.commonutil.common.ErrorCode;
-import com.yhz.senbeiforummain.domain.User;
+import com.yhz.senbeiforummain.model.entity.User;
 import com.yhz.senbeiforummain.exception.BusinessException;
 import com.yhz.senbeiforummain.mapper.UserMapper;
 import com.yhz.senbeiforummain.security.domain.AuthUser;
@@ -22,8 +22,6 @@ import org.springframework.stereotype.Service;
 import javax.annotation.Resource;
 import java.util.List;
 import java.util.stream.Collectors;
-
-import static net.sf.jsqlparser.util.validation.metadata.NamedObject.user;
 
 /**
  * 要实现UserDetailsService接口，这个接口是security提供的

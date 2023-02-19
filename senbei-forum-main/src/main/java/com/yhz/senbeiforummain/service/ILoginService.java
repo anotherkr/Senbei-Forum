@@ -1,8 +1,8 @@
 package com.yhz.senbeiforummain.service;
 
-import com.yhz.senbeiforummain.domain.dto.EmailRegisterDto;
-import com.yhz.senbeiforummain.domain.dto.LoginDto;
-import com.yhz.senbeiforummain.common.enums.LoginChannelEnum;
+import com.yhz.senbeiforummain.model.dto.register.EmailRegisterRequest;
+import com.yhz.senbeiforummain.model.dto.login.DoLoginRequest;
+import com.yhz.senbeiforummain.model.enums.LoginChannelEnum;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -13,10 +13,10 @@ import java.io.IOException;
 public interface ILoginService {
     /**
      * 用户登录
-     * @param loginDTO
+     * @param doLoginRequest
      * @return
      */
-    String doLogin(LoginDto loginDTO);
+    String doLogin(DoLoginRequest doLoginRequest);
 
     /**
      * 用户注销
@@ -33,7 +33,7 @@ public interface ILoginService {
      * 邮箱注册
      * @param registerDto
      */
-    void emailRegister(EmailRegisterDto registerDto);
+    void emailRegister(EmailRegisterRequest registerDto);
 
     /**
      *  获取前端跳转的url，跳转并授权后获取授权码

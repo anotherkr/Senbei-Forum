@@ -4,7 +4,7 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.yhz.senbeiforummain.mapper.UserMapper">
 
-    <resultMap id="BaseResultMap" type="com.yhz.senbeiforummain.domain.User">
+    <resultMap id="BaseResultMap" type="com.yhz.senbeiforummain.model.entity.User">
             <id property="id" column="id" jdbcType="BIGINT"/>
             <result property="nickname" column="nickname" jdbcType="VARCHAR"/>
             <result property="username" column="username" jdbcType="VARCHAR"/>
@@ -25,7 +25,7 @@
         phone,description,create_time,
         create_by,update_time,update_by
     </sql>
-    <resultMap id="userInfoVoresultMap" type="userInfoVo">
+    <resultMap id="userInfoVoresultMap" type="com.yhz.senbeiforummain.model.vo.UserInfoVo">
         <id property="id" column="user_id"></id>
         <result property="nickname" column="nickname"></result>
         <result property="username" column="username"></result>
@@ -38,7 +38,7 @@
         <result property="headUrl" column="head_url"></result>
         <result property="createTime" column="create_time"></result>
     </resultMap>
-    <select id="getUserInfoVoById" resultType="UserInfoVo">
+    <select id="getUserInfoVoById" resultType="com.yhz.senbeiforummain.model.vo.UserInfoVo">
         SELECT id,nickname,username,
                point,`level`,role_id,
                phone,description,sex,head_url,create_time

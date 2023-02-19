@@ -1,22 +1,17 @@
 package com.yhz.senbeiforummain;
 
-import com.yhz.senbeiforummain.domain.Module;
+import com.yhz.senbeiforummain.model.entity.Module;
 import com.yhz.senbeiforummain.service.IModuleService;
 import lombok.extern.slf4j.Slf4j;
 import org.jasypt.encryption.pbe.StandardPBEStringEncryptor;
 import org.jasypt.encryption.pbe.config.EnvironmentStringPBEConfig;
-import org.jasypt.util.text.BasicTextEncryptor;
 import org.junit.jupiter.api.Test;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.redis.core.RedisTemplate;
 
 import javax.annotation.Resource;
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
-
-import static ch.qos.logback.classic.db.names.ColumnName.LOGGER_NAME;
 
 @SpringBootTest
 @Slf4j

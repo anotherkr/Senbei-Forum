@@ -1,20 +1,15 @@
 package com.yhz.senbeiforummain.security.filter;
 
 import cn.hutool.core.util.StrUtil;
-import com.alibaba.fastjson.JSON;
-import com.yhz.commonutil.common.BaseResponse;
 import com.yhz.commonutil.common.ErrorCode;
-import com.yhz.commonutil.common.ResultUtils;
-import com.yhz.senbeiforummain.common.constant.RedisUserKey;
+import com.yhz.senbeiforummain.constant.RedisUserKey;
 import com.yhz.senbeiforummain.exception.BusinessException;
 import com.yhz.senbeiforummain.security.domain.AuthUser;
-import com.yhz.senbeiforummain.service.impl.AuthUserDetailsServiceImpl;
 import com.yhz.senbeiforummain.util.JwtUtil;
 import com.yhz.senbeiforummain.util.RedisCache;
 import io.jsonwebtoken.Claims;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -27,7 +22,6 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.util.Objects;
 
 /**

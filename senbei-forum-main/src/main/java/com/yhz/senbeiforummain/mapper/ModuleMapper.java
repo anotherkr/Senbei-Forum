@@ -1,6 +1,6 @@
 package com.yhz.senbeiforummain.mapper;
 
-import com.yhz.senbeiforummain.domain.Module;
+import com.yhz.senbeiforummain.model.entity.Module;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 
 /**

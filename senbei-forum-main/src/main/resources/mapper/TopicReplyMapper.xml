@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.yhz.senbeiforummain.mapper.TopicReplyMapper">
+
+    <resultMap id="BaseResultMap" type="com.yhz.senbeiforummain.model.entity.TopicReply">
+        <id property="id" column="id" jdbcType="BIGINT"/>
+        <result property="topicId" column="topic_id" jdbcType="BIGINT"/>
+        <result property="userId" column="user_id" jdbcType="BIGINT"/>
+        <result property="content" column="content" jdbcType="VARCHAR"/>
+        <result property="supportNum" column="support_num" jdbcType="INTEGER"/>
+        <result property="unsupportNum" column="unsupport_num" jdbcType="INTEGER"/>
+        <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+        <result property="createBy" column="create_by" jdbcType="VARCHAR"/>
+        <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
+        <result property="updateBy" column="update_by" jdbcType="VARCHAR"/>
+        <result property="isDeleted" column="is_deleted" jdbcType="INTEGER"/>
+        <result property="version" column="version" jdbcType="INTEGER"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id
+        ,topic_id,user_id,
+        content,support_num,unsupport_num,
+        create_time,create_by,update_time,
+        update_by,is_deleted,version
+    </sql>
+    <resultMap id="TopicReplyVoresultMap" type="TopicReplyVo">
+        <id property="id" column="id" jdbcType="BIGINT"/>
+        <result property="content" column="content"/>
+        <result property="content" column="content" jdbcType="VARCHAR"/>
+        <result property="supportNum" column="support_num" jdbcType="INTEGER"/>
+        <result property="unsupportNum" column="unsupport_num" jdbcType="INTEGER"/>
+        <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+        <result property="imgUrls" column="img_urls" jdbcType="VARCHAR"/>
+        <association property="userInfoVo" select="com.yhz.senbeiforummain.mapper.UserMapper.getUserInfoVoById"
+                     column="user_id"></association>
+        <collection property="replySecondVoList"
+                    select="com.yhz.senbeiforummain.mapper.ReplySecondMapper.getReplySecondVoListByTopicReplyId"
+                    column="id">
+        </collection>
+    </resultMap>
+
+    <select id="selectTopicReplyVoListByTopicId" resultMap="TopicReplyVoresultMap">
+        SELECT id,user_id,content,support_num,unsupport_num,create_time,img_urls
+        FROM topic_reply
+        WHERE topic_id=#{topicId}
+        ORDER BY create_time ASC
+    </select>
+</mapper>

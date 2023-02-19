@@ -1,11 +1,7 @@
 package com.yhz.senbeiforummain.util;
 
-import com.baomidou.mybatisplus.extension.api.R;
-import com.sun.org.apache.regexp.internal.RE;
-import com.yhz.senbeiforummain.common.constant.RedisBasePrefixKey;
-import com.yhz.senbeiforummain.common.constant.RedisPrefixKey;
-import com.yhz.senbeiforummain.common.constant.RedisUserKey;
-import io.swagger.annotations.ApiOperation;
+import com.yhz.senbeiforummain.constant.RedisPrefixKey;
+import com.yhz.senbeiforummain.constant.RedisUserKey;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.BoundSetOperations;
 import org.springframework.data.redis.core.HashOperations;
@@ -13,7 +9,6 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.stereotype.Component;
 
-import javax.annotation.Resource;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;

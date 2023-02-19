@@ -1,8 +1,8 @@
 package com.yhz.senbeiforummain.mapper;
 
-import com.yhz.senbeiforummain.domain.ReplySecond;
+import com.yhz.senbeiforummain.model.entity.ReplySecond;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import com.yhz.senbeiforummain.domain.vo.ReplySecondVo;
+import com.yhz.senbeiforummain.model.vo.ReplySecondVo;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;

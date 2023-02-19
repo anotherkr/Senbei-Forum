@@ -3,15 +3,15 @@ package com.yhz.senbeiforummain.service.impl;
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.yhz.commonutil.common.ErrorCode;
-import com.yhz.senbeiforummain.common.constant.RedisUserKey;
-import com.yhz.senbeiforummain.domain.User;
-import com.yhz.senbeiforummain.domain.dto.EmailRegisterDto;
-import com.yhz.senbeiforummain.common.enums.LoginChannelEnum;
-import com.yhz.senbeiforummain.common.enums.RoleEnum;
+import com.yhz.senbeiforummain.constant.RedisUserKey;
+import com.yhz.senbeiforummain.model.entity.User;
+import com.yhz.senbeiforummain.model.dto.register.EmailRegisterRequest;
+import com.yhz.senbeiforummain.model.enums.LoginChannelEnum;
+import com.yhz.senbeiforummain.model.enums.RoleEnum;
 import com.yhz.senbeiforummain.factory.LoginFactory;
 import com.yhz.senbeiforummain.handler.OauthLoginHandler;
 import com.yhz.senbeiforummain.security.domain.AuthUser;
-import com.yhz.senbeiforummain.domain.dto.LoginDto;
+import com.yhz.senbeiforummain.model.dto.login.DoLoginRequest;
 import com.yhz.senbeiforummain.exception.BusinessException;
 import com.yhz.senbeiforummain.service.ILoginService;
 import com.yhz.senbeiforummain.service.IRoleService;
@@ -39,7 +39,6 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.Objects;
 import java.util.Random;
-import java.util.concurrent.TimeUnit;
 
 /**
  * @author 吉良吉影
@@ -71,9 +70,9 @@ public class LoginServiceImpl implements ILoginService {
 
 
     @Override
-    public String doLogin(LoginDto loginDTO) {
+    public String doLogin(DoLoginRequest doLoginRequest) {
 
-        UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(loginDTO.getUsername(), loginDTO.getPassword());
+        UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(doLoginRequest.getUsername(), doLoginRequest.getPassword());
         Authentication authenticate = authenticationManager.authenticate(authenticationToken);
 
         if (Objects.isNull(authenticate)) {
@@ -123,7 +122,7 @@ public class LoginServiceImpl implements ILoginService {
 
     @Transactional(rollbackFor = BusinessException.class)
     @Override
-    public void emailRegister(EmailRegisterDto registerDto) {
+    public void emailRegister(EmailRegisterRequest registerDto) {
         String email = registerDto.getEmail();
         String password = registerDto.getPassword();
         String checkPassword = registerDto.getCheckPassword();

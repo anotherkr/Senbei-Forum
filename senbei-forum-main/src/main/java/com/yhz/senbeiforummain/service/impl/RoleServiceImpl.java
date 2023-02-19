@@ -3,7 +3,7 @@ package com.yhz.senbeiforummain.service.impl;
 import cn.hutool.core.collection.CollUtil;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.yhz.commonutil.common.ErrorCode;
-import com.yhz.senbeiforummain.domain.Role;
+import com.yhz.senbeiforummain.model.entity.Role;
 import com.yhz.senbeiforummain.exception.BusinessException;
 import com.yhz.senbeiforummain.service.IRoleService;
 import com.yhz.senbeiforummain.mapper.RoleMapper;

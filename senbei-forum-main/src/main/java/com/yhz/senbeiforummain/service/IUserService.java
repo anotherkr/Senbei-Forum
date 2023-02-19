@@ -1,6 +1,6 @@
 package com.yhz.senbeiforummain.service;
 
-import com.yhz.senbeiforummain.domain.User;
+import com.yhz.senbeiforummain.model.entity.User;
 import com.baomidou.mybatisplus.extension.service.IService;
 
 /**

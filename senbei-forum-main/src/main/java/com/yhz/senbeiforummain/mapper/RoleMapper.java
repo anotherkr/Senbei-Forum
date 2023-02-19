@@ -1,6 +1,6 @@
 package com.yhz.senbeiforummain.mapper;
 
-import com.yhz.senbeiforummain.domain.Role;
+import com.yhz.senbeiforummain.model.entity.Role;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.apache.ibatis.annotations.Param;
 

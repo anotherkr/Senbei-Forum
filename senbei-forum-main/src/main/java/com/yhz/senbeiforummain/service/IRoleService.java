@@ -1,6 +1,6 @@
 package com.yhz.senbeiforummain.service;
 
-import com.yhz.senbeiforummain.domain.Role;
+import com.yhz.senbeiforummain.model.entity.Role;
 import com.baomidou.mybatisplus.extension.service.IService;
 
 import java.util.List;

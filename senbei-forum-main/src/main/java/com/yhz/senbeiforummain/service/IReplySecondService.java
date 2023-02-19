@@ -1,8 +1,8 @@
 package com.yhz.senbeiforummain.service;
 
-import com.yhz.senbeiforummain.domain.ReplySecond;
+import com.yhz.senbeiforummain.model.entity.ReplySecond;
 import com.baomidou.mybatisplus.extension.service.IService;
-import com.yhz.senbeiforummain.domain.dto.ReplySecondDto;
+import com.yhz.senbeiforummain.model.dto.replysecond.ReplySecondQueryRequst;
 
 /**
 * @author 吉良吉影
@@ -11,5 +11,5 @@ import com.yhz.senbeiforummain.domain.dto.ReplySecondDto;
 */
 public interface IReplySecondService extends IService<ReplySecond> {
 
-    void reply(ReplySecondDto replySecondDto);
+    void reply(ReplySecondQueryRequst replySecondQueryRequst);
 }

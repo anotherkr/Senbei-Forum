@@ -3,8 +3,8 @@ package com.yhz.senbeiforummain.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.rabbitmq.client.Channel;
-import com.yhz.senbeiforummain.domain.ModuleTopic;
-import com.yhz.senbeiforummain.domain.User;
+import com.yhz.senbeiforummain.model.entity.Topic;
+import com.yhz.senbeiforummain.model.entity.User;
 import com.yhz.senbeiforummain.service.IUserService;
 import com.yhz.senbeiforummain.mapper.UserMapper;
 import org.springframework.amqp.core.Message;
@@ -35,12 +35,12 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
      */
     //@RabbitListener(queues = {"hello-java-queue"})
     @RabbitHandler
-    public void receiveMessage(Message message, ModuleTopic moduleTopic,
+    public void receiveMessage(Message message, Topic topic,
                                Channel channel) {
         byte[] body = message.getBody();
         //消息头属性信息
         MessageProperties messageProperties = message.getMessageProperties();
-        System.out.println("接收到消息:"+message+",内容为:"+moduleTopic);
+        System.out.println("接收到消息:"+message+",内容为:"+ topic);
         //channel 内按顺序自增的
         long deliveryTag = messageProperties.getDeliveryTag();
         //签收货物,非批量模式

@@ -1,17 +1,13 @@
 package com.yhz.senbeiforummain.controller;
 
-import com.baomidou.mybatisplus.extension.api.R;
 import com.yhz.commonutil.common.BaseResponse;
 import com.yhz.commonutil.common.ResultUtils;
-import com.yhz.senbeiforummain.domain.dto.EmailRegisterDto;
-import com.yhz.senbeiforummain.domain.dto.LoginDto;
+import com.yhz.senbeiforummain.model.dto.register.EmailRegisterRequest;
+import com.yhz.senbeiforummain.model.dto.login.DoLoginRequest;
 import com.yhz.senbeiforummain.service.ILoginService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -38,9 +34,9 @@ public class UserController {
 
     @ApiOperation("用户登录接口")
     @PostMapping("/login")
-    public BaseResponse<String> doLogin(@Valid @RequestBody LoginDto loginDto) {
+    public BaseResponse<String> doLogin(@Valid @RequestBody DoLoginRequest doLoginRequest) {
 
-        String token = loginService.doLogin(loginDto);
+        String token = loginService.doLogin(doLoginRequest);
         return ResultUtils.success(token);
     }
 
@@ -59,7 +55,7 @@ public class UserController {
 
     @ApiOperation("邮箱注册接口")
     @PostMapping("/register/email")
-    public BaseResponse register(@Valid @RequestBody EmailRegisterDto registerDto) {
+    public BaseResponse register(@Valid @RequestBody EmailRegisterRequest registerDto) {
         loginService.emailRegister(registerDto);
         return ResultUtils.success();
     }

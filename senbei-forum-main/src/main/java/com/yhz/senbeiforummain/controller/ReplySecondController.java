@@ -2,7 +2,7 @@ package com.yhz.senbeiforummain.controller;
 
 import com.yhz.commonutil.common.BaseResponse;
 import com.yhz.commonutil.common.ResultUtils;
-import com.yhz.senbeiforummain.domain.dto.ReplySecondDto;
+import com.yhz.senbeiforummain.model.dto.replysecond.ReplySecondQueryRequst;
 import com.yhz.senbeiforummain.service.IReplySecondService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -28,8 +28,8 @@ public class ReplySecondController {
     @PostMapping("/reply")
     @PreAuthorize("hasRole('user')")
     @ApiOperation("二级回复的回复接口")
-    public BaseResponse reply(@RequestBody @Valid ReplySecondDto replySecondDto) {
-        replySecondService.reply(replySecondDto);
+    public BaseResponse reply(@RequestBody @Valid ReplySecondQueryRequst replySecondQueryRequst) {
+        replySecondService.reply(replySecondQueryRequst);
         return ResultUtils.success();
     }
 }

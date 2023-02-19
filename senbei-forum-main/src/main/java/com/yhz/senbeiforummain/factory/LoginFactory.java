@@ -1,6 +1,6 @@
 package com.yhz.senbeiforummain.factory;
 
-import com.yhz.senbeiforummain.common.enums.LoginChannelEnum;
+import com.yhz.senbeiforummain.model.enums.LoginChannelEnum;
 import com.yhz.senbeiforummain.handler.OauthLoginHandler;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.stereotype.Component;

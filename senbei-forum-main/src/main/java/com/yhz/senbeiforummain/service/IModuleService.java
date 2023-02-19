@@ -1,9 +1,10 @@
 package com.yhz.senbeiforummain.service;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
-import com.yhz.senbeiforummain.domain.dto.ModulePageDto;
-import com.yhz.senbeiforummain.domain.Module;
+import com.yhz.senbeiforummain.model.dto.module.ModuleQueryRequest;
+import com.yhz.senbeiforummain.model.entity.Module;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.yhz.senbeiforummain.model.vo.ModuleVo;
 
 /**
 * @author 吉良吉影
@@ -12,5 +13,5 @@ import com.baomidou.mybatisplus.extension.service.IService;
 */
 public interface IModuleService extends IService<Module> {
 
-    IPage<Module> pageList(ModulePageDto modulePageDto);
+    IPage<ModuleVo> pageList(ModuleQueryRequest moduleQueryRequest);
 }

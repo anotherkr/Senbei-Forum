@@ -5,19 +5,18 @@ import cn.hutool.http.HttpRequest;
 import cn.hutool.http.HttpUtil;
 import com.alibaba.fastjson.JSONObject;
 import com.yhz.commonutil.common.ErrorCode;
-import com.yhz.senbeiforummain.common.constant.RedisUserKey;
-import com.yhz.senbeiforummain.domain.User;
-import com.yhz.senbeiforummain.domain.github.GithubAuth;
-import com.yhz.senbeiforummain.domain.github.GithubToken;
-import com.yhz.senbeiforummain.domain.github.GithubUser;
-import com.yhz.senbeiforummain.common.enums.LoginChannelEnum;
-import com.yhz.senbeiforummain.common.enums.RoleEnum;
+import com.yhz.senbeiforummain.constant.RedisUserKey;
+import com.yhz.senbeiforummain.model.entity.User;
+import com.yhz.senbeiforummain.model.dto.github.GithubAuthRequest;
+import com.yhz.senbeiforummain.model.dto.github.GithubTokenRequest;
+import com.yhz.senbeiforummain.model.dto.github.GithubUserRequest;
+import com.yhz.senbeiforummain.model.enums.LoginChannelEnum;
+import com.yhz.senbeiforummain.model.enums.RoleEnum;
 import com.yhz.senbeiforummain.exception.BusinessException;
 import com.yhz.senbeiforummain.service.IRoleService;
 import com.yhz.senbeiforummain.service.IUserService;
 import com.yhz.senbeiforummain.util.JwtUtil;
 import com.yhz.senbeiforummain.util.RedisCache;
-import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.http.HttpHeaders;
@@ -45,7 +44,7 @@ public class GithubLoginHandler implements OauthLoginHandler {
     @Resource
     private TransactionTemplate transactionTemplate;
     @Resource
-    GithubAuth githubAuth;
+    GithubAuthRequest githubAuthRequest;
 
     @Override
     public LoginChannelEnum getChannel() {
@@ -57,34 +56,34 @@ public class GithubLoginHandler implements OauthLoginHandler {
     public void dealLogin(String code, HttpServletResponse response) {
         //拼装获取accessToken url
         String accessTokenUrl = "https://github.com/login/oauth/access_token?client_id="
-                .concat(githubAuth.getClientId())
+                .concat(githubAuthRequest.getClientId())
                 .concat("&client_secret=")
-                .concat(githubAuth.getClientSecret())
+                .concat(githubAuthRequest.getClientSecret())
                 .concat("&code=")
                 .concat(code);
         HttpRequest httpRequest = HttpUtil.createGet(accessTokenUrl);
         httpRequest.header("Accept", "application/json").timeout(-1);
         //发送请求，拿到accessToken
         String result = httpRequest.execute().body();
-        GithubToken githubToken = JSONObject.parseObject(result, GithubToken.class);
+        GithubTokenRequest githubTokenRequest = JSONObject.parseObject(result, GithubTokenRequest.class);
         // 获取 github 用户信息
         String authorization = String.join(
-                StringUtils.SPACE, githubToken.getTokenType(), githubToken.getAccessToken());
+                StringUtils.SPACE, githubTokenRequest.getTokenType(), githubTokenRequest.getAccessToken());
         log.info("authorization:{}", authorization);
         String body = HttpUtil.createGet("https://api.github.com/user")
                 .header("X-GitHub-Api-Version", "2022-11-28")
                 .header(HttpHeaders.ACCEPT, "application/vnd.github+json")
                 .header(HttpHeaders.AUTHORIZATION, authorization).execute().body();
-        GithubUser githubUser = JSONObject.parseObject(body, GithubUser.class);
-        String username = this.getChannel().getValue() + "_" + githubUser.getId();
+        GithubUserRequest githubUserRequest = JSONObject.parseObject(body, GithubUserRequest.class);
+        String username = this.getChannel().getValue() + "_" + githubUserRequest.getId();
         //查看是否已经注册过
         User user = userService.getUserByUserName(username);
         if (ObjectUtil.isEmpty(user)) {
             //如果没有注册过，则进行注册
             User finalUser = new User();
             finalUser.setUsername(username)
-                    .setNickname(this.getChannel().getValue() + "_" + githubUser.getLogin())
-                    .setHeadUrl(githubUser.getAvatarUrl());
+                    .setNickname(this.getChannel().getValue() + "_" + githubUserRequest.getLogin())
+                    .setHeadUrl(githubUserRequest.getAvatarUrl());
             transactionTemplate.execute(transactionStatus -> {
                 boolean save = userService.save(finalUser);
                 if (!save) {
@@ -103,7 +102,7 @@ public class GithubLoginHandler implements OauthLoginHandler {
         redisCache.setCacheObject(RedisUserKey.getUserInfo,username,user);
         //重定向到前端
         try {
-            response.sendRedirect(githubAuth.getFrontRedirectUrl() + "?token=" + token);
+            response.sendRedirect(githubAuthRequest.getFrontRedirectUrl() + "?token=" + token);
         } catch (IOException e) {
             log.error("Redirect error:{}",e.getMessage());
             throw new BusinessException(ErrorCode.SYSTEM_ERROR);
@@ -113,8 +112,8 @@ public class GithubLoginHandler implements OauthLoginHandler {
     @Override
     public String getUrl() {
         return "https://github.com/login/oauth/authorize?client_id="
-                .concat(githubAuth.getClientId())
+                .concat(githubAuthRequest.getClientId())
                 .concat("&redirect_uri=")
-                .concat(githubAuth.getRedirectUri());
+                .concat(githubAuthRequest.getRedirectUri());
     }
 }

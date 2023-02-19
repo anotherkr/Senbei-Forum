@@ -1,6 +1,6 @@
 package com.yhz.senbeiforummain.service;
 
-import com.yhz.senbeiforummain.domain.oos.OssRequestParam;
+import com.yhz.senbeiforummain.model.dto.oos.OssRequest;
 import com.yhz.senbeiforummain.exception.BusinessException;
 
 /**
@@ -14,5 +14,5 @@ public interface IOssService {
      * @return
      * @throws BusinessException
      */
-     OssRequestParam policy() throws BusinessException;
+     OssRequest policy() throws BusinessException;
 }
