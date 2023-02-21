@@ -37,9 +37,5 @@ public interface ITopicService extends IService<Topic> {
      */
     TopicDetailVo getTopicDetailVo(Long topicId);
 
-    /**
-     * 查询所有并排序
-     * @return
-     */
-    List<TopicVo> sortlist(Integer sortType);
+
 }

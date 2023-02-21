@@ -3,13 +3,10 @@ package com.yhz.senbeiforummain.service.impl;
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.yhz.commonutil.common.ErrorCode;
-import com.yhz.commonutil.constant.PageConstant;
 import com.yhz.commonutil.constant.SortConstant;
 import com.yhz.commonutil.util.ImgUrlUtil;
-import com.yhz.senbeiforummain.constant.SortType;
 import com.yhz.senbeiforummain.mapper.TopicMapper;
 import com.yhz.senbeiforummain.model.entity.Module;
 import com.yhz.senbeiforummain.model.entity.Topic;
@@ -142,24 +139,7 @@ public class TopicServiceImpl extends ServiceImpl<TopicMapper, Topic>
         return topicDetailVo;
     }
 
-    @Override
-    public List<TopicVo> sortlist(Integer sortType) {
 
-        QueryWrapper<Topic> queryWrapper = new QueryWrapper<>();
-        if (SortType.SORT_BY_HEAT.equals(sortType)) {
-            queryWrapper.orderByDesc("heat");
-        } else if (SortType.SORT_BY_TIME.equals(sortType)) {
-            queryWrapper.orderByDesc("create_time");
-        }
-        List<Topic> topicList = this.list(queryWrapper);
-        List<TopicVo> topicVoList = topicList.stream().map(item -> {
-            TopicVo topicVo = new TopicVo();
-            BeanUtils.copyProperties(item, topicVo);
-            return topicVo;
-        }).collect(Collectors.toList());
-
-        return topicVoList;
-    }
 }
 
 
