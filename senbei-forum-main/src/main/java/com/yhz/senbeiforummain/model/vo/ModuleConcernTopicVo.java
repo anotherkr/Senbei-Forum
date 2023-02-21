@@ -12,9 +12,12 @@ import java.util.Date;
  */
 @Data
 @ApiModel("主贴展示项")
-public class TopicVo {
+public class ModuleConcernTopicVo {
 
     private Long id;
+
+    @ApiModelProperty("模块信息")
+    private ModuleVo moduleVo;
     /**
      * 模块id
      */

@@ -32,7 +32,7 @@ public class TopicReplyRequst {
      * 回复内容
      */
     @ApiModelProperty("回复内容(5-2000字)")
-    @Size(min = 5,max = 2000,message = "回复内容应为5-2000字之间")
+    @Size(min = 3,max = 2001,message = "回复内容应为5-2000字之间")
     private String content;
 
     @ApiModelProperty("图片地址")

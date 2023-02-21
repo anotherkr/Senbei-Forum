@@ -1,8 +1,7 @@
 package com.yhz.senbeiforummain.model.vo;
 
-import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableField;
-import com.baomidou.mybatisplus.annotation.TableId;
+
+import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
@@ -11,6 +10,7 @@ import lombok.Data;
  * @date 2023/2/19 - 19:53
  */
 @Data
+@ApiModel("模块信息展示项")
 public class ModuleVo {
 
     private Long id;
@@ -58,9 +58,17 @@ public class ModuleVo {
     private String statement;
 
     /**
+     * 关注数
+     */
+    @ApiModelProperty("关注数")
+    private Long concernNum;
+    /**
      * 热度
      */
     @ApiModelProperty("热度")
     private Integer heat;
+
+    @ApiModelProperty("是否已关注(0-未关注,1-关注)")
+    private Integer isConcern;
 
 }

@@ -1,7 +1,7 @@
 package com.yhz.senbeiforummain.util;
 
 import com.yhz.senbeiforummain.constant.RedisPrefixKey;
-import com.yhz.senbeiforummain.constant.RedisUserKey;
+import com.yhz.senbeiforummain.constant.rediskey.RedisUserKey;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.BoundSetOperations;
 import org.springframework.data.redis.core.HashOperations;

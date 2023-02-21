@@ -17,7 +17,7 @@ import java.io.IOException;
 
 /**
 * @author 吉良吉影
-* @description 针对表【t_user】的数据库操作Service实现
+* @description 针对表【user】的数据库操作Service实现
 * @createDate 2022-11-13 16:08:53
 */
 @Service

@@ -62,7 +62,10 @@ public class Module extends BaseEntity implements Serializable {
      * 模块描述
      */
     private String statement;
-
+    /**
+     * 关注数
+     */
+    private Long concernNum;
     /**
      * 热度
      */

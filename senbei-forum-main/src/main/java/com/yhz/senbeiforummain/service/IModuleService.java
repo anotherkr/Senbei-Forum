@@ -14,4 +14,16 @@ import com.yhz.senbeiforummain.model.vo.ModuleVo;
 public interface IModuleService extends IService<Module> {
 
     IPage<ModuleVo> pageList(ModuleQueryRequest moduleQueryRequest);
+
+    ModuleVo getModuleVo(Long moduleId, Long userId);
+    /**
+     * 校准所有模块的关注数
+     * @return
+     */
+    int calibrationConcern();
+    /**
+     * 校准所有模块的帖子数
+     * @return
+     */
+    int calibrationTopicNum();
 }

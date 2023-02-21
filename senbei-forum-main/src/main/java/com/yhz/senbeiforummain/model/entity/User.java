@@ -13,7 +13,7 @@ import lombok.experimental.Accessors;
 /**
  * 
  * @author 吉良吉影
- * @TableName t_user
+ * @TableName user
  */
 @TableName(value ="user")
 @Data

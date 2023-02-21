@@ -8,12 +8,12 @@ public interface SortConstant {
     /**
      * 升序
      */
-    String SORT_ORDER_ASC = "ascend";
+    String SORT_ORDER_ASC = "ASC";
 
     /**
      * 降序
      */
-    String SORT_ORDER_DESC = "descend";
+    String SORT_ORDER_DESC = "DESC";
 
 
 }

@@ -5,27 +5,106 @@
 <mapper namespace="com.yhz.senbeiforummain.mapper.TopicMapper">
 
     <resultMap id="BaseResultMap" type="com.yhz.senbeiforummain.model.entity.Topic">
-            <id property="id" column="id" jdbcType="BIGINT"/>
-            <result property="moduleId" column="module_id" jdbcType="BIGINT"/>
-            <result property="userId" column="user_id" jdbcType="BIGINT"/>
-            <result property="replyNum" column="reply_num" jdbcType="INTEGER"/>
-            <result property="title" column="title" jdbcType="VARCHAR"/>
-            <result property="supportNum" column="support_num" jdbcType="INTEGER"/>
-            <result property="unsupportNum" column="unsupport_num" jdbcType="INTEGER"/>
-            <result property="heat" column="heat" jdbcType="INTEGER"/>
-            <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
-            <result property="createBy" column="create_by" jdbcType="VARCHAR"/>
-            <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
-            <result property="updateBy" column="update_by" jdbcType="VARCHAR"/>
-            <result property="isDeleted" column="is_deleted" jdbcType="INTEGER"/>
-            <result property="version" column="version" jdbcType="INTEGER"/>
+        <id property="id" column="id" jdbcType="BIGINT"/>
+        <result property="moduleId" column="module_id" jdbcType="BIGINT"/>
+        <result property="userId" column="user_id" jdbcType="BIGINT"/>
+        <result property="replyNum" column="reply_num" jdbcType="INTEGER"/>
+        <result property="title" column="title" jdbcType="VARCHAR"/>
+        <result property="supportNum" column="support_num" jdbcType="INTEGER"/>
+        <result property="unsupportNum" column="unsupport_num" jdbcType="INTEGER"/>
+        <result property="heat" column="heat" jdbcType="INTEGER"/>
+        <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+        <result property="createBy" column="create_by" jdbcType="VARCHAR"/>
+        <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
+        <result property="updateBy" column="update_by" jdbcType="VARCHAR"/>
+        <result property="isDeleted" column="is_deleted" jdbcType="INTEGER"/>
+        <result property="version" column="version" jdbcType="INTEGER"/>
     </resultMap>
 
     <sql id="Base_Column_List">
-        id,module_id,user_id,
-        reply_num,title,support_num,
-        unsupport_num,heat,create_time,
-        create_by,update_time,update_by,
-        is_deleted,version
+        id
+        ,module_id,user_id,
+        reply_num,title,content,img_urls,support_num,
+        unsupport_num,heat,create_time
     </sql>
+    <resultMap id="TopicToResultMap" type="com.yhz.senbeiforummain.model.to.TopicTo">
+        <id column="id" property="id"></id>
+        <result property="moduleId" column="module_id"></result>
+        <result property="title" column="title"></result>
+        <result property="content" column="content"></result>
+        <result property="imgUrls" column="img_urls"></result>
+        <result property="replyNum" column="reply_num"></result>
+        <result property="supportNum" column="support_num"></result>
+        <result property="unsupportNum" column="unsupport_num"></result>
+        <result property="heat" column="heat"></result>
+        <result property="createTime" column="create_time"></result>
+        <association property="userInfoVo" select="com.yhz.senbeiforummain.mapper.UserMapper.getUserInfoVoById"
+                     column="user_id"></association>
+    </resultMap>
+    <resultMap id="ModuleConcernTopicToResultMap" type="com.yhz.senbeiforummain.model.to.ModuleConcernTopicTo">
+        <id column="id" property="id"></id>
+        <result property="moduleId" column="module_id"></result>
+        <result property="title" column="title"></result>
+        <result property="content" column="content"></result>
+        <result property="imgUrls" column="img_urls"></result>
+        <result property="replyNum" column="reply_num"></result>
+        <result property="supportNum" column="support_num"></result>
+        <result property="unsupportNum" column="unsupport_num"></result>
+        <result property="heat" column="heat"></result>
+        <result property="createTime" column="create_time"></result>
+        <association property="userInfoVo" select="com.yhz.senbeiforummain.mapper.UserMapper.getUserInfoVoById"
+                     column="user_id"></association>
+        <association property="moduleVo" select="com.yhz.senbeiforummain.mapper.ModuleMapper.getModuleVoById"
+                     column="module_id"></association>
+    </resultMap>
+    <select id="selectModuleConcernToPage" resultMap="ModuleConcernTopicToResultMap">
+        SELECT id,module_id,user_id,
+        reply_num,title,content,img_urls,support_num,
+        unsupport_num,heat,create_time
+        FROM topic
+        WHERE is_deleted=0 AND module_id IN
+        <foreach collection="moduleIdList" item="moduleId" index="index" open="(" close=")" separator=",">
+            #{moduleId}
+        </foreach>
+        ORDER BY ${sortField} ${sortOrder}
+    </select>
+
+    <select id="selectTopicToPage" resultMap="TopicToResultMap">
+        SELECT id,module_id,user_id,
+        reply_num,title,content,img_urls,support_num,
+        unsupport_num,heat,create_time
+        FROM topic
+        <trim prefix="WHERE" suffixOverrides="AND">
+            is_deleted=0 AND
+            <if test="topicQueryRequest.id!=null">
+                id=#{topicQueryRequest.id} AND
+            </if>
+            <if test="topicQueryRequest.moduleId!=null">
+                module_id=#{topicQueryRequest.moduleId} AND
+            </if>
+            <if test="topicQueryRequest.userId!=null">
+                user_id=#{topicQueryRequest.userId} AND
+            </if>
+            <if test="topicQueryRequest.title!=null and topicQueryRequest.title!=''">
+                title LIKE #{topicQueryRequest.title} AND
+            </if>
+            <if test="topicQueryRequest.content!=null and topicQueryRequest.content!=''">
+                content LIKE #{topicQueryRequest.content} AND
+            </if>
+        </trim>
+        ORDER BY ${topicQueryRequest.sortField} ${topicQueryRequest.sortOrder}
+    </select>
+    <resultMap id="TopicNumModuleResultMap" type="com.yhz.senbeiforummain.model.entity.Module">
+        <id column="module_id" property="id"></id>
+        <result column="topic_num" property="topicNum"></result>
+    </resultMap>
+    <select id="getTopicNumByModuleIdList" resultMap="TopicNumModuleResultMap">
+        SELECT count(id) topic_num,module_id
+        FROM topic
+        WHERE module_id IN
+        <foreach collection="moduleIdList" item="item" separator="," open="(" close=")">
+            #{item}
+        </foreach>
+        GROUP BY module_id
+    </select>
 </mapper>

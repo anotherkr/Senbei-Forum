@@ -2,7 +2,7 @@ package com.yhz.senbeiforummain.security.filter;
 
 import cn.hutool.core.util.StrUtil;
 import com.yhz.commonutil.common.ErrorCode;
-import com.yhz.senbeiforummain.constant.RedisUserKey;
+import com.yhz.senbeiforummain.constant.rediskey.RedisUserKey;
 import com.yhz.senbeiforummain.exception.BusinessException;
 import com.yhz.senbeiforummain.security.domain.AuthUser;
 import com.yhz.senbeiforummain.util.JwtUtil;

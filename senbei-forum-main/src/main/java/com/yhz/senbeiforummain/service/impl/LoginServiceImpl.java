@@ -3,7 +3,7 @@ package com.yhz.senbeiforummain.service.impl;
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.yhz.commonutil.common.ErrorCode;
-import com.yhz.senbeiforummain.constant.RedisUserKey;
+import com.yhz.senbeiforummain.constant.rediskey.RedisUserKey;
 import com.yhz.senbeiforummain.model.entity.User;
 import com.yhz.senbeiforummain.model.dto.register.EmailRegisterRequest;
 import com.yhz.senbeiforummain.model.enums.LoginChannelEnum;

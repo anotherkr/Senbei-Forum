@@ -35,7 +35,7 @@ jasypt:
     # 配置加密算法
     algorithm: PBEWithMD5AndDES
     iv-generator-classname: org.jasypt.iv.NoIvGenerator
-    password:
+    password: yhz
     property:
       # 算法识别前缀(当算法发现配置文件中的值以这前缀开始，后缀结尾时，会使用指定算法解密)
       prefix: IT(

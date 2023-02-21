@@ -1,10 +1,12 @@
-package com.yhz.senbeiforummain.constant;
+package com.yhz.senbeiforummain.constant.rediskey;
+
+import com.yhz.senbeiforummain.constant.RedisBasePrefixKey;
 
 /**
  * 用户redis前缀
  * @author 吉良吉影
  */
-public class RedisUserKey extends RedisBasePrefixKey{
+public class RedisUserKey extends RedisBasePrefixKey {
 
     public static final String USER_KEY_TOKEN = "token";
     public static final String USER_KEY_INFO = "info";
@@ -20,7 +22,7 @@ public class RedisUserKey extends RedisBasePrefixKey{
         super(prefix);
     }
 
-    private RedisUserKey( String prefix,Long expireSeconds) {
-        super( prefix,expireSeconds);
+    private RedisUserKey(String prefix,Long expireSeconds) {
+        super(prefix,expireSeconds);
     }
 }

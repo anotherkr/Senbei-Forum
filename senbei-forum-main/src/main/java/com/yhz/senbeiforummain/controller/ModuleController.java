@@ -4,12 +4,12 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.yhz.commonutil.common.BaseResponse;
 import com.yhz.senbeiforummain.model.dto.module.ModuleQueryRequest;
 import com.yhz.commonutil.common.ResultUtils;
-import com.yhz.senbeiforummain.model.entity.Module;
 import com.yhz.senbeiforummain.model.vo.ModuleVo;
 import com.yhz.senbeiforummain.service.IModuleService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -31,6 +31,7 @@ public class ModuleController {
 
     /**
      * 分页查询接口
+     *
      * @param moduleQueryRequest
      * @return
      */
@@ -41,4 +42,10 @@ public class ModuleController {
         return ResultUtils.success(page);
     }
 
+    @ApiOperation("获取模块信息")
+    @GetMapping("/one")
+    public BaseResponse<ModuleVo> getOne(Long moduleId, Long userId) {
+        ModuleVo moduleVo = moduleService.getModuleVo(moduleId, userId);
+        return ResultUtils.success(moduleVo);
+    }
 }

@@ -5,7 +5,7 @@ import cn.hutool.http.HttpRequest;
 import cn.hutool.http.HttpUtil;
 import com.alibaba.fastjson.JSONObject;
 import com.yhz.commonutil.common.ErrorCode;
-import com.yhz.senbeiforummain.constant.RedisUserKey;
+import com.yhz.senbeiforummain.constant.rediskey.RedisUserKey;
 import com.yhz.senbeiforummain.model.entity.User;
 import com.yhz.senbeiforummain.model.dto.github.GithubAuthRequest;
 import com.yhz.senbeiforummain.model.dto.github.GithubTokenRequest;

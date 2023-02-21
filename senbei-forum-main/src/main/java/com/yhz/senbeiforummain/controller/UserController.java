@@ -22,7 +22,7 @@ import javax.validation.Valid;
 /**
  * @author 吉良吉影
  */
-@Api(tags = "用户模块")
+@Api(tags = "用户")
 @RestController
 @RequestMapping("/user")
 public class UserController {

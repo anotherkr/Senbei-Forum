@@ -17,6 +17,7 @@ import com.yhz.senbeiforummain.model.entity.TopicReply;
 import com.yhz.senbeiforummain.model.entity.User;
 import com.yhz.senbeiforummain.model.dto.topic.TopicQueryRequest;
 import com.yhz.senbeiforummain.model.dto.topic.TopicAddRequst;
+import com.yhz.senbeiforummain.model.to.TopicTo;
 import com.yhz.senbeiforummain.model.vo.TopicVo;
 import com.yhz.senbeiforummain.model.vo.TopicDetailVo;
 import com.yhz.senbeiforummain.model.vo.TopicReplyVo;
@@ -30,6 +31,7 @@ import com.yhz.senbeiforummain.util.PageUtil;
 import org.apache.commons.lang3.ArrayUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
 import javax.annotation.Resource;
@@ -51,6 +53,8 @@ public class TopicServiceImpl extends ServiceImpl<TopicMapper, Topic>
     private TopicReplyMapper topicReplyMapper;
     @Resource
     private ModuleMapper moduleMapper;
+    @Resource
+    private TopicMapper topicMapper;
     /**
      * 主贴分页查询
      * @param topicQueryRequest 查询条件
@@ -59,65 +63,41 @@ public class TopicServiceImpl extends ServiceImpl<TopicMapper, Topic>
      */
     @Override
     public IPage<TopicVo> pageList(TopicQueryRequest topicQueryRequest) throws BusinessException {
-        Optional.ofNullable(topicQueryRequest).orElseThrow(() -> new BusinessException(ErrorCode.PARAMS_ERROR));
         IPage<Topic> page = PageUtil.vaildPageParam(topicQueryRequest.getCurrent(), topicQueryRequest.getPageSize());
-        Long id = topicQueryRequest.getId();
-        Long moduleId = topicQueryRequest.getModuleId();
-        String title = topicQueryRequest.getTitle();
-        String content = topicQueryRequest.getContent();
-        Long userId = topicQueryRequest.getUserId();
         String sortField = topicQueryRequest.getSortField();
         String sortOrder = topicQueryRequest.getSortOrder();
-        QueryWrapper<Topic> wrapper = new QueryWrapper<>();
-        wrapper.like(!StrUtil.isBlank(title), "title", title);
-        wrapper.like(!StrUtil.isBlank(content), "content", title);
-        wrapper.eq(id!=null,"id", id);
-        wrapper.eq(moduleId!=null,"module_id", moduleId);
-        wrapper.eq(userId!=null,"user_id", userId);
-        if (!StrUtil.isBlank(sortField)) {
-            if (sortOrder.equals(SortConstant.SORT_ORDER_DESC)) {
-                wrapper.orderByDesc(sortField);
-            } else if(sortOrder.equals(SortConstant.SORT_ORDER_ASC)){
-                wrapper.orderByAsc(sortField);
-            }else {
-                throw new BusinessException(ErrorCode.PARAMS_ERROR);
-            }
+        //校验排序参数，防止sql注入，默认按时间降序排序
+        if (StrUtil.isBlank(sortField) ||
+                !StrUtil.equalsAny(sortField, "id", "reply_num", "click_num",
+                        "support_num", "unsupport_num", "heat")) {
+            //不符合上述条件，默认按时间排序
+            sortField = "create_time";
         }
-        IPage<Topic> moduleTopicIPage = this.page(page, wrapper);
-        //若查询到的数据为空，抛出异常
-        if (moduleTopicIPage.getRecords().size() == 0) {
-            throw new BusinessException(ErrorCode.NULL_ERROR);
+        if (StrUtil.isBlank(sortOrder) || !StrUtil.equalsAny(sortOrder, SortConstant.SORT_ORDER_ASC, SortConstant.SORT_ORDER_DESC)) {
+            //默认按降序排序
+            sortOrder = SortConstant.SORT_ORDER_DESC;
         }
-        List<User> userList = userMapper.selectList(null);
-        List<Module> moduleList = moduleMapper.selectList(null);
-        //传入主贴对应的用户信息
-        IPage<TopicVo> moduleTopicVoIPage = moduleTopicIPage.convert(moduleTopic -> {
+        topicQueryRequest.setSortField(sortField);
+        topicQueryRequest.setSortOrder(sortOrder);
+        IPage<TopicTo> topicToIPage=topicMapper.selectTopicToPage(page, topicQueryRequest);
+        IPage<TopicVo> topicVoIPage = topicToIPage.convert(item -> {
             TopicVo topicVo = new TopicVo();
-            BeanUtils.copyProperties(moduleTopic, topicVo);
-            //解析图片地址字符串放入字符串数组
-            String imgUrls = moduleTopic.getImgUrls();
-            if (!StrUtil.isBlank(imgUrls)) {
-                topicVo.setImgUrlArray(ImgUrlUtil.imgUrlJsonToArray(imgUrls));
-            }
-            //获取用户信息
-            Long topicUserId = moduleTopic.getUserId();
-            User user = userList.stream().filter(item -> item.getId().equals(topicUserId)).findFirst().get();
-            UserInfoVo userInfoVo = new UserInfoVo();
-            BeanUtils.copyProperties(user, userInfoVo);
-            topicVo.setUserInfoVo(userInfoVo);
-            //获取模块名和背景图片
-            Module selectModule = moduleList.stream().filter(module -> module.getId().equals(moduleTopic.getModuleId())).findFirst().get();
-            topicVo.setModuleName(selectModule.getName());
-            topicVo.setModuleBackgroundImgUrl(selectModule.getBackgroundImgUrl());
+            BeanUtils.copyProperties(item, topicVo);
+            topicVo.setImgUrlArray(ImgUrlUtil.imgUrlJsonToArray(item.getImgUrls()));
             return topicVo;
         });
 
-        return moduleTopicVoIPage;
+        return topicVoIPage;
     }
 
     @Override
+    @Transactional(rollbackFor = BusinessException.class)
     public void publish(TopicAddRequst topicAddRequst) throws BusinessException {
-
+        Long moduleId = topicAddRequst.getModuleId();
+        Long userId = topicAddRequst.getUserId();
+        if (userId == null || moduleId == null || userId <= 0 || moduleId <= 0) {
+            throw new BusinessException(ErrorCode.PARAMS_ERROR);
+        }
         Topic topic = new Topic();
         BeanUtils.copyProperties(topicAddRequst, topic);
         //处理图片地址数组转json
@@ -129,6 +109,13 @@ public class TopicServiceImpl extends ServiceImpl<TopicMapper, Topic>
         boolean save = this.save(topic);
         if (!save) {
             throw new BusinessException(ErrorCode.SAVE_ERROR);
+        }
+        Module module = moduleMapper.selectById(moduleId);
+        long concernNum = module.getConcernNum() + 1;
+        module.setConcernNum(concernNum);
+        int update = moduleMapper.updateById(module);
+        if (update <= 0) {
+            throw new BusinessException(ErrorCode.UPDATE_ERROR);
         }
     }
 

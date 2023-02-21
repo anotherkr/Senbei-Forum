@@ -5,26 +5,66 @@
 <mapper namespace="com.yhz.senbeiforummain.mapper.ModuleMapper">
 
     <resultMap id="BaseResultMap" type="com.yhz.senbeiforummain.model.entity.Module">
-            <id property="id" column="id" jdbcType="BIGINT"/>
-            <result property="name" column="name" jdbcType="VARCHAR"/>
-            <result property="imgUrl" column="img_url" jdbcType="VARCHAR"/>
-            <result property="topicNum" column="topic_num" jdbcType="BIGINT"/>
-            <result property="clickNum" column="click_num" jdbcType="BIGINT"/>
-            <result property="userId" column="user_id" jdbcType="BIGINT"/>
-            <result property="statement" column="statement" jdbcType="VARCHAR"/>
-            <result property="heat" column="heat" jdbcType="INTEGER"/>
-            <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
-            <result property="createBy" column="create_by" jdbcType="VARCHAR"/>
-            <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
-            <result property="isDeleted" column="is_deleted" jdbcType="INTEGER"/>
-            <result property="version" column="version" jdbcType="INTEGER"/>
+        <id property="id" column="id" jdbcType="BIGINT"/>
+        <result property="name" column="name" jdbcType="VARCHAR"/>
+        <result property="imgUrl" column="img_url" jdbcType="VARCHAR"/>
+        <result property="topicNum" column="topic_num" jdbcType="BIGINT"/>
+        <result property="clickNum" column="click_num" jdbcType="BIGINT"/>
+        <result property="userId" column="user_id" jdbcType="BIGINT"/>
+        <result property="statement" column="statement" jdbcType="VARCHAR"/>
+        <result property="heat" column="heat" jdbcType="INTEGER"/>
+        <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+        <result property="createBy" column="create_by" jdbcType="VARCHAR"/>
+        <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
+        <result property="isDeleted" column="is_deleted" jdbcType="INTEGER"/>
+        <result property="version" column="version" jdbcType="INTEGER"/>
     </resultMap>
 
     <sql id="Base_Column_List">
-        id,name,img_url,
+        id
+        ,`name`,img_url,
         topic_num,click_num,user_id,
-        statement,heat,create_time,
+        `statement`,heat,create_time,
         create_by,update_time,is_deleted,
         version,update_by
     </sql>
+    <update id="updateBatchById">
+        UPDATE `module`
+        <trim prefix="SET" suffixOverrides=",">
+            <trim prefix="concern_num=CASE" suffix="END,">
+                <foreach collection="moduleList" item="item" index="index">
+                    <if test="item.concernNum!=null">
+                        WHEN id=#{item.id} THEN #{item.concernNum}
+                    </if>
+
+                </foreach>
+            </trim>
+            <trim prefix="topic_num=CASE" suffix="END,">
+                <foreach collection="moduleList" item="item" index="index">
+                    <if test="item.topicNum!=null">
+                        WHEN id=#{item.id} THEN #{item.topicNum}
+                    </if>
+                </foreach>
+            </trim>
+        </trim>
+        WHERE
+        <foreach collection="moduleList" separator="OR" item="item">
+            id=#{item.id}
+        </foreach>
+    </update>
+    <select id="getModuleVoById" resultType="com.yhz.senbeiforummain.model.vo.ModuleVo">
+        SELECT id,
+               `name`,
+               img_url,
+               topic_num,
+               click_num,
+               user_id,
+               `statement`,
+               heat,
+               create_time
+        FROM `module`
+        WHERE id = #{id}
+          AND is_deleted = 0
+    </select>
+
 </mapper>
