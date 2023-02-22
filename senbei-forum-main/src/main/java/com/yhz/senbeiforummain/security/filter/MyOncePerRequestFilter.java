@@ -25,7 +25,7 @@ import java.io.IOException;
 import java.util.Objects;
 
 /**
- * @Author LZDWTL
+ * @Author
  * @Date 2021-12-20 16:28
  * @ClassName ${MyOncePerRequestFilter}
  * @Description ${认证过滤器}

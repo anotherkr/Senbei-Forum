@@ -4,6 +4,7 @@ import com.yhz.commonutil.common.BaseResponse;
 import com.yhz.commonutil.common.ResultUtils;
 import com.yhz.senbeiforummain.model.dto.register.EmailRegisterRequest;
 import com.yhz.senbeiforummain.model.dto.login.DoLoginRequest;
+import com.yhz.senbeiforummain.model.vo.CaptchaImageVo;
 import com.yhz.senbeiforummain.service.ILoginService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -16,7 +17,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
 import javax.validation.Valid;
-
 
 
 /**
@@ -35,7 +35,6 @@ public class UserController {
     @ApiOperation("用户登录接口")
     @PostMapping("/login")
     public BaseResponse<String> doLogin(@Valid @RequestBody DoLoginRequest doLoginRequest) {
-
         String token = loginService.doLogin(doLoginRequest);
         return ResultUtils.success(token);
     }
@@ -59,6 +58,11 @@ public class UserController {
         loginService.emailRegister(registerDto);
         return ResultUtils.success();
     }
-
+    @GetMapping("/captchaImage")
+    @ApiOperation(value = "获取验证码（数学表达式）")
+    public BaseResponse captchaImage() {
+        CaptchaImageVo captchaImageVo = loginService.createCaptchImage();
+        return ResultUtils.success(captchaImageVo);
+    }
 }
 

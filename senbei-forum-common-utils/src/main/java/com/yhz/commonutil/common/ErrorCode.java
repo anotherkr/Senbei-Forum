@@ -15,8 +15,8 @@ public enum ErrorCode {
     SYSTEM_ERROR(50000, "系统内部异常", ""),
     SAVE_ERROR(50010, "新增失败", ""),
     UPDATE_ERROR(50020, "更新失败", ""),
-    DELETE_ERROR(50030, "删除失败", "");
-
+    DELETE_ERROR(50030, "删除失败", ""),
+    CODE_ERROR(50040, "验证码错误", "");
     private final int code;
 
     /**

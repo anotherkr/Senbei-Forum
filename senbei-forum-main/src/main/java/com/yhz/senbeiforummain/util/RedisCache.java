@@ -81,9 +81,9 @@ public class RedisCache {
      * @param key 缓存键值
      * @return 缓存键值对应的数据
      */
-    public <T> T getCacheObject(RedisUserKey redisUserKey, String key) {
+    public <T> T getCacheObject(RedisPrefixKey prefixKey, String key) {
         ValueOperations<String, T> operation = redisTemplate.opsForValue();
-        return operation.get(redisUserKey.getPrefix() + key);
+        return operation.get(prefixKey.getPrefix() + key);
     }
 
     /**

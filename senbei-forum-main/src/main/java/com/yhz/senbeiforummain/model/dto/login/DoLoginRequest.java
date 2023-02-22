@@ -19,4 +19,8 @@ public class DoLoginRequest {
     @NotEmpty(message = "密码不能为空")
     @ApiModelProperty("密码")
     private String password;
+    @ApiModelProperty("验证码")
+    private String captchaCode;
+    @ApiModelProperty("uuid用于取验证码")
+    private String uuid;
 }

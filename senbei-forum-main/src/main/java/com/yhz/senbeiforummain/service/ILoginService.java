@@ -3,6 +3,7 @@ package com.yhz.senbeiforummain.service;
 import com.yhz.senbeiforummain.model.dto.register.EmailRegisterRequest;
 import com.yhz.senbeiforummain.model.dto.login.DoLoginRequest;
 import com.yhz.senbeiforummain.model.enums.LoginChannelEnum;
+import com.yhz.senbeiforummain.model.vo.CaptchaImageVo;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -49,4 +50,11 @@ public interface ILoginService {
      * @param response
      */
     void oauthLogin(LoginChannelEnum loginChannelEnum, String code, HttpServletResponse response) throws IOException;
+
+    /**
+     * 生成图片验证码
+     * @return
+     */
+    CaptchaImageVo createCaptchImage();
+
 }
