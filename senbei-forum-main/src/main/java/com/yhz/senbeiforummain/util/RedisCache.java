@@ -1,7 +1,6 @@
 package com.yhz.senbeiforummain.util;
 
-import com.yhz.senbeiforummain.constant.RedisPrefixKey;
-import com.yhz.senbeiforummain.constant.rediskey.RedisUserKey;
+import com.yhz.commonutil.common.RedisPrefixKey;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.BoundSetOperations;
 import org.springframework.data.redis.core.HashOperations;
@@ -228,5 +227,9 @@ public class RedisCache {
      */
     public Collection<String> keys(String pattern) {
         return redisTemplate.keys(pattern);
+    }
+
+    public boolean hasKey(RedisPrefixKey redisPrefixKey, String key) {
+        return redisTemplate.hasKey(redisPrefixKey.getPrefix() + key);
     }
 }

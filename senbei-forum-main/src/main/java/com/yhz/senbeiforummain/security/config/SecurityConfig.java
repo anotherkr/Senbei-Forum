@@ -1,9 +1,10 @@
 package com.yhz.senbeiforummain.security.config;
 
+import com.yhz.senbeiforummain.security.dao.RedisPersistentRepository;
 import com.yhz.senbeiforummain.security.filter.MyOncePerRequestFilter;
 import com.yhz.senbeiforummain.security.handler.MyAccessDeniedHandler;
 import com.yhz.senbeiforummain.security.handler.MyAuthenticationEntryPoint;
-import com.yhz.senbeiforummain.service.impl.AuthUserDetailsServiceImpl;
+import com.yhz.senbeiforummain.security.service.AuthUserDetailsServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -31,7 +32,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Resource
     private MyOncePerRequestFilter myOncePerRequestFilter;
     private final AuthUserDetailsServiceImpl authUserDetailsService;
-
+    @Autowired
+    RedisPersistentRepository redisPersistentRepository;
     @Autowired
     public SecurityConfig(AuthUserDetailsServiceImpl authUserDetailsService) {
         this.authUserDetailsService = authUserDetailsService;
@@ -66,7 +68,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http
                 .authorizeRequests()
                 //允许未登录的用户进行访问
-                .antMatchers("/user/login", "/user/register/**", "/user/email/**").permitAll()
+                .antMatchers("/user/login", "/user/register/**", "/user/email/**","/user/captchaImage").permitAll()
                 //允许访问knife4j
                 .antMatchers("/doc.html", "/webjars/**", "/img.icons/**", "/swagger-resources/**", "/**", "/v2/api-docs").permitAll()
                 //oauth2
@@ -87,6 +89,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http
                 .cors()
                 .configurationSource(configurationSource());
+                ////设置rememberme
+                //.and()
+                //.rememberMe()
+                //.rememberMeParameter("rememberMe")
+                //.tokenRepository(redisPersistentRepository)
+                //.rememberMeCookieName("rememberMe");
     }
 
     CorsConfigurationSource configurationSource() {

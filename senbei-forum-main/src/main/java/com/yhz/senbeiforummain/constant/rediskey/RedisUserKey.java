@@ -1,6 +1,6 @@
 package com.yhz.senbeiforummain.constant.rediskey;
 
-import com.yhz.senbeiforummain.constant.RedisBasePrefixKey;
+import com.yhz.commonutil.common.RedisBasePrefixKey;
 
 /**
  * 用户redis前缀
