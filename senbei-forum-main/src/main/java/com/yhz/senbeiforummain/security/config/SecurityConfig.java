@@ -1,6 +1,5 @@
 package com.yhz.senbeiforummain.security.config;
 
-import com.yhz.senbeiforummain.security.dao.RedisPersistentRepository;
 import com.yhz.senbeiforummain.security.filter.MyOncePerRequestFilter;
 import com.yhz.senbeiforummain.security.handler.MyAccessDeniedHandler;
 import com.yhz.senbeiforummain.security.handler.MyAuthenticationEntryPoint;
@@ -8,6 +7,7 @@ import com.yhz.senbeiforummain.security.service.AuthUserDetailsServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
@@ -22,6 +22,7 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import javax.annotation.Resource;
 import java.util.Arrays;
 
+
 /**
  * @author 吉良吉影
  */
@@ -32,8 +33,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Resource
     private MyOncePerRequestFilter myOncePerRequestFilter;
     private final AuthUserDetailsServiceImpl authUserDetailsService;
-    @Autowired
-    RedisPersistentRepository redisPersistentRepository;
+
     @Autowired
     public SecurityConfig(AuthUserDetailsServiceImpl authUserDetailsService) {
         this.authUserDetailsService = authUserDetailsService;
@@ -89,14 +89,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http
                 .cors()
                 .configurationSource(configurationSource());
-                ////设置rememberme
-                //.and()
-                //.rememberMe()
-                //.rememberMeParameter("rememberMe")
-                //.tokenRepository(redisPersistentRepository)
-                //.rememberMeCookieName("rememberMe");
     }
-
     CorsConfigurationSource configurationSource() {
         CorsConfiguration corsConfiguration = new CorsConfiguration();
         corsConfiguration.setAllowedHeaders(Arrays.asList("*"));
@@ -107,4 +100,5 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         source.registerCorsConfiguration("/**", corsConfiguration);
         return source;
     }
+
 }

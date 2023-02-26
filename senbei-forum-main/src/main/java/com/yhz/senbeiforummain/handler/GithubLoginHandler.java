@@ -13,6 +13,7 @@ import com.yhz.senbeiforummain.model.dto.github.GithubUserRequest;
 import com.yhz.senbeiforummain.model.enums.LoginChannelEnum;
 import com.yhz.senbeiforummain.model.enums.RoleEnum;
 import com.yhz.senbeiforummain.exception.BusinessException;
+import com.yhz.senbeiforummain.security.domain.AuthUser;
 import com.yhz.senbeiforummain.service.IRoleService;
 import com.yhz.senbeiforummain.service.IUserService;
 import com.yhz.senbeiforummain.util.JwtUtil;
@@ -20,6 +21,9 @@ import com.yhz.senbeiforummain.util.RedisCache;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.http.HttpHeaders;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.support.TransactionTemplate;
@@ -45,7 +49,8 @@ public class GithubLoginHandler implements OauthLoginHandler {
     private TransactionTemplate transactionTemplate;
     @Resource
     GithubAuthRequest githubAuthRequest;
-
+    @Resource
+    AuthenticationManager authenticationManager;
     @Override
     public LoginChannelEnum getChannel() {
         return LoginChannelEnum.GITHUB_LOGIN;
@@ -97,9 +102,12 @@ public class GithubLoginHandler implements OauthLoginHandler {
             });
             user = finalUser;
         }
+        AuthUser authUser = new AuthUser();
+        authUser.setUser(user);
         String token = JwtUtil.createJWT(username);
         redisCache.setCacheObject(RedisUserKey.getUserToken,username,token);
-        redisCache.setCacheObject(RedisUserKey.getUserInfo,username,user);
+        redisCache.setCacheObject(RedisUserKey.getUserInfo,username,authUser);
+
         //重定向到前端
         try {
             response.sendRedirect(githubAuthRequest.getFrontRedirectUrl() + "?token=" + token);

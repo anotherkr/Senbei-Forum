@@ -8,6 +8,8 @@ import com.yhz.senbeiforummain.model.vo.CaptchaImageVo;
 import com.yhz.senbeiforummain.service.ILoginService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.web.authentication.RememberMeServices;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -16,6 +18,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
 
@@ -34,8 +38,9 @@ public class UserController {
 
     @ApiOperation("用户登录接口")
     @PostMapping("/login")
-    public BaseResponse<String> doLogin(@Valid @RequestBody DoLoginRequest doLoginRequest) {
-        String token = loginService.doLogin(doLoginRequest);
+    public BaseResponse<String> doLogin(@Valid @RequestBody DoLoginRequest doLoginRequest, String rememberMe, HttpServletRequest request, HttpServletResponse response) {
+        String token = loginService.doLogin(doLoginRequest,request,response);
+
         return ResultUtils.success(token);
     }
 

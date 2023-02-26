@@ -26,9 +26,11 @@ import com.yhz.senbeiforummain.util.RedisCache;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -42,6 +44,7 @@ import org.springframework.util.FastByteArrayOutputStream;
 
 import javax.annotation.Resource;
 import javax.imageio.ImageIO;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
@@ -82,7 +85,7 @@ public class LoginServiceImpl implements ILoginService {
     private Producer captchaProducerMath;
 
     @Override
-    public String doLogin(DoLoginRequest doLoginRequest) {
+    public String doLogin(DoLoginRequest doLoginRequest, HttpServletRequest request, HttpServletResponse response) {
         //校验验证码
         String captchaCode = doLoginRequest.getCaptchaCode();
         String uuid = doLoginRequest.getUuid();
@@ -92,11 +95,11 @@ public class LoginServiceImpl implements ILoginService {
         }
         UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(doLoginRequest.getUsername(), doLoginRequest.getPassword());
         Authentication authenticate = authenticationManager.authenticate(authenticationToken);
-
         if (Objects.isNull(authenticate)) {
             //用户名密码错误
             throw new BusinessException(ErrorCode.NULL_ERROR);
         }
+
         AuthUser authUser = (AuthUser) authenticate.getPrincipal();
         String username = authUser.getUser().getUsername();
         String token = JwtUtil.createJWT(username);
@@ -114,6 +117,10 @@ public class LoginServiceImpl implements ILoginService {
     @Override
     public void doLogout() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if ((authentication instanceof AnonymousAuthenticationToken)) {
+            //如果是匿名用户
+            throw new BusinessException(ErrorCode.NOT_LOGIN);
+        }
         AuthUser authUser = (AuthUser) authentication.getPrincipal();
         String username = authUser.getUser().getUsername();
         //删除redis中存的信息

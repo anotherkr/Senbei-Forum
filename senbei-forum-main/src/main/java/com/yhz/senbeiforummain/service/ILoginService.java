@@ -5,6 +5,7 @@ import com.yhz.senbeiforummain.model.dto.login.DoLoginRequest;
 import com.yhz.senbeiforummain.model.enums.LoginChannelEnum;
 import com.yhz.senbeiforummain.model.vo.CaptchaImageVo;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
@@ -15,9 +16,11 @@ public interface ILoginService {
     /**
      * 用户登录
      * @param doLoginRequest
+     * @param request
+     * @param response
      * @return
      */
-    String doLogin(DoLoginRequest doLoginRequest);
+    String doLogin(DoLoginRequest doLoginRequest, HttpServletRequest request, HttpServletResponse response);
 
     /**
      * 用户注销

@@ -112,5 +112,5 @@ oauth:
   github:
     clientId: 59375e93fc8678305556
     clientSecret: a4b68da8aa28877a7713e51fff0a524e72ef6017
-    redirectUri: http://localhost:8800/oauth/github/redirect
-    frontRedirectUrl:
+    redirectUri: http://amn8sm.natappfree.cc/oauth/github/redirect
+    frontRedirectUrl: http://172.16.68.233:8080/#/redirect

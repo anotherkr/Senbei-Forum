@@ -1,6 +1,7 @@
 package com.yhz.senbeiforummain.security.filter;
 
 import cn.hutool.core.util.StrUtil;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.yhz.commonutil.common.ErrorCode;
 import com.yhz.senbeiforummain.constant.rediskey.RedisUserKey;
 import com.yhz.senbeiforummain.exception.BusinessException;
@@ -67,6 +68,7 @@ public class MyOncePerRequestFilter extends OncePerRequestFilter {
             //对比前端发送请求携带的的token是否与redis中存储的一致
             if (!Objects.isNull(redisToken) && redisToken.equals(token)) {
                 AuthUser authUser = redisCache.getCacheObject(RedisUserKey.getUserInfo,username);
+
                 logger.info("MyOncePerRequestFilter-authUser:{}", authUser);
                 if (Objects.isNull(authUser)) {
                     throw new BusinessException(ErrorCode.NOT_LOGIN);
