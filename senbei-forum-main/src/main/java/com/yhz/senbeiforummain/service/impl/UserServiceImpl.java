@@ -3,17 +3,30 @@ package com.yhz.senbeiforummain.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.rabbitmq.client.Channel;
+import com.yhz.commonutil.common.ErrorCode;
+import com.yhz.senbeiforummain.constant.rediskey.RedisUserKey;
+import com.yhz.senbeiforummain.exception.BusinessException;
 import com.yhz.senbeiforummain.model.entity.Topic;
 import com.yhz.senbeiforummain.model.entity.User;
+import com.yhz.senbeiforummain.model.vo.UserInfoVo;
+import com.yhz.senbeiforummain.security.domain.AuthUser;
 import com.yhz.senbeiforummain.service.IUserService;
 import com.yhz.senbeiforummain.mapper.UserMapper;
+import com.yhz.senbeiforummain.util.JwtUtil;
+import com.yhz.senbeiforummain.util.RedisCache;
+import io.jsonwebtoken.Claims;
 import org.springframework.amqp.core.Message;
 import org.springframework.amqp.core.MessageProperties;
 import org.springframework.amqp.rabbit.annotation.RabbitHandler;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
+import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
+import java.util.Optional;
 
 /**
 * @author 吉良吉影
@@ -24,6 +37,10 @@ import java.io.IOException;
 @RabbitListener(queues = {"hello-java-queue"})
 public class UserServiceImpl extends ServiceImpl<UserMapper, User>
     implements IUserService {
+    @Value("${jwt.tokenHeader}")
+    private String header;
+    @Resource
+    private RedisCache redisCache;
     /**
      * queues:声明需要监听的所有队列
      * 参数可以写以下类型：
@@ -57,6 +74,25 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
         wrapper.eq("username", username);
         User user = baseMapper.selectOne(wrapper);
         return user;
+    }
+
+    @Override
+    public UserInfoVo getUserInfoByToken(HttpServletRequest request) {
+        String token = request.getHeader(this.header);
+        Claims claims;
+        try {
+             claims = JwtUtil.parseJWT(token);
+        } catch (Exception e) {
+            throw new BusinessException(ErrorCode.TOKEN_VALIDATE_FAILED);
+        }
+        Optional.ofNullable(claims).orElseThrow(() -> new BusinessException(ErrorCode.TOKEN_VALIDATE_FAILED));
+        String username = claims.getSubject();
+        AuthUser authUser = redisCache.getCacheObject(RedisUserKey.getUserInfo, username);
+        User user = Optional.ofNullable(authUser).map(AuthUser::getUser)
+                .orElseThrow(() -> new BusinessException(ErrorCode.TOKEN_VALIDATE_FAILED));
+        UserInfoVo userInfoVo = new UserInfoVo();
+        BeanUtils.copyProperties(user, userInfoVo);
+        return userInfoVo;
     }
 }
 

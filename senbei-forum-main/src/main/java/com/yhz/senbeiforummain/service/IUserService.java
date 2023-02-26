@@ -2,6 +2,9 @@ package com.yhz.senbeiforummain.service;
 
 import com.yhz.senbeiforummain.model.entity.User;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.yhz.senbeiforummain.model.vo.UserInfoVo;
+
+import javax.servlet.http.HttpServletRequest;
 
 /**
 * @author 吉良吉影
@@ -12,4 +15,5 @@ public interface IUserService extends IService<User> {
 
     User getUserByUserName(String username);
 
+    UserInfoVo getUserInfoByToken(HttpServletRequest request);
 }

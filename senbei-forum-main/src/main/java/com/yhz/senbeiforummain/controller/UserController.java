@@ -4,8 +4,11 @@ import com.yhz.commonutil.common.BaseResponse;
 import com.yhz.commonutil.common.ResultUtils;
 import com.yhz.senbeiforummain.model.dto.register.EmailRegisterRequest;
 import com.yhz.senbeiforummain.model.dto.login.DoLoginRequest;
+import com.yhz.senbeiforummain.model.entity.User;
 import com.yhz.senbeiforummain.model.vo.CaptchaImageVo;
+import com.yhz.senbeiforummain.model.vo.UserInfoVo;
 import com.yhz.senbeiforummain.service.ILoginService;
+import com.yhz.senbeiforummain.service.IUserService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,7 +36,8 @@ public class UserController {
 
     @Resource
     private ILoginService loginService;
-
+    @Resource
+    private IUserService userService;
 
 
     @ApiOperation("用户登录接口")
@@ -43,7 +47,6 @@ public class UserController {
 
         return ResultUtils.success(token);
     }
-
     @ApiOperation("用户注销登录接口")
     @GetMapping("/logout")
     public BaseResponse doLogout() {
@@ -68,6 +71,13 @@ public class UserController {
     public BaseResponse captchaImage() {
         CaptchaImageVo captchaImageVo = loginService.createCaptchImage();
         return ResultUtils.success(captchaImageVo);
+    }
+
+    @GetMapping("/info")
+    @ApiOperation(value = "获取用户信息")
+    public BaseResponse getUserInfo(HttpServletRequest request) {
+        UserInfoVo userInfoVo=userService.getUserInfoByToken(request);
+        return ResultUtils.success(userInfoVo);
     }
 }
 

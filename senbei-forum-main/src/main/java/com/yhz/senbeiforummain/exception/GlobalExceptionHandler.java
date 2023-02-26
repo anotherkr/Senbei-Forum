@@ -14,6 +14,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 
 /**
@@ -25,13 +26,16 @@ import java.util.List;
 @Slf4j
 @Component
 public class GlobalExceptionHandler {
+    public static final int errorCode=500;
     @ExceptionHandler(BusinessException.class)
-    public BaseResponse businessExceptionHandler(BusinessException e) {
-        log.error("--------------businessException: " + e.getMessage(), e);
+    public BaseResponse businessExceptionHandler(BusinessException e, HttpServletResponse response) {
+        response.setStatus(errorCode);
+        log.error("BusinessException:{} ",e);
         return ResultUtils.error(e.getCode(), e.getMessage(), e.getDescription());
     }
     @ExceptionHandler({MethodArgumentNotValidException.class})
-    public BaseResponse paramExceptionHandler(MethodArgumentNotValidException e) {
+    public BaseResponse paramExceptionHandler(MethodArgumentNotValidException e, HttpServletResponse response) {
+        response.setStatus(errorCode);
         BindingResult exceptions = e.getBindingResult();
         // 判断异常中是否有错误信息，如果存在就使用异常中的消息，否则使用默认消息
         if (exceptions.hasErrors()) {
@@ -46,13 +50,15 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(RuntimeException.class)
-    public BaseResponse runtimeExceptionHandler(RuntimeException e) {
-        log.error("runtimeException", e);
+    public BaseResponse runtimeExceptionHandler(RuntimeException e,HttpServletResponse response) {
+        response.setStatus(errorCode);
+        log.error("RuntimeException:{}", e);
         return ResultUtils.error(ErrorCode.SYSTEM_ERROR, e.getMessage(), "");
     }
     @ExceptionHandler(Exception.class)
-    public BaseResponse ExceptionHandler(Exception e) {
-        log.error("Exception", e);
+    public BaseResponse ExceptionHandler(Exception e,HttpServletResponse response) {
+        response.setStatus(errorCode);
+        log.error("Exception:{}", e);
         return ResultUtils.error(ErrorCode.SYSTEM_ERROR, e.getMessage(), "");
     }
     /**

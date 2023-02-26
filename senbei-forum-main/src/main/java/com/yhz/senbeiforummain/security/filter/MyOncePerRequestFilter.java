@@ -46,7 +46,7 @@ public class MyOncePerRequestFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request,
                                     HttpServletResponse response,
                                     FilterChain chain) throws ServletException, IOException {
-        // header的值是在yml文件中定义的 “Authorization”
+        // header的值是在yml文件中定义的 “authorization”
         String token = request.getHeader(header);
         logger.info("MyOncePerRequestFilter-token:{}", token);
         if (!StrUtil.isEmpty(token)) {
