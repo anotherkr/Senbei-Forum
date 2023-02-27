@@ -203,9 +203,9 @@ public class LoginServiceImpl implements ILoginService {
 
     @Override
     public CaptchaImageVo createCaptchImage() {
-        //        生成UUID
+        //生成UUID
         String uuid = IdUtil.simpleUUID();
-//        获取验证码
+        //获取验证码
         String capStr = null, code = null;
         BufferedImage image = null;
         // 生成验证
@@ -213,7 +213,7 @@ public class LoginServiceImpl implements ILoginService {
         capStr = captchaText.substring(0, captchaText.lastIndexOf("@"));
         code = captchaText.substring(captchaText.lastIndexOf("@") + 1);
         image = captchaProducerMath.createImage(capStr);
-//        将验证码存放到redis中
+        //将验证码存放到redis中
         redisCache.setCacheObject(RedisCaptchaKey.getCaptchaCode, uuid, code);
 
 //        转换为流对象写出

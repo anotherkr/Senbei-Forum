@@ -27,16 +27,26 @@ public class OauthController {
     @Resource
     private ILoginService loginService;
 
-    @ApiOperation("获取跳转url接口")
+    @ApiOperation("github获取跳转url接口")
     @GetMapping("/url/github")
-    public BaseResponse<String> getUrl() {
+    public BaseResponse<String> getGithubUrl() {
         String url = loginService.getOauthUrl(LoginChannelEnum.GITHUB_LOGIN);
         return ResultUtils.success(url);
     }
-
-    @ApiOperation("oauth2重定向接收授权码接口")
+    @ApiOperation("gitee获取跳转url接口")
+    @GetMapping("/url/gitee")
+    public BaseResponse<String> getGiteeUrl() {
+        String url = loginService.getOauthUrl(LoginChannelEnum.GITEE_LOGIN);
+        return ResultUtils.success(url);
+    }
+    @ApiOperation("Github重定向接收授权码接口")
     @GetMapping("/github/redirect")
     public void githubRedirect(String code, HttpServletResponse response) throws IOException {
         loginService.oauthLogin(LoginChannelEnum.GITHUB_LOGIN, code, response);
+    }
+    @ApiOperation("Gitee重定向接收授权码接口")
+    @GetMapping("/gitee/redirect")
+    public void giteeRedirect(String code, HttpServletResponse response) throws IOException {
+        loginService.oauthLogin(LoginChannelEnum.GITEE_LOGIN, code, response);
     }
 }

@@ -6,7 +6,7 @@ package com.yhz.senbeiforummain.model.enums;
  * @date 2022/12/14 - 23:35
  */
 public enum LoginChannelEnum {
-    WECHAT_LOGIN(1, "wechat","微信登录"),
+    GITEE_LOGIN(1, "gitee","Gitee登录"),
     GITHUB_LOGIN(0,"github", "GitHub登录");
 
     LoginChannelEnum(int code,String value, String desc) {
