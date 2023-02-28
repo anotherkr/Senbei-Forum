@@ -74,6 +74,7 @@ public class IModuleConcernServiceImpl extends ServiceImpl<ModuleConcernMapper, 
             return true;
         }
         ModuleConcern newModuleConcern = new ModuleConcern();
+        newModuleConcern.setUserId(userId);
         BeanUtils.copyProperties(moduleConcernAddRequest, newModuleConcern);
         int insert = this.baseMapper.insert(newModuleConcern);
         if (insert > 0) {
