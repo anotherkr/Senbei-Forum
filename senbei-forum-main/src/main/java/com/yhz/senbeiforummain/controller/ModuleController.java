@@ -2,6 +2,7 @@ package com.yhz.senbeiforummain.controller;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.yhz.commonutil.common.BaseResponse;
+import com.yhz.senbeiforummain.common.annotation.UserId;
 import com.yhz.senbeiforummain.model.dto.module.ModuleQueryRequest;
 import com.yhz.commonutil.common.ResultUtils;
 import com.yhz.senbeiforummain.model.vo.ModuleVo;
@@ -44,7 +45,7 @@ public class ModuleController {
 
     @ApiOperation("获取模块信息")
     @GetMapping("/one")
-    public BaseResponse<ModuleVo> getOne(Long moduleId, Long userId) {
+    public BaseResponse<ModuleVo> getOne(Long moduleId, @UserId Long userId) {
         ModuleVo moduleVo = moduleService.getModuleVo(moduleId, userId);
         return ResultUtils.success(moduleVo);
     }

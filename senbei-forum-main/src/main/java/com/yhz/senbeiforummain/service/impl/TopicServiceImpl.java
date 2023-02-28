@@ -24,17 +24,18 @@ import com.yhz.senbeiforummain.mapper.ModuleMapper;
 import com.yhz.senbeiforummain.mapper.TopicReplyMapper;
 import com.yhz.senbeiforummain.mapper.UserMapper;
 import com.yhz.senbeiforummain.service.ITopicService;
+import com.yhz.senbeiforummain.util.IpUtils;
 import com.yhz.senbeiforummain.util.PageUtil;
 import org.apache.commons.lang3.ArrayUtils;
 import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.StringUtils;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 /**
  * @author 吉良吉影
@@ -44,6 +45,8 @@ import java.util.stream.Collectors;
 @Service
 public class TopicServiceImpl extends ServiceImpl<TopicMapper, Topic>
         implements ITopicService {
+    @Value("${jwt.tokenHeader}")
+    private String header;
     @Resource
     private UserMapper userMapper;
     @Resource
@@ -89,13 +92,24 @@ public class TopicServiceImpl extends ServiceImpl<TopicMapper, Topic>
 
     @Override
     @Transactional(rollbackFor = BusinessException.class)
-    public void publish(TopicAddRequst topicAddRequst) throws BusinessException {
+    public void publish(TopicAddRequst topicAddRequst, Long userId, HttpServletRequest request) throws BusinessException {
         Long moduleId = topicAddRequst.getModuleId();
-        Long userId = topicAddRequst.getUserId();
+        //获取ip所属地 todo
+
+        String ipAddr = IpUtils.getIpAddr(request);
+        String city;
+        try {
+             city = IpUtils.getIpPossession(ipAddr);
+        } catch (Exception e) {
+            log.error("获取IP所属地失败:{}",e);
+            throw new BusinessException(ErrorCode.SYSTEM_ERROR);
+        }
         if (userId == null || moduleId == null || userId <= 0 || moduleId <= 0) {
             throw new BusinessException(ErrorCode.PARAMS_ERROR);
         }
         Topic topic = new Topic();
+        topic.setUserId(userId);
+        topic.setCity(city);
         BeanUtils.copyProperties(topicAddRequst, topic);
         //处理图片地址数组转json
         String[] imgUrlArray = topicAddRequst.getImgUrlArray();
@@ -108,6 +122,7 @@ public class TopicServiceImpl extends ServiceImpl<TopicMapper, Topic>
             throw new BusinessException(ErrorCode.SAVE_ERROR);
         }
         Module module = moduleMapper.selectById(moduleId);
+        Optional.ofNullable(module).orElseThrow(() -> new BusinessException(ErrorCode.PARAMS_ERROR));
         long concernNum = module.getConcernNum() + 1;
         module.setConcernNum(concernNum);
         int update = moduleMapper.updateById(module);

@@ -137,10 +137,13 @@ public class LoginServiceImpl implements ILoginService {
         String checkCode = redisCache.getCacheObject(RedisUserKey.getUserEmailCode, email);
         if (StrUtil.isEmpty(checkCode)) {
             checkCode = String.valueOf(new Random().nextInt(899999) + 100000);
-            String message = "您的注册验证码为：".concat(checkCode).concat("(有效时间5分钟),请在有效时间内完成注册。");
+            String message = "您的注册验证码为：".concat(checkCode).concat("(有效时间1分钟),请在有效时间内完成注册。");
             sendSimpleMail(email, "仙贝论坛注册验证码", message);
             //存到redis中并设置有效时间5分钟
             redisCache.setCacheObject(RedisUserKey.getUserEmailCode, email, checkCode);
+        }else {
+            //如果验证码已经存在
+            throw new BusinessException(ErrorCode.EMAIL_CODE_EXIT);
         }
 
     }

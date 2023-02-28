@@ -45,14 +45,13 @@ public class IModuleConcernServiceImpl extends ServiceImpl<ModuleConcernMapper, 
     private UserMapper userMapper;
     @Resource
     private ModuleMapper moduleMapper;
-    @Resource
-    private ModuleConcernMapper moduleConcernMapper;
+
     @Resource
     private TopicMapper topicMapper;
     @Transactional(rollbackFor = BusinessException.class)
     @Override
-    public boolean addModuleConcern(ModuleConcernAddRequest moduleConcernAddRequest) {
-        Long userId = moduleConcernAddRequest.getUserId();
+    public boolean addModuleConcern(ModuleConcernAddRequest moduleConcernAddRequest, Long userId) {
+
         Long moduleId = moduleConcernAddRequest.getModuleId();
         if (userId == null || moduleId == null || userId <= 0 || moduleId <= 0) {
             throw new BusinessException(ErrorCode.PARAMS_ERROR);

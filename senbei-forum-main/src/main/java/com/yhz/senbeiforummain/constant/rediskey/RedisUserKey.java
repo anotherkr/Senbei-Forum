@@ -16,7 +16,7 @@ public class RedisUserKey extends RedisBasePrefixKey {
      */
     public static RedisUserKey getUserToken = new RedisUserKey(USER_KEY_TOKEN,3600*24L);
     public static RedisUserKey getUserInfo = new RedisUserKey(USER_KEY_INFO,3600*24L);
-    public static RedisUserKey getUserEmailCode = new RedisUserKey(USER_KEY_EMAIL_CODE,300L);
+    public static RedisUserKey getUserEmailCode = new RedisUserKey(USER_KEY_EMAIL_CODE,60L);
 
     private RedisUserKey(String prefix) {
         super(prefix);

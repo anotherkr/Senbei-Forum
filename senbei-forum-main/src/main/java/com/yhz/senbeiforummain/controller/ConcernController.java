@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.yhz.commonutil.common.BaseResponse;
 import com.yhz.commonutil.common.ErrorCode;
 import com.yhz.commonutil.common.ResultUtils;
+import com.yhz.senbeiforummain.common.annotation.UserId;
 import com.yhz.senbeiforummain.exception.BusinessException;
 import com.yhz.senbeiforummain.model.dto.moduleconcern.ModuleConcernAddRequest;
 import com.yhz.senbeiforummain.model.dto.moduleconcern.ModuleConcernQueryRequest;
@@ -34,8 +35,8 @@ public class ConcernController {
 
     @PostMapping("/module")
     @ApiOperation("关注模块")
-    public BaseResponse concernModule(@RequestBody ModuleConcernAddRequest moduleConcernAddRequest) {
-        boolean save = IModuleConcernService.addModuleConcern(moduleConcernAddRequest);
+    public BaseResponse concernModule(@RequestBody ModuleConcernAddRequest moduleConcernAddRequest, @UserId Long userId) {
+        boolean save = IModuleConcernService.addModuleConcern(moduleConcernAddRequest,userId);
         if (!save) {
             throw new BusinessException(ErrorCode.SAVE_ERROR);
         }

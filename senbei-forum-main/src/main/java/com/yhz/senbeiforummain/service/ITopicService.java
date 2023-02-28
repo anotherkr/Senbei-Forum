@@ -9,7 +9,7 @@ import com.yhz.senbeiforummain.model.vo.TopicVo;
 import com.yhz.senbeiforummain.model.vo.TopicDetailVo;
 import com.yhz.senbeiforummain.exception.BusinessException;
 
-import java.util.List;
+import javax.servlet.http.HttpServletRequest;
 
 /**
 * @author 吉良吉影
@@ -27,8 +27,10 @@ public interface ITopicService extends IService<Topic> {
     /**
      * 发布主贴
      * @param topicAddRequst
+     * @param userId
+     * @param request
      */
-    void publish(TopicAddRequst topicAddRequst);
+    void publish(TopicAddRequst topicAddRequst, Long userId, HttpServletRequest request);
 
     /**
      * 获取主贴详细信息

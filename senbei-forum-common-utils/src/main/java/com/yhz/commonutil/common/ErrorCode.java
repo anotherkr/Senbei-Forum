@@ -16,7 +16,8 @@ public enum ErrorCode {
     SAVE_ERROR(50010, "新增失败", ""),
     UPDATE_ERROR(50020, "更新失败", ""),
     DELETE_ERROR(50030, "删除失败", ""),
-    CODE_ERROR(50040, "验证码错误", "");
+    CODE_ERROR(50040, "验证码错误", ""),
+    EMAIL_CODE_EXIT(50050,"邮箱验证码已经发送,一分钟后可重新获取","");
     private final int code;
 
     /**

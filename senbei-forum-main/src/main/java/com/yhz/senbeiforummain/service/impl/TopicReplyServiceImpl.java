@@ -22,8 +22,9 @@ public class TopicReplyServiceImpl extends ServiceImpl<TopicReplyMapper, TopicRe
     implements ITopicReplyService {
 
     @Override
-    public void reply(TopicReplyRequst topicReplyRequst) {
+    public void reply(TopicReplyRequst topicReplyRequst, Long userId) {
         TopicReply topicReply = new TopicReply();
+        topicReply.setUserId(userId);
         BeanUtils.copyProperties(topicReplyRequst, topicReply);
         //处理图片
         String[] imgUrlArray = topicReplyRequst.getImgUrlArray();

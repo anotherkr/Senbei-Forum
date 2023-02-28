@@ -32,6 +32,12 @@ public class TopicVo {
     @ApiModelProperty("图片地址(0-3张)")
     private String[] imgUrlArray;
 
+    /**
+     * 城市
+     */
+    @ApiModelProperty("城市")
+    private String city;
+
     @ApiModelProperty("用户基本信息")
     private UserInfoVo userInfoVo;
 

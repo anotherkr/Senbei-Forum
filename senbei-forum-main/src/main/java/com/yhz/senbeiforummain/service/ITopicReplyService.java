@@ -11,5 +11,5 @@ import com.yhz.senbeiforummain.model.dto.topicreply.TopicReplyRequst;
 */
 public interface ITopicReplyService extends IService<TopicReply> {
 
-    void reply(TopicReplyRequst topicReplyRequst);
+    void reply(TopicReplyRequst topicReplyRequst, Long userId);
 }

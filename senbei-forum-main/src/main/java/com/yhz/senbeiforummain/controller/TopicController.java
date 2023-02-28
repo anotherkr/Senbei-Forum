@@ -3,6 +3,7 @@ package com.yhz.senbeiforummain.controller;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.yhz.commonutil.common.BaseResponse;
 import com.yhz.commonutil.common.ResultUtils;
+import com.yhz.senbeiforummain.common.annotation.UserId;
 import com.yhz.senbeiforummain.model.dto.topic.TopicQueryRequest;
 import com.yhz.senbeiforummain.model.dto.topic.TopicAddRequst;
 import com.yhz.senbeiforummain.model.vo.TopicDetailVo;
@@ -20,6 +21,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
 /**
@@ -42,8 +45,8 @@ public class TopicController {
     @PostMapping("/publish")
     @ApiOperation("主贴发布接口")
     //@PreAuthorize("hasRole('user')")
-    public BaseResponse publish( @RequestBody @Valid TopicAddRequst topicAddRequst) {
-        topicService.publish(topicAddRequst);
+    public BaseResponse publish(@RequestBody @Valid TopicAddRequst topicAddRequst, @UserId Long userId, HttpServletRequest request) {
+        topicService.publish(topicAddRequst,userId,request);
         return ResultUtils.success();
     }
 

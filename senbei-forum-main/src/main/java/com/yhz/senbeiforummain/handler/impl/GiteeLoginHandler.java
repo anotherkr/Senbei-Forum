@@ -23,6 +23,8 @@ import com.yhz.senbeiforummain.service.ThirdUserService;
 import com.yhz.senbeiforummain.util.JwtUtil;
 import com.yhz.senbeiforummain.util.RedisCache;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.support.TransactionTemplate;
@@ -102,8 +104,8 @@ public class GiteeLoginHandler implements OauthLoginHandler {
         queryWrapper.eq("third_id", thirdUserId);
         queryWrapper.eq("channel", getChannel().getCode());
         AtomicReference<ThirdUser> thirdUser = new AtomicReference<>(thirdUserService.getOne(queryWrapper));
-        AtomicReference<User> finalUser = null;
-        if (ObjectUtil.isEmpty(thirdUser)) {
+        AtomicReference<User> finalUser = new AtomicReference<>();
+        if (ObjectUtil.isEmpty(thirdUser.get())) {
             //如果没有注册过，则进行注册
             transactionTemplate.execute(transactionStatus -> {
                 //保存本地用户
@@ -136,6 +138,10 @@ public class GiteeLoginHandler implements OauthLoginHandler {
         AuthUser authUser = new AuthUser();
         authUser.setUser(user);
         String token = JwtUtil.createJWT(username);
+        UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(username,password);
+        //将用户存入上下文中
+        SecurityContextHolder.getContext().setAuthentication(authenticationToken);
+
         redisCache.setCacheObject(RedisUserKey.getUserToken,username,token);
         redisCache.setCacheObject(RedisUserKey.getUserInfo,username,authUser);
         //重定向到前端

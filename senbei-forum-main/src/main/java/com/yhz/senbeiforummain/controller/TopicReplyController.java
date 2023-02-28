@@ -2,6 +2,7 @@ package com.yhz.senbeiforummain.controller;
 
 import com.yhz.commonutil.common.BaseResponse;
 import com.yhz.commonutil.common.ResultUtils;
+import com.yhz.senbeiforummain.common.annotation.UserId;
 import com.yhz.senbeiforummain.model.dto.topicreply.TopicReplyRequst;
 import com.yhz.senbeiforummain.service.ITopicReplyService;
 import io.swagger.annotations.Api;
@@ -29,8 +30,8 @@ public class TopicReplyController {
     @PostMapping("/reply")
     @PreAuthorize("hasRole('user')")
     @ApiOperation("主贴回复接口")
-    public BaseResponse reply(@RequestBody @Valid TopicReplyRequst topicReplyRequst) {
-        moduleTopicReplyService.reply(topicReplyRequst);
+    public BaseResponse reply(@RequestBody @Valid TopicReplyRequst topicReplyRequst, @UserId Long userId) {
+        moduleTopicReplyService.reply(topicReplyRequst,userId);
         return ResultUtils.success();
     }
 }

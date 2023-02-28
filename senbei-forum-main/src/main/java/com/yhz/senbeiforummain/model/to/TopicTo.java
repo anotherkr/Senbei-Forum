@@ -46,8 +46,10 @@ public class TopicTo {
      * 图片地址(0-3张图片)
      */
     private String imgUrls;
-
-
+    /**
+     * 城市
+     */
+    private String city;
     private UserInfoVo userInfoVo;
 
 

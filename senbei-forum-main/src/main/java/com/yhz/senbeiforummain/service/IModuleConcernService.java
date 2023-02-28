@@ -17,9 +17,10 @@ public interface IModuleConcernService extends IService<ModuleConcern> {
     /**
      * 关注模块
      * @param moduleConcernAddRequest
+     * @param userId
      * @return
      */
-    boolean addModuleConcern(ModuleConcernAddRequest moduleConcernAddRequest);
+    boolean addModuleConcern(ModuleConcernAddRequest moduleConcernAddRequest, Long userId);
 
     /**
      * 获取用户所关注模块的主贴并分页

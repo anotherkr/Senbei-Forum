@@ -112,10 +112,10 @@ oauth:
   github:
     clientId: 59375e93fc8678305556
     clientSecret: IT(JhYVKBXcVstB+90aDUsP+SCXvE4T4OsHDPK5fXZL9wbrr4EqyY7F/DpnrDjqpfK73efpR2gfCKk=)
-    redirectUri: http://iat52x.natappfree.cc/oauth/github/redirect
+    redirectUri: http://ps2rsn.natappfree.cc/oauth/github/redirect
     frontRedirectUrl: http://172.16.68.233:8080/#/redirect
   gitee:
     clientId: cb6fe5b122d9f3d27fd86d2709255d25a1f34162d871d33cd27104f4b36a156c
     clientSecret: IT(v9iWgsrz/AwmVLC/WspVO1vtgblB8503t8EhbINb/NsE2wlf8XS+LWIY4/OxOB+34r0SeDT77a4tC7Hds8O4DKa19qYs4pyhNXFojM1nd8A=)
-    redirectUri: http://iat52x.natappfree.cc/oauth/gitee/redirect
+    redirectUri: http://ps2rsn.natappfree.cc/oauth/gitee/redirect
     frontRedirectUrl: http://172.16.68.233:8080/#/redirect

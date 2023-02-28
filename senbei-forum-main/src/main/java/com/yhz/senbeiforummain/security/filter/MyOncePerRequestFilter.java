@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.yhz.commonutil.common.ErrorCode;
 import com.yhz.senbeiforummain.constant.rediskey.RedisUserKey;
 import com.yhz.senbeiforummain.exception.BusinessException;
+import com.yhz.senbeiforummain.model.entity.User;
 import com.yhz.senbeiforummain.security.domain.AuthUser;
 import com.yhz.senbeiforummain.util.JwtUtil;
 import com.yhz.senbeiforummain.util.RedisCache;
@@ -24,6 +25,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.Objects;
+import java.util.Optional;
 
 /**
  * @Author
@@ -73,6 +75,10 @@ public class MyOncePerRequestFilter extends OncePerRequestFilter {
                 if (Objects.isNull(authUser)) {
                     throw new BusinessException(ErrorCode.NOT_LOGIN);
                 }
+                Long userId = Optional.ofNullable(authUser.getUser()).map(User::getId)
+                        .orElseThrow(() -> new BusinessException(ErrorCode.TOKEN_VALIDATE_FAILED));
+                //将用户id保存到请求中，方便在控制层使用自定义注解@UserId 获取用户id
+                request.setAttribute("userId",userId);
                 UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(authUser, null, authUser.getAuthorities());
                 SecurityContextHolder.getContext().setAuthentication(authenticationToken);
             }

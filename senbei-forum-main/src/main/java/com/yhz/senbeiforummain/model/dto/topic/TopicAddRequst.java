@@ -21,12 +21,7 @@ public class TopicAddRequst {
     @NotNull(message = "模块id不能为空")
     private Long moduleId;
 
-    /**
-     * 用户id
-     */
-    @ApiModelProperty("用户id")
-    @NotNull(message = "用户id不能为空")
-    private Long userId;
+
     /**
      * 主贴标题
      */

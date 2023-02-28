@@ -37,6 +37,10 @@ public class Topic extends BaseEntity implements Serializable {
      */
     private String imgUrls;
     /**
+     * 城市
+     */
+    private String city;
+    /**
      * 用户id
      */
     private Long userId;

@@ -4,6 +4,7 @@ import com.yhz.senbeiforummain.model.entity.Module;
 import com.yhz.senbeiforummain.model.entity.User;
 import com.yhz.senbeiforummain.security.domain.AuthUser;
 import com.yhz.senbeiforummain.service.IModuleService;
+import com.yhz.senbeiforummain.util.IpUtils;
 import com.yhz.senbeiforummain.util.RedisCache;
 import lombok.extern.slf4j.Slf4j;
 import org.jasypt.encryption.pbe.StandardPBEStringEncryptor;
@@ -81,13 +82,9 @@ class SenbeiForumMainApplicationTests {
     @Resource
     RedisCache redisCache;
     @Test
-    public void test02() {
-        User user = new User();
-        user.setUsername("111");
-        user.setPassword("222");
-        redisTemplate.opsForValue().set("user",user);
-        User newUser = (User) redisTemplate.opsForValue().get("user");
-        System.out.println(newUser.toString());
+    public void test02() throws Exception {
+        String ipPossession = IpUtils.getIpPossession("58.249.115.101");
+        System.out.println(ipPossession);
     }
 
 }
