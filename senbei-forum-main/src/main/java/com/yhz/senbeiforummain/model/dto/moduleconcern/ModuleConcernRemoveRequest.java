@@ -15,9 +15,5 @@ public class ModuleConcernRemoveRequest {
     @ApiModelProperty("模块id")
     private Long moduleId;
 
-    /**
-     * 用户id
-     */
-    @ApiModelProperty("用户id")
-    private Long userId;
+
 }

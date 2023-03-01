@@ -16,7 +16,6 @@ import javax.servlet.http.HttpServletRequest;
  * @author yanhuanzhan
  * @date 2023/2/28 - 17:06
  */
-@Component
 public class UserIdResolver implements HandlerMethodArgumentResolver {
     @Value("${jwt.tokenHeader}")
     private String header;

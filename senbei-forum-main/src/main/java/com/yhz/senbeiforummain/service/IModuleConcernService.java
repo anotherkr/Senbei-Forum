@@ -3,7 +3,6 @@ package com.yhz.senbeiforummain.service;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.yhz.senbeiforummain.model.dto.moduleconcern.ModuleConcernAddRequest;
 import com.yhz.senbeiforummain.model.dto.moduleconcern.ModuleConcernQueryRequest;
-import com.yhz.senbeiforummain.model.dto.moduleconcern.ModuleConcernRemoveRequest;
 import com.yhz.senbeiforummain.model.entity.ModuleConcern;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.yhz.senbeiforummain.model.vo.ModuleConcernTopicVo;
@@ -33,7 +32,7 @@ public interface IModuleConcernService extends IService<ModuleConcern> {
 
     /**
      * 取消关注模块
-     * @param moduleConcernRemoveRequest
+     * @param userId
      */
-    void cancelModuleConcern(ModuleConcernRemoveRequest moduleConcernRemoveRequest);
+    void cancelModuleConcern(Long moduleId, Long userId);
 }

@@ -18,6 +18,5 @@ public class ReplySecondQueryRequst {
     @Size(min = 1,max = 200,message = "回复内容应为1-200字之间")
     private String content;
 
-    @ApiModelProperty("用户id")
-    private Long userId;
+
 }

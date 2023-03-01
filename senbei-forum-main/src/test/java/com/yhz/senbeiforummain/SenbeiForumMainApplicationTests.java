@@ -54,7 +54,7 @@ class SenbeiForumMainApplicationTests {
 
 
         // 要加密的数据（如数据库的用户名或密码）
-        String username = encrypt("1");
+        String username = encrypt("yhz2000");
         String password = encrypt("1");
         log.info("username:{}",username);
         System.out.println("加密：password:" + password);

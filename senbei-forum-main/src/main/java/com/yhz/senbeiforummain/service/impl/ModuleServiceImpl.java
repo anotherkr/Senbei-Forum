@@ -90,6 +90,8 @@ public class ModuleServiceImpl extends ServiceImpl<ModuleMapper, Module>
             } else {
                 moduleVo.setIsConcern(ConcernConstant.NOT_CONCERN);
             }
+        }else {
+            moduleVo.setIsConcern(ConcernConstant.NOT_CONCERN);
         }
         return moduleVo;
     }

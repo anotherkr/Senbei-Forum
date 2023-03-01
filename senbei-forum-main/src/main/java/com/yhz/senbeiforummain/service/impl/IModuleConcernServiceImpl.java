@@ -14,7 +14,6 @@ import com.yhz.senbeiforummain.mapper.TopicMapper;
 import com.yhz.senbeiforummain.mapper.UserMapper;
 import com.yhz.senbeiforummain.model.dto.moduleconcern.ModuleConcernAddRequest;
 import com.yhz.senbeiforummain.model.dto.moduleconcern.ModuleConcernQueryRequest;
-import com.yhz.senbeiforummain.model.dto.moduleconcern.ModuleConcernRemoveRequest;
 import com.yhz.senbeiforummain.model.entity.Module;
 import com.yhz.senbeiforummain.model.entity.ModuleConcern;
 import com.yhz.senbeiforummain.model.entity.Topic;
@@ -136,16 +135,12 @@ public class IModuleConcernServiceImpl extends ServiceImpl<ModuleConcernMapper, 
 
     @Transactional(rollbackFor = BusinessException.class)
     @Override
-    public void cancelModuleConcern(ModuleConcernRemoveRequest moduleConcernRemoveRequest) {
-        Long userId = moduleConcernRemoveRequest.getUserId();
-        Long moduleId = moduleConcernRemoveRequest.getModuleId();
+    public void cancelModuleConcern(Long moduleId, Long userId) {
+
         if (userId == null || moduleId == null || userId <= 0 || moduleId <= 0) {
             throw new BusinessException(ErrorCode.PARAMS_ERROR);
         }
 
-        ModuleConcern newModuleConcern = new ModuleConcern();
-
-        BeanUtils.copyProperties(moduleConcernRemoveRequest, newModuleConcern);
         QueryWrapper<ModuleConcern> wrapper = new QueryWrapper<>();
         wrapper.eq("user_id", userId);
         wrapper.eq("module_id", moduleId);

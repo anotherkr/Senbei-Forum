@@ -16,13 +16,13 @@ logging:
 spring:
   datasource:
     driver-class-name: com.p6spy.engine.spy.P6SpyDriver
-    url: jdbc:p6spy:mysql://localhost:3306/senbei_forum?serverTimezone=Asia/Shanghai
+    url: jdbc:p6spy:mysql://111.230.243.152:3306/senbei_forum?serverTimezone=Asia/Shanghai
     username: root
-    password: 123456
+    password: IT(uYTzWWdyGoG4ClQoSllzmQ==)
   #redis配置
   redis:
     #服务器地址
-    host: 192.168.10.128
+    host: 111.230.243.152
     #端口
     port: 6379
     #redis密码
