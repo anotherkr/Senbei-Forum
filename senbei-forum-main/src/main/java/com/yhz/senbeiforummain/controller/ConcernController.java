@@ -51,7 +51,7 @@ public class ConcernController {
         return ResultUtils.success();
     }
     @PostMapping("/module/page")
-    @ApiOperation(value = "获取关注模块的帖子并分页",tags = "默认按时间降序排序")
+    @ApiOperation(value = "获取关注模块的帖子并分页")
     public BaseResponse getModuleConcernTopicByPage(@RequestBody ModuleConcernQueryRequest moduleConcernQueryRequest) {
         IPage<ModuleConcernTopicVo> iPage = IModuleConcernService.getModuleConcernTopicByPage(moduleConcernQueryRequest);
         return ResultUtils.success(iPage);

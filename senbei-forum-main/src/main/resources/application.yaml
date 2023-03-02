@@ -2,6 +2,9 @@
 server:
   port: 8800
 spring:
+  jackson:
+    date-format: yyyy-MM-dd HH:mm:ss
+    time-zone: GMT+8
   application:
     name: Senbei-forum-main
     # DataSource Config

@@ -50,23 +50,23 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
      *
      * Queue:可以很多人来监听，只要收到消息，队列就会删除消息，而且只能有一个收到此消息
      */
-    //@RabbitListener(queues = {"hello-java-queue"})
-    @RabbitHandler
-    public void receiveMessage(Message message, Topic topic,
-                               Channel channel) {
-        byte[] body = message.getBody();
-        //消息头属性信息
-        MessageProperties messageProperties = message.getMessageProperties();
-        System.out.println("接收到消息:"+message+",内容为:"+ topic);
-        //channel 内按顺序自增的
-        long deliveryTag = messageProperties.getDeliveryTag();
-        //签收货物,非批量模式
-        try {
-            channel.basicAck(deliveryTag, false);
-        } catch (IOException e) {
-            //网络中断
-        }
-    }
+    ////@RabbitListener(queues = {"hello-java-queue"})
+    //@RabbitHandler
+    //public void receiveMessage(Message message, Topic topic,
+    //                           Channel channel) {
+    //    byte[] body = message.getBody();
+    //    //消息头属性信息
+    //    MessageProperties messageProperties = message.getMessageProperties();
+    //    System.out.println("接收到消息:"+message+",内容为:"+ topic);
+    //    //channel 内按顺序自增的
+    //    long deliveryTag = messageProperties.getDeliveryTag();
+    //    //签收货物,非批量模式
+    //    try {
+    //        channel.basicAck(deliveryTag, false);
+    //    } catch (IOException e) {
+    //        //网络中断
+    //    }
+    //}
 
     @Override
     public User getUserByUserName(String username) {

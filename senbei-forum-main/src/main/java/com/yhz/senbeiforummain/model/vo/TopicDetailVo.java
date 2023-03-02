@@ -41,7 +41,7 @@ public class TopicDetailVo {
     @ApiModelProperty("用户基本信息")
     private UserInfoVo userInfoVo;
 
-    @ApiModelProperty
+    @ApiModelProperty("主贴回复集合")
     private List<TopicReplyVo> topicReplyVoList;
 
     @ApiModelProperty("访问量")

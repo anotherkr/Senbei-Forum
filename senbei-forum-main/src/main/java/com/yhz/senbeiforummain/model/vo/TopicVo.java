@@ -1,5 +1,6 @@
 package com.yhz.senbeiforummain.model.vo;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -53,7 +54,6 @@ public class TopicVo {
 
     @ApiModelProperty("热度")
     private Integer heat;
-
     @ApiModelProperty("创建时间")
     private Date createTime;
 }
