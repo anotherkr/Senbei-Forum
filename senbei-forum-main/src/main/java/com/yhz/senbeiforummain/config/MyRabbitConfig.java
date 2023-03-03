@@ -2,6 +2,7 @@ package com.yhz.senbeiforummain.config;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.core.ReturnedMessage;
+import org.springframework.amqp.rabbit.connection.ConnectionFactory;
 import org.springframework.amqp.rabbit.connection.CorrelationData;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.amqp.support.converter.Jackson2JsonMessageConverter;
@@ -9,8 +10,11 @@ import org.springframework.amqp.support.converter.MessageConverter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Lazy;
+import org.springframework.context.annotation.Primary;
 
 import javax.annotation.PostConstruct;
+import javax.annotation.Resource;
 
 /**
  * @author yanhuanzhan
@@ -19,8 +23,17 @@ import javax.annotation.PostConstruct;
 @Configuration
 @Slf4j
 public class MyRabbitConfig {
-    @Autowired
-    private RabbitTemplate rabbitTemplate;
+    //@Resource
+    RabbitTemplate rabbitTemplate;
+    @Primary
+    @Bean
+    public RabbitTemplate myRabbitTemplate(ConnectionFactory connectionFactory) {
+        RabbitTemplate rabbitTemplate = new RabbitTemplate(connectionFactory);
+        this.rabbitTemplate = rabbitTemplate;
+        rabbitTemplate.setMessageConverter(messageConverter());
+        initRabbitTemplate();
+        return rabbitTemplate;
+    }
     /**
      * 使用JSON序列化机制,进行消息转换
      * @return
@@ -46,7 +59,7 @@ public class MyRabbitConfig {
      *      2，
      *
      */
-    @PostConstruct //MyRabbitConfig对象创建完成以后，执行这个方法
+    //@PostConstruct //MyRabbitConfig对象创建完成以后，执行这个方法
     public void initRabbitTemplate() {
         //设置ConfirmCallback
         rabbitTemplate.setConfirmCallback(new RabbitTemplate.ConfirmCallback() {
