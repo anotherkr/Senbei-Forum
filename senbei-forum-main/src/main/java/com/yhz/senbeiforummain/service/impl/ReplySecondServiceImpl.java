@@ -20,8 +20,9 @@ public class ReplySecondServiceImpl extends ServiceImpl<ReplySecondMapper, Reply
     implements IReplySecondService {
 
     @Override
-    public void reply(ReplySecondQueryRequst replySecondQueryRequst) {
+    public void reply(ReplySecondQueryRequst replySecondQueryRequst, Long userId) {
         ReplySecond replySecond = new ReplySecond();
+        replySecond.setUserId(userId);
         BeanUtils.copyProperties(replySecondQueryRequst, replySecond);
         boolean save = this.save(replySecond);
         if (!save) {

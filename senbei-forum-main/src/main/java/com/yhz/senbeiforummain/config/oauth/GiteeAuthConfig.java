@@ -1,18 +1,18 @@
-package com.yhz.senbeiforummain.config;
+package com.yhz.senbeiforummain.config.oauth;
 
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
 
 /**
- * github认证信息
+ * gitee认证信息
  * @author yanhuanzhan
  * @date 2022/12/16 - 2:33
  */
 @Data
 @Component
-@ConfigurationProperties(prefix = "oauth.github")
-public class GithubAuthConfig {
+@ConfigurationProperties(prefix = "oauth.gitee")
+public class GiteeAuthConfig {
     /**
      * 客户端 id
      */

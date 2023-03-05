@@ -1,7 +1,9 @@
 package com.yhz.senbeiforummain.mapper;
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.yhz.senbeiforummain.model.entity.TopicReply;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.yhz.senbeiforummain.model.to.TopicReplyTo;
 import com.yhz.senbeiforummain.model.vo.TopicReplyVo;
 import org.apache.ibatis.annotations.Param;
 
@@ -19,7 +21,7 @@ public interface TopicReplyMapper extends BaseMapper<TopicReply> {
      * @param topicId
      * @return
      */
-    List<TopicReplyVo> selectTopicReplyVoListByTopicId(@Param("topicId")Long topicId);
+    IPage<TopicReplyTo> selectTopicReplyVoIPageByTopicId(@Param("iPage") IPage<TopicReplyTo> iPage, @Param("topicId")Long topicId, @Param("sortField") String sortField, @Param("sortOrder")String sortOrder);
 }
 
 

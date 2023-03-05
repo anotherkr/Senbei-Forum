@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.yhz.commonutil.common.BaseResponse;
 import com.yhz.commonutil.common.ResultUtils;
 import com.yhz.senbeiforummain.common.annotation.UserId;
+import com.yhz.senbeiforummain.model.dto.topic.TopicDetailQueryRequest;
 import com.yhz.senbeiforummain.model.dto.topic.TopicQueryRequest;
 import com.yhz.senbeiforummain.model.dto.topic.TopicAddRequst;
 import com.yhz.senbeiforummain.model.vo.TopicDetailVo;
@@ -50,10 +51,10 @@ public class TopicController {
         return ResultUtils.success();
     }
 
-    @GetMapping("/detail/{topicId}")
+    @PostMapping("/detail")
     @ApiOperation("主贴详细信息")
-    public BaseResponse<TopicDetailVo> detail(@PathVariable Long topicId) {
-        TopicDetailVo topicDetailVo = topicService.getTopicDetailVo(topicId);
+    public BaseResponse<TopicDetailVo> detail(@Valid @RequestBody TopicDetailQueryRequest topicDetailQueryRequest) {
+        TopicDetailVo topicDetailVo = topicService.getTopicDetailVo(topicDetailQueryRequest);
         return ResultUtils.success(topicDetailVo);
     }
 }

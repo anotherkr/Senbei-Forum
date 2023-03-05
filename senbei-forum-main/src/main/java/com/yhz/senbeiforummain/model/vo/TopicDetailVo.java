@@ -7,6 +7,7 @@ package com.yhz.senbeiforummain.model.vo;
  * @date 2022/11/27 - 15:04
  */
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -42,7 +43,7 @@ public class TopicDetailVo {
     private UserInfoVo userInfoVo;
 
     @ApiModelProperty("主贴回复集合")
-    private List<TopicReplyVo> topicReplyVoList;
+    private IPage<TopicReplyVo> topicReplyVoIPage;
 
     @ApiModelProperty("访问量")
     private Long clickNum;

@@ -10,6 +10,7 @@ import org.springframework.amqp.core.Queue;
 import org.springframework.amqp.rabbit.connection.CorrelationData;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ActiveProfiles;
 
 import javax.annotation.Resource;
 import java.util.UUID;
@@ -20,6 +21,7 @@ import java.util.UUID;
  */
 @SpringBootTest
 @Slf4j
+@ActiveProfiles("dev")
 public class RabbitMqTest {
     @Resource
     private AmqpAdmin amqpAdmin;

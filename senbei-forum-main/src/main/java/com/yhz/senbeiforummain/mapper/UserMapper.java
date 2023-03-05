@@ -3,6 +3,7 @@ package com.yhz.senbeiforummain.mapper;
 import com.yhz.senbeiforummain.model.entity.User;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.yhz.senbeiforummain.model.vo.UserInfoVo;
+import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
 /**
@@ -11,7 +12,7 @@ import org.apache.ibatis.annotations.Param;
 * @createDate 2022-11-13 16:08:53
 * @Entity com.yhz.senbeiforummain.domain.User
 */
-
+@Mapper
 public interface UserMapper extends BaseMapper<User> {
      /**
       * 根据用户id查询userInfo

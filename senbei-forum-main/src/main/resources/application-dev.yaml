@@ -22,7 +22,7 @@ spring:
   #redis配置
   redis:
     #服务器地址
-    host: 192.168.10.128
+    host: 111.230.243.152
     #端口
     port: 6379
     #redis密码

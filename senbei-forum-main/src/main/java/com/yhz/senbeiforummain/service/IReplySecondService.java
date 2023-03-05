@@ -11,5 +11,5 @@ import com.yhz.senbeiforummain.model.dto.replysecond.ReplySecondQueryRequst;
 */
 public interface IReplySecondService extends IService<ReplySecond> {
 
-    void reply(ReplySecondQueryRequst replySecondQueryRequst);
+    void reply(ReplySecondQueryRequst replySecondQueryRequst, Long userId);
 }

@@ -9,6 +9,7 @@ import com.yhz.commonutil.common.ErrorCode;
 import com.yhz.commonutil.constant.PageConstant;
 import com.yhz.commonutil.constant.SortConstant;
 import com.yhz.senbeiforummain.exception.BusinessException;
+import org.apache.commons.lang3.StringUtils;
 
 
 import java.util.Optional;
@@ -42,16 +43,47 @@ public class PageUtil {
      */
     public static <T> void dealSortWrapper(QueryWrapper<T> wrapper, String sortField, String sortOrder) {
         if (!StrUtil.isBlank(sortField)) {
+            //防止sql注入
+            String checkSortField = sqlInject(sortField);
             if (sortOrder.equals(SortConstant.SORT_ORDER_DESC)) {
-                wrapper.orderByDesc(sortField);
+                wrapper.orderByDesc(checkSortField);
             } else if(sortOrder.equals(SortConstant.SORT_ORDER_ASC)){
-                wrapper.orderByAsc(sortField);
+                wrapper.orderByAsc(checkSortField);
             }else {
                 throw new BusinessException(ErrorCode.PARAMS_ERROR);
             }
         }
     }
+    /**
+     * SQL注入过滤
+     * @param str  待验证的字符串
+     * @throws
+     */
+    public static String sqlInject(String str){
+        if(StringUtils.isBlank(str)){
+            return null;
+        }
+        //去掉'|"|;|\字符
+        str = StringUtils.replace(str, "'", "");
+        str = StringUtils.replace(str, "\"", "");
+        str = StringUtils.replace(str, ";", "");
+        str = StringUtils.replace(str, "\\", "");
 
+        //转换成小写
+        str = str.toLowerCase();
+
+        //非法字符
+        String[] keywords = {"master", "truncate", "insert", "select", "delete", "update", "declare", "alert", "drop"};
+
+        //判断是否包含非法字符
+        for(String keyword : keywords){
+            if(str.indexOf(keyword) != -1){
+                throw new BusinessException(ErrorCode.SQL_ERROR);
+            }
+        }
+
+        return str;
+    }
 
 
 }

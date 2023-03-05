@@ -1,6 +1,7 @@
 package com.yhz.senbeiforummain.service;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.yhz.senbeiforummain.model.dto.topic.TopicDetailQueryRequest;
 import com.yhz.senbeiforummain.model.entity.Topic;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.yhz.senbeiforummain.model.dto.topic.TopicQueryRequest;
@@ -34,10 +35,10 @@ public interface ITopicService extends IService<Topic> {
 
     /**
      * 获取主贴详细信息
-     * @param topicId
+     * @param topicDetailQueryRequest
      * @return
      */
-    TopicDetailVo getTopicDetailVo(Long topicId);
+    TopicDetailVo getTopicDetailVo(TopicDetailQueryRequest topicDetailQueryRequest);
 
 
 }

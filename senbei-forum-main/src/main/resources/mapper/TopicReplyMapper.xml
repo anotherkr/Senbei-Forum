@@ -26,7 +26,7 @@
         create_time,create_by,update_time,
         update_by,is_deleted,version
     </sql>
-    <resultMap id="TopicReplyVoresultMap" type="TopicReplyVo">
+    <resultMap id="TopicReplyVoresultMap" type="TopicReplyTo">
         <id property="id" column="id" jdbcType="BIGINT"/>
         <result property="content" column="content"/>
         <result property="content" column="content" jdbcType="VARCHAR"/>
@@ -42,10 +42,11 @@
         </collection>
     </resultMap>
 
-    <select id="selectTopicReplyVoListByTopicId" resultMap="TopicReplyVoresultMap">
+    <select id="selectTopicReplyVoIPageByTopicId" resultMap="TopicReplyVoresultMap">
         SELECT id,user_id,content,support_num,unsupport_num,create_time,img_urls
         FROM topic_reply
         WHERE topic_id=#{topicId}
-        ORDER BY create_time ASC
+        ORDER BY #{sortField} #{sortOrder}
+
     </select>
 </mapper>

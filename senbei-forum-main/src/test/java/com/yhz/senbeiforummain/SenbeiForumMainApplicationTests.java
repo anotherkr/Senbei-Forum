@@ -1,8 +1,6 @@
 package com.yhz.senbeiforummain;
 
 import com.yhz.senbeiforummain.model.entity.Module;
-import com.yhz.senbeiforummain.model.entity.User;
-import com.yhz.senbeiforummain.security.domain.AuthUser;
 import com.yhz.senbeiforummain.service.IModuleService;
 import com.yhz.senbeiforummain.util.IpUtils;
 import com.yhz.senbeiforummain.util.RedisCache;
@@ -12,6 +10,7 @@ import org.jasypt.encryption.pbe.config.EnvironmentStringPBEConfig;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.test.context.ActiveProfiles;
 
 import javax.annotation.Resource;
 import java.util.Date;
@@ -19,6 +18,7 @@ import java.util.concurrent.TimeUnit;
 
 @SpringBootTest
 @Slf4j
+@ActiveProfiles("dev")
 class SenbeiForumMainApplicationTests {
     @Resource
     IModuleService moduleService;

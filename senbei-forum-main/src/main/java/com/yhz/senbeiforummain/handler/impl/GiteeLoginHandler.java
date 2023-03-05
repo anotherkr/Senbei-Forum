@@ -6,7 +6,7 @@ import cn.hutool.http.HttpUtil;
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.yhz.commonutil.common.ErrorCode;
-import com.yhz.senbeiforummain.config.GiteeAuthConfig;
+import com.yhz.senbeiforummain.config.oauth.GiteeAuthConfig;
 import com.yhz.senbeiforummain.constant.rediskey.RedisUserKey;
 import com.yhz.senbeiforummain.exception.BusinessException;
 import com.yhz.senbeiforummain.handler.OauthLoginHandler;

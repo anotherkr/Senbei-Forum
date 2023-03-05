@@ -1,19 +1,19 @@
 package com.yhz.senbeiforummain.service.impl;
 
 import cn.hutool.core.util.StrUtil;
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.yhz.commonutil.common.ErrorCode;
 import com.yhz.commonutil.constant.SortConstant;
 import com.yhz.commonutil.util.ImgUrlUtil;
 import com.yhz.senbeiforummain.mapper.TopicMapper;
+import com.yhz.senbeiforummain.model.dto.topic.TopicDetailQueryRequest;
 import com.yhz.senbeiforummain.model.entity.Module;
 import com.yhz.senbeiforummain.model.entity.Topic;
-import com.yhz.senbeiforummain.model.entity.TopicReply;
 import com.yhz.senbeiforummain.model.entity.User;
 import com.yhz.senbeiforummain.model.dto.topic.TopicQueryRequest;
 import com.yhz.senbeiforummain.model.dto.topic.TopicAddRequst;
+import com.yhz.senbeiforummain.model.to.TopicReplyTo;
 import com.yhz.senbeiforummain.model.to.TopicTo;
 import com.yhz.senbeiforummain.model.vo.TopicVo;
 import com.yhz.senbeiforummain.model.vo.TopicDetailVo;
@@ -34,7 +34,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
-import java.util.List;
 import java.util.Optional;
 
 /**
@@ -132,7 +131,14 @@ public class TopicServiceImpl extends ServiceImpl<TopicMapper, Topic>
     }
 
     @Override
-    public TopicDetailVo getTopicDetailVo(Long topicId) {
+    public TopicDetailVo getTopicDetailVo(TopicDetailQueryRequest topicDetailQueryRequest) {
+        Long topicId = topicDetailQueryRequest.getTopicId();
+        long current = topicDetailQueryRequest.getCurrent();
+        long pageSize = topicDetailQueryRequest.getPageSize();
+        String sortField = topicDetailQueryRequest.getSortField();
+        String sortOrder = topicDetailQueryRequest.getSortOrder();
+
+
         Topic topic = this.getById(topicId);
         TopicDetailVo topicDetailVo = new TopicDetailVo();
         BeanUtils.copyProperties(topic, topicDetailVo);
@@ -146,11 +152,18 @@ public class TopicServiceImpl extends ServiceImpl<TopicMapper, Topic>
         BeanUtils.copyProperties(user, userInfoVo);
         topicDetailVo.setUserInfoVo(userInfoVo);
         //获取主贴回复
-        QueryWrapper<TopicReply> replyWrapper = new QueryWrapper<>();
-        replyWrapper.eq("topic_id", topicId);
-        List<TopicReplyVo> topicReplyVoList = topicReplyMapper.selectTopicReplyVoListByTopicId(topicId);
-        topicDetailVo.setTopicReplyVoList(topicReplyVoList);
-
+        IPage<TopicReplyTo> topicReplyToIPage = PageUtil.vaildPageParam(current, pageSize);
+        String checkSortField = PageUtil.sqlInject(sortField);
+        IPage<TopicReplyTo> finalTopicReplyToIPage = topicReplyMapper.selectTopicReplyVoIPageByTopicId(topicReplyToIPage, topicId, checkSortField, sortOrder);
+        IPage<TopicReplyVo> topicReplyVoIPage = finalTopicReplyToIPage.convert(item -> {
+            String urls = item.getImgUrls();
+            String[] toArray = ImgUrlUtil.imgUrlJsonToArray(urls);
+            TopicReplyVo topicReplyVo = new TopicReplyVo();
+            topicReplyVo.setImgUrlArray(toArray);
+            BeanUtils.copyProperties(item, topicReplyVo);
+            return topicReplyVo;
+        });
+        topicDetailVo.setTopicReplyVoIPage(topicReplyVoIPage);
         return topicDetailVo;
     }
 
