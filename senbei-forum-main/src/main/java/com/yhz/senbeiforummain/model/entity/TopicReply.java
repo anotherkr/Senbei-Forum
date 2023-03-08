@@ -36,6 +36,8 @@ public class TopicReply extends BaseEntity implements Serializable {
      * 回复内容
      */
     private String content;
+
+    private String city;
     /**
      * 多图片地址
      */

@@ -126,7 +126,8 @@ public class GithubLoginHandler implements OauthLoginHandler {
                 }
                 //保存第三方用户
                 thirdUser.set(new ThirdUser());
-                thirdUser.get().setUserId(finalUser.get().getId()).setThirdId(thirdUserId).setNickname(thirdUserNickname);
+                thirdUser.get().setUserId(finalUser.get().getId()).setThirdId(thirdUserId)
+                        .setNickname(thirdUserNickname).setChannel(this.getChannel().getCode());
                 thirdUserService.save(thirdUser.get());
                 return null;
             });

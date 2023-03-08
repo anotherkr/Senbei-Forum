@@ -2,7 +2,9 @@ package com.yhz.senbeiforummain.service;
 
 import com.yhz.senbeiforummain.model.entity.TopicReply;
 import com.baomidou.mybatisplus.extension.service.IService;
-import com.yhz.senbeiforummain.model.dto.topicreply.TopicReplyRequst;
+import com.yhz.senbeiforummain.model.dto.topicreply.TopicReplyAddRequst;
+
+import javax.servlet.http.HttpServletRequest;
 
 /**
 * @author 吉良吉影
@@ -11,5 +13,12 @@ import com.yhz.senbeiforummain.model.dto.topicreply.TopicReplyRequst;
 */
 public interface ITopicReplyService extends IService<TopicReply> {
 
-    void reply(TopicReplyRequst topicReplyRequst, Long userId);
+    void reply(TopicReplyAddRequst topicReplyAddRequst, Long userId, HttpServletRequest request);
+
+    /**
+     * 点赞功能
+     * @param topicReplyId
+     * @param userId
+     */
+    void support(Long topicReplyId, Long userId);
 }

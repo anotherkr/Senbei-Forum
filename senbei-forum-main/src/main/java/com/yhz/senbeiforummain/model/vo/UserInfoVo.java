@@ -42,11 +42,6 @@ public class UserInfoVo {
      */
     @ApiModelProperty("用户等级(1-6)")
     private Integer level;
-    /**
-     * 角色id
-     */
-    @ApiModelProperty("角色id")
-    private Long roleId;
 
     @ApiModelProperty("邮箱")
     private String email;

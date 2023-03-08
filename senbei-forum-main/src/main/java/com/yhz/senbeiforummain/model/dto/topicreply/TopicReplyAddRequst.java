@@ -13,7 +13,7 @@ import javax.validation.constraints.Size;
  */
 @Data
 @ApiModel("主贴回复请求参数")
-public class TopicReplyRequst {
+public class TopicReplyAddRequst {
     /**
      * 主贴id
      */

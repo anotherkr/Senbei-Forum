@@ -14,7 +14,7 @@
         id,role_name,role_decription
     </sql>
     <insert id="attachRoleByUserId">
-        INSERT INTO user_role(role_id,user_id) VALUES(#{roleId},#{userId})
+        INSERT INTO user_role(role_id,user_id,create_time,update_time) VALUES(#{roleId},#{userId},now(),now())
     </insert>
     <select id="getRolesByUserName" resultType="com.yhz.senbeiforummain.model.entity.Role">
         SELECT r.id,r.role_name,r.role_decription

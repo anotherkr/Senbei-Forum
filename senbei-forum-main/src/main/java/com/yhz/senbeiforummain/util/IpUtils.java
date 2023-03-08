@@ -32,6 +32,10 @@ public class IpUtils {
     private static final String LOCALHOST_IP = "0:0:0:0:0:0:0:1";
     private static final String LOCALHOST_IP1 = "127.0.0.1";
 
+    public static String getCity(HttpServletRequest request) throws Exception {
+        String ipAddr = getIpAddr(request);
+        return getIpPossession(ipAddr);
+    }
     /**
      * 判断ip地址
      * @param ip

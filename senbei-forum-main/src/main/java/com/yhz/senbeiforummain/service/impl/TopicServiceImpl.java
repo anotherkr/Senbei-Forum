@@ -93,12 +93,10 @@ public class TopicServiceImpl extends ServiceImpl<TopicMapper, Topic>
     @Transactional(rollbackFor = BusinessException.class)
     public void publish(TopicAddRequst topicAddRequst, Long userId, HttpServletRequest request) throws BusinessException {
         Long moduleId = topicAddRequst.getModuleId();
-        //获取ip所属地 todo
-
-        String ipAddr = IpUtils.getIpAddr(request);
+        //获取ip所属地
         String city;
         try {
-             city = IpUtils.getIpPossession(ipAddr);
+            city = IpUtils.getCity(request);
         } catch (Exception e) {
             log.error("获取IP所属地失败:{}",e);
             throw new BusinessException(ErrorCode.SYSTEM_ERROR);
@@ -137,7 +135,7 @@ public class TopicServiceImpl extends ServiceImpl<TopicMapper, Topic>
         long pageSize = topicDetailQueryRequest.getPageSize();
         String sortField = topicDetailQueryRequest.getSortField();
         String sortOrder = topicDetailQueryRequest.getSortOrder();
-
+        Long userId = topicDetailQueryRequest.getUserId();
 
         Topic topic = this.getById(topicId);
         TopicDetailVo topicDetailVo = new TopicDetailVo();
@@ -154,7 +152,7 @@ public class TopicServiceImpl extends ServiceImpl<TopicMapper, Topic>
         //获取主贴回复
         IPage<TopicReplyTo> topicReplyToIPage = PageUtil.vaildPageParam(current, pageSize);
         String checkSortField = PageUtil.sqlInject(sortField);
-        IPage<TopicReplyTo> finalTopicReplyToIPage = topicReplyMapper.selectTopicReplyVoIPageByTopicId(topicReplyToIPage, topicId, checkSortField, sortOrder);
+        IPage<TopicReplyTo> finalTopicReplyToIPage = topicReplyMapper.selectTopicReplyVoIPageByTopicId(topicReplyToIPage, topicId, userId, checkSortField, sortOrder);
         IPage<TopicReplyVo> topicReplyVoIPage = finalTopicReplyToIPage.convert(item -> {
             String urls = item.getImgUrls();
             String[] toArray = ImgUrlUtil.imgUrlJsonToArray(urls);

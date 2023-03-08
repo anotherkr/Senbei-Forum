@@ -4,10 +4,7 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.yhz.senbeiforummain.model.entity.TopicReply;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.yhz.senbeiforummain.model.to.TopicReplyTo;
-import com.yhz.senbeiforummain.model.vo.TopicReplyVo;
 import org.apache.ibatis.annotations.Param;
-
-import java.util.List;
 
 /**
 * @author 吉良吉影
@@ -18,10 +15,14 @@ import java.util.List;
 public interface TopicReplyMapper extends BaseMapper<TopicReply> {
     /**
      * 根据主贴id查询回复表集合
+     * @param iPage
      * @param topicId
+     * @param userId
+     * @param sortField
+     * @param sortOrder
      * @return
      */
-    IPage<TopicReplyTo> selectTopicReplyVoIPageByTopicId(@Param("iPage") IPage<TopicReplyTo> iPage, @Param("topicId")Long topicId, @Param("sortField") String sortField, @Param("sortOrder")String sortOrder);
+    IPage<TopicReplyTo> selectTopicReplyVoIPageByTopicId(@Param("iPage") IPage<TopicReplyTo> iPage, @Param("topicId") Long topicId, @Param("userId") Long userId, @Param("sortField") String sortField, @Param("sortOrder") String sortOrder);
 }
 
 

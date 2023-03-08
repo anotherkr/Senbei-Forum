@@ -10,7 +10,6 @@
             <result property="username" column="username" jdbcType="VARCHAR"/>
             <result property="password" column="password" jdbcType="VARCHAR"/>
             <result property="point" column="point" jdbcType="BIGINT"/>
-            <result property="roleId" column="role_id" jdbcType="BIGINT"/>
             <result property="phone" column="phone" jdbcType="VARCHAR"/>
             <result property="description" column="description" jdbcType="VARCHAR"/>
             <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
@@ -31,7 +30,6 @@
         <result property="username" column="username"></result>
         <result property="point" column="point"></result>
         <result property="level" column="level"></result>
-        <result property="roleId" column="role_id"></result>
         <result property="phone" column="phone"></result>
         <result property="description" column="description"></result>
         <result property="sex" column="sex"></result>
@@ -40,7 +38,7 @@
     </resultMap>
     <select id="getUserInfoVoById" resultType="com.yhz.senbeiforummain.model.vo.UserInfoVo">
         SELECT id,nickname,username,
-               point,`level`,role_id,
+               point,`level`,
                phone,description,sex,head_url,create_time
         FROM   user
         WHERE id=#{userId}

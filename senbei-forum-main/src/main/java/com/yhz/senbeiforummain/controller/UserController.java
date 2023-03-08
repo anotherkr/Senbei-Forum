@@ -1,9 +1,14 @@
 package com.yhz.senbeiforummain.controller;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.yhz.commonutil.common.BaseResponse;
+import com.yhz.commonutil.common.ErrorCode;
 import com.yhz.commonutil.common.ResultUtils;
+import com.yhz.senbeiforummain.common.annotation.UserId;
+import com.yhz.senbeiforummain.exception.BusinessException;
 import com.yhz.senbeiforummain.model.dto.register.EmailRegisterRequest;
 import com.yhz.senbeiforummain.model.dto.login.DoLoginRequest;
+import com.yhz.senbeiforummain.model.dto.user.UserUpdateRequest;
 import com.yhz.senbeiforummain.model.entity.User;
 import com.yhz.senbeiforummain.model.vo.CaptchaImageVo;
 import com.yhz.senbeiforummain.model.vo.UserInfoVo;
@@ -11,6 +16,7 @@ import com.yhz.senbeiforummain.service.ILoginService;
 import com.yhz.senbeiforummain.service.IUserService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.web.authentication.RememberMeServices;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -18,6 +24,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
@@ -78,6 +85,19 @@ public class UserController {
     public BaseResponse getUserInfo(HttpServletRequest request) {
         UserInfoVo userInfoVo=userService.getUserInfoByToken(request);
         return ResultUtils.success(userInfoVo);
+    }
+
+    @ApiOperation(value = "更新用户信息")
+    @PostMapping("/update")
+    public BaseResponse updateUserInfo(@RequestBody UserUpdateRequest userUpdateRequest, @UserId Long userId) {
+        User user = new User();
+        user.setId(userId);
+        BeanUtils.copyProperties(userUpdateRequest, user);
+        boolean update = userService.updateById(user);
+        if (!update) {
+            throw new BusinessException(ErrorCode.UPDATE_ERROR);
+        }
+        return ResultUtils.success();
     }
 }
 

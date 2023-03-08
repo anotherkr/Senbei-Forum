@@ -25,6 +25,8 @@ public class TopicReplyVo {
     @ApiModelProperty("回复内容")
     private String content;
 
+    private String city;
+
     @ApiModelProperty("图片地址")
     @TableField(exist = false)
     private String[] imgUrlArray;

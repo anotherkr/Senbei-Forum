@@ -45,10 +45,7 @@ public class User extends BaseEntity implements Serializable {
      */
     private Long point;
 
-    /**
-     * 角色id
-     */
-    private Long roleId;
+
     /**
      * 邮箱
      */

@@ -24,6 +24,8 @@ public class TopicReplyTo {
 
     private String content;
 
+    private String city;
+
     private String imgUrls;
 
     private List<ReplySecondVo> replySecondVoList;
