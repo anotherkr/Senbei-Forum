@@ -40,5 +40,11 @@ public interface ITopicService extends IService<Topic> {
      */
     TopicDetailVo getTopicDetailVo(TopicDetailQueryRequest topicDetailQueryRequest);
 
-
+    /**
+     * 点赞功能
+     * @param topicId
+     * @param userId
+     * @return
+     */
+    Integer support(Long topicId, Long userId);
 }

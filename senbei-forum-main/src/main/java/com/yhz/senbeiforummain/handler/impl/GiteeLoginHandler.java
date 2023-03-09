@@ -19,7 +19,7 @@ import com.yhz.senbeiforummain.model.enums.RoleEnum;
 import com.yhz.senbeiforummain.security.domain.AuthUser;
 import com.yhz.senbeiforummain.service.IRoleService;
 import com.yhz.senbeiforummain.service.IUserService;
-import com.yhz.senbeiforummain.service.ThirdUserService;
+import com.yhz.senbeiforummain.service.IThirdUserService;
 import com.yhz.senbeiforummain.util.JwtUtil;
 import com.yhz.senbeiforummain.util.RedisCache;
 import lombok.extern.slf4j.Slf4j;
@@ -48,7 +48,7 @@ public class GiteeLoginHandler implements OauthLoginHandler {
     @Resource
     private RedisCache redisCache;
     @Resource
-    private ThirdUserService thirdUserService;
+    private IThirdUserService thirdUserService;
     @Resource
     private IUserService userService;
     @Resource

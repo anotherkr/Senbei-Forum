@@ -178,6 +178,8 @@ public class LoginServiceImpl implements ILoginService {
         BeanUtils.copyProperties(registerDto, user);
         //使用邮箱作为用户名
         user.setUsername(email);
+        //設置默認頭像
+        user.setHeadUrl("https://www.vcg.com/creative/1311122392");
         transactionTemplate.execute(transactionStatus -> {
             boolean save = userService.save(user);
             if (!save) {

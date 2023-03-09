@@ -6,6 +6,8 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.yhz.commonutil.common.ErrorCode;
 import com.yhz.commonutil.constant.SortConstant;
 import com.yhz.commonutil.util.ImgUrlUtil;
+import com.yhz.senbeiforummain.constant.rediskey.RedisTopicKey;
+import com.yhz.senbeiforummain.constant.rediskey.RedisTopicReplyKey;
 import com.yhz.senbeiforummain.mapper.TopicMapper;
 import com.yhz.senbeiforummain.model.dto.topic.TopicDetailQueryRequest;
 import com.yhz.senbeiforummain.model.entity.Module;
@@ -29,11 +31,16 @@ import com.yhz.senbeiforummain.util.PageUtil;
 import org.apache.commons.lang3.ArrayUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.script.DefaultRedisScript;
+import org.springframework.scripting.support.ResourceScriptSource;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
+import java.util.Arrays;
 import java.util.Optional;
 
 /**
@@ -54,6 +61,8 @@ public class TopicServiceImpl extends ServiceImpl<TopicMapper, Topic>
     private ModuleMapper moduleMapper;
     @Resource
     private TopicMapper topicMapper;
+    @Resource
+    private RedisTemplate redisTemplate;
     /**
      * 主贴分页查询
      * @param topicQueryRequest 查询条件
@@ -163,6 +172,17 @@ public class TopicServiceImpl extends ServiceImpl<TopicMapper, Topic>
         });
         topicDetailVo.setTopicReplyVoIPage(topicReplyVoIPage);
         return topicDetailVo;
+    }
+
+    @Override
+    public Integer support(Long topicId, Long userId) {
+        DefaultRedisScript<Integer> redisScript = new DefaultRedisScript();
+        redisScript.setScriptSource(new ResourceScriptSource(new ClassPathResource("redis/support.lua")));
+        redisScript.setResultType(Integer.class);
+        String[] keys = {RedisTopicKey.getSupportInfo.getPrefix(),
+                RedisTopicKey.getSupportCount.getPrefix()};
+        Integer res = (Integer) redisTemplate.execute(redisScript, Arrays.asList(keys), topicId.intValue(), userId.intValue());
+        return res;
     }
 
 

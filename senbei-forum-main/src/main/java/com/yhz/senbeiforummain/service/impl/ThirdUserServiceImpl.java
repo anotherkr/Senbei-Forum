@@ -2,7 +2,7 @@ package com.yhz.senbeiforummain.service.impl;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.yhz.senbeiforummain.model.entity.ThirdUser;
-import com.yhz.senbeiforummain.service.ThirdUserService;
+import com.yhz.senbeiforummain.service.IThirdUserService;
 import com.yhz.senbeiforummain.mapper.ThirdUserMapper;
 import org.springframework.stereotype.Service;
 
@@ -13,7 +13,7 @@ import org.springframework.stereotype.Service;
 */
 @Service
 public class ThirdUserServiceImpl extends ServiceImpl<ThirdUserMapper, ThirdUser>
-    implements ThirdUserService{
+    implements IThirdUserService {
 
 }
 

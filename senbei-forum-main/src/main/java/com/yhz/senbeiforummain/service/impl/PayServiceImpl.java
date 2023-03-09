@@ -16,7 +16,7 @@ import com.yhz.senbeiforummain.model.entity.Product;
 import com.yhz.senbeiforummain.model.enums.AlipayNotifyTypeEnum;
 import com.yhz.senbeiforummain.model.enums.PaymentTypeEnum;
 import com.yhz.senbeiforummain.service.IPayService;
-import com.yhz.senbeiforummain.service.OrderInfoService;
+import com.yhz.senbeiforummain.service.IOrderInfoService;
 import com.yhz.senbeiforummain.util.OrderNoUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -34,7 +34,7 @@ import java.util.Optional;
 @Slf4j
 public class PayServiceImpl implements IPayService {
     @Resource
-    private OrderInfoService orderInfoService;
+    private IOrderInfoService orderInfoService;
     @Resource
     private ProductMapper productMapper;
     @Resource

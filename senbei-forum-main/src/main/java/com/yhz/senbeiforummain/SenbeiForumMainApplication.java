@@ -5,6 +5,7 @@ import org.springframework.amqp.rabbit.annotation.EnableRabbit;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.jackson.JacksonAutoConfiguration;
+import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 
@@ -12,6 +13,8 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 @EnableRabbit
 @MapperScan("com.yhz.senbeiforummain.mapper")
 @EnableTransactionManagement
+
+@EnableScheduling//引入spring Task
 public class SenbeiForumMainApplication {
 
     public static void main(String[] args) {

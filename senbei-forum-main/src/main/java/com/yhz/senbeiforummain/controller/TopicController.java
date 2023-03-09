@@ -7,6 +7,7 @@ import com.yhz.senbeiforummain.common.annotation.UserId;
 import com.yhz.senbeiforummain.model.dto.topic.TopicDetailQueryRequest;
 import com.yhz.senbeiforummain.model.dto.topic.TopicQueryRequest;
 import com.yhz.senbeiforummain.model.dto.topic.TopicAddRequst;
+import com.yhz.senbeiforummain.model.enums.SupportEnum;
 import com.yhz.senbeiforummain.model.vo.TopicDetailVo;
 import com.yhz.senbeiforummain.model.vo.TopicVo;
 import com.yhz.senbeiforummain.exception.BusinessException;
@@ -56,5 +57,22 @@ public class TopicController {
     public BaseResponse<TopicDetailVo> detail(@Valid @RequestBody TopicDetailQueryRequest topicDetailQueryRequest) {
         TopicDetailVo topicDetailVo = topicService.getTopicDetailVo(topicDetailQueryRequest);
         return ResultUtils.success(topicDetailVo);
+    }
+    @ApiOperation(value = "点赞功能")
+    @PostMapping("/support/{topicId}")
+    public BaseResponse support(@PathVariable("topicId") Long topicId,@UserId Long userId) {
+        if (userId == null) {
+            //-1代表匿名用户
+            userId=-1L;
+        }
+        //返回缓存中点赞状态，执行相反操作
+        Integer support = topicService.support(topicId, userId);
+        System.out.println(support);
+        if (support==null||support.equals(SupportEnum.NO_SUPPORT.getCode())) {
+            return ResultUtils.success("点赞成功");
+        }else {
+            return ResultUtils.success("点赞取消");
+        }
+
     }
 }

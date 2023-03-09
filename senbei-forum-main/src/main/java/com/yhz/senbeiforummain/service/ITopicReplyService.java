@@ -19,6 +19,7 @@ public interface ITopicReplyService extends IService<TopicReply> {
      * 点赞功能
      * @param topicReplyId
      * @param userId
+     * @return
      */
-    void support(Long topicReplyId, Long userId);
+    Integer support(Long topicReplyId, Long userId);
 }
