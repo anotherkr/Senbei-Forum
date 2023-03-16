@@ -1,10 +1,12 @@
 package com.yhz.senbeiforummain.service.impl;
 
 import cn.hutool.core.util.StrUtil;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.yhz.commonutil.common.ErrorCode;
-import com.yhz.commonutil.constant.SortConstant;
+import com.yhz.commonutil.common.PageRequest;
 import com.yhz.commonutil.util.ImgUrlUtil;
 import com.yhz.senbeiforummain.constant.rediskey.RedisTopicKey;
 import com.yhz.senbeiforummain.constant.rediskey.RedisTopicReplyKey;
@@ -28,6 +30,8 @@ import com.yhz.senbeiforummain.mapper.UserMapper;
 import com.yhz.senbeiforummain.service.ITopicService;
 import com.yhz.senbeiforummain.util.IpUtils;
 import com.yhz.senbeiforummain.util.PageUtil;
+import com.yhz.senbeiforummain.util.RedisCache;
+import io.swagger.models.auth.In;
 import org.apache.commons.lang3.ArrayUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Value;
@@ -41,7 +45,11 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 /**
  * @author 吉良吉影
@@ -63,36 +71,62 @@ public class TopicServiceImpl extends ServiceImpl<TopicMapper, Topic>
     private TopicMapper topicMapper;
     @Resource
     private RedisTemplate redisTemplate;
+    @Resource
+    private RedisCache redisCache;
+
     /**
      * 主贴分页查询
+     *
      * @param topicQueryRequest 查询条件
+     * @param userId
      * @return
      * @throws BusinessException
      */
     @Override
-    public IPage<TopicVo> pageList(TopicQueryRequest topicQueryRequest) throws BusinessException {
+    public IPage<TopicVo> pageList(TopicQueryRequest topicQueryRequest, Long userId) throws BusinessException {
         IPage<Topic> page = PageUtil.vaildPageParam(topicQueryRequest.getCurrent(), topicQueryRequest.getPageSize());
         String sortField = topicQueryRequest.getSortField();
-        String sortOrder = topicQueryRequest.getSortOrder();
+        Long moduleId = topicQueryRequest.getModuleId();
         //校验排序参数，防止sql注入，默认按时间降序排序
-        if (StrUtil.isBlank(sortField) ||
-                !StrUtil.equalsAny(sortField, "id", "reply_num", "click_num",
-                        "support_num", "unsupport_num", "heat")) {
-            //不符合上述条件，默认按时间排序
-            sortField = "create_time";
-        }
-        if (StrUtil.isBlank(sortOrder) || !StrUtil.equalsAny(sortOrder, SortConstant.SORT_ORDER_ASC, SortConstant.SORT_ORDER_DESC)) {
-            //默认按降序排序
-            sortOrder = SortConstant.SORT_ORDER_DESC;
-        }
+        sortField = PageUtil.sqlInject(sortField);
         topicQueryRequest.setSortField(sortField);
-        topicQueryRequest.setSortOrder(sortOrder);
-        IPage<TopicTo> topicToIPage=topicMapper.selectTopicToPage(page, topicQueryRequest);
+        IPage<TopicTo> topicToIPage = topicMapper.selectTopicToPage(page, topicQueryRequest);
         IPage<TopicVo> topicVoIPage = topicToIPage.convert(item -> {
             TopicVo topicVo = new TopicVo();
             BeanUtils.copyProperties(item, topicVo);
             topicVo.setImgUrlArray(ImgUrlUtil.imgUrlJsonToArray(item.getImgUrls()));
             return topicVo;
+        });
+        //加入模块名信息
+        if (moduleId != null) {
+            Module module = moduleMapper.selectById(moduleId);
+            String moduleName = module.getName();
+            topicVoIPage.getRecords().forEach(record -> {
+                Long moduleId2 = record.getModuleId();
+                if (moduleId2 != null) {
+                    record.setModuleName(moduleName);
+                }
+            });
+        }
+        //设置模块名
+        List<Long> moduleIdList = topicVoIPage.getRecords().stream().map(topicVo ->
+                topicVo.getModuleId()
+        ).collect(Collectors.toList());
+        HashMap<Long, String> moduleNameMap = new HashMap<>();
+        if (moduleIdList.size() > 0) {
+            List<Module> moduleList = moduleMapper.selectBatchIds(moduleIdList);
+            moduleList.forEach(module -> {
+                String moduleName = module.getName();
+                Long id = module.getId();
+                if (StrUtil.isNotBlank(moduleName)) {
+                    moduleNameMap.put(id, moduleName);
+                }
+            });
+        }
+        topicVoIPage.getRecords().forEach(topicVo -> {
+            topicVo.setModuleName(moduleNameMap.get(topicVo.getModuleId()));
+            //设置是否点赞
+            setIsSupport(topicVo,userId);
         });
 
         return topicVoIPage;
@@ -107,7 +141,7 @@ public class TopicServiceImpl extends ServiceImpl<TopicMapper, Topic>
         try {
             city = IpUtils.getCity(request);
         } catch (Exception e) {
-            log.error("获取IP所属地失败:{}",e);
+            log.error("获取IP所属地失败:{}", e);
             throw new BusinessException(ErrorCode.SYSTEM_ERROR);
         }
         if (userId == null || moduleId == null || userId <= 0 || moduleId <= 0) {
@@ -138,14 +172,14 @@ public class TopicServiceImpl extends ServiceImpl<TopicMapper, Topic>
     }
 
     @Override
-    public TopicDetailVo getTopicDetailVo(TopicDetailQueryRequest topicDetailQueryRequest) {
+    public TopicDetailVo getTopicDetailVo(TopicDetailQueryRequest topicDetailQueryRequest, Long currentUserId) {
         Long topicId = topicDetailQueryRequest.getTopicId();
         long current = topicDetailQueryRequest.getCurrent();
         long pageSize = topicDetailQueryRequest.getPageSize();
         String sortField = topicDetailQueryRequest.getSortField();
         String sortOrder = topicDetailQueryRequest.getSortOrder();
         Long userId = topicDetailQueryRequest.getUserId();
-
+        sortField = PageUtil.sqlInject(sortField);
         Topic topic = this.getById(topicId);
         TopicDetailVo topicDetailVo = new TopicDetailVo();
         BeanUtils.copyProperties(topic, topicDetailVo);
@@ -168,6 +202,14 @@ public class TopicServiceImpl extends ServiceImpl<TopicMapper, Topic>
             TopicReplyVo topicReplyVo = new TopicReplyVo();
             topicReplyVo.setImgUrlArray(toArray);
             BeanUtils.copyProperties(item, topicReplyVo);
+            if (currentUserId != null) {
+                String hKey = item.getId().toString().concat("::").concat(currentUserId.toString());
+                Map<String, Integer> cacheMap = redisCache.getCacheMap(RedisTopicReplyKey.getSupportInfo, "");
+                if (cacheMap != null) {
+                    Integer isSupport = cacheMap.get(hKey);
+                    topicReplyVo.setIsSupport(isSupport!=null?isSupport:0);
+                }
+            }
             return topicReplyVo;
         });
         topicDetailVo.setTopicReplyVoIPage(topicReplyVoIPage);
@@ -181,11 +223,67 @@ public class TopicServiceImpl extends ServiceImpl<TopicMapper, Topic>
         redisScript.setResultType(Integer.class);
         String[] keys = {RedisTopicKey.getSupportInfo.getPrefix(),
                 RedisTopicKey.getSupportCount.getPrefix()};
-        Integer res = (Integer) redisTemplate.execute(redisScript, Arrays.asList(keys), topicId.intValue(), userId.intValue());
+        Integer res = (Integer) redisTemplate.execute(redisScript, Arrays.asList(keys), topicId.toString(), userId.toString());
         return res;
     }
 
+    @Override
+    public IPage<TopicVo> userTopicPage(PageRequest pageRequest, Long userId) {
+        Long current = pageRequest.getCurrent();
+        Long pageSize = pageRequest.getPageSize();
+        String sortField = pageRequest.getSortField();
+        String sortOrder = pageRequest.getSortOrder();
+        IPage<Topic> iPage = new Page<>(current, pageSize);
+        QueryWrapper<Topic> wrapper = new QueryWrapper<>();
+        wrapper.eq("user_id", userId);
+        PageUtil.dealSortWrapper(wrapper, sortField, sortOrder);
+        IPage<Topic> topicIPage = baseMapper.selectPage(iPage, wrapper);
+        IPage<TopicVo> topicVoIPage = topicIPage.convert(topic -> {
+            TopicVo topicVo = new TopicVo();
+            topicVo.setImgUrlArray(ImgUrlUtil.imgUrlJsonToArray(topic.getImgUrls()));
+            BeanUtils.copyProperties(topic, topicVo);
+            return topicVo;
+        });
+        List<Long> moduleIdList = topicVoIPage.getRecords().stream().map(topicVo ->
+                topicVo.getModuleId()
+        ).collect(Collectors.toList());
+        HashMap<Long, String> moduleNameMap = new HashMap<>();
+        if (moduleIdList.size() > 0) {
+            List<Module> moduleList = moduleMapper.selectBatchIds(moduleIdList);
 
+            moduleList.forEach(module -> {
+                String moduleName = module.getName();
+                Long id = module.getId();
+                if (StrUtil.isNotBlank(moduleName)) {
+                    moduleNameMap.put(id, moduleName);
+                }
+            });
+        }
+        topicVoIPage.getRecords().forEach(topicVo -> {
+            topicVo.setModuleName(moduleNameMap.get(topicVo.getModuleId()));
+            //設置是否點贊
+            setIsSupport(topicVo,userId);
+        });
+        //设置用户信息
+        User user = userMapper.selectById(userId);
+        UserInfoVo userInfoVo = new UserInfoVo();
+        BeanUtils.copyProperties(user, userInfoVo);
+        topicVoIPage.getRecords().forEach(topicVo -> {
+            topicVo.setUserInfoVo(userInfoVo);
+        });
+        return topicVoIPage;
+    }
+
+    private void setIsSupport(TopicVo topicVo, Long userId) {
+        if (userId != null) {
+            String hKey = topicVo.getId().toString().concat("::").concat(userId.toString());
+            Map<String, Integer> cacheMap = redisCache.getCacheMap(RedisTopicKey.getSupportInfo, "");
+            if (cacheMap != null) {
+                Integer isSupport =  cacheMap.get(hKey);
+                topicVo.setIsSupport(isSupport!=null?isSupport:0);
+            }
+        }
+    }
 }
 
 

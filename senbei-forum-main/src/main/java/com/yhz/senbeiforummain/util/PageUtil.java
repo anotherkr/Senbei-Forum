@@ -19,22 +19,25 @@ import java.util.Optional;
  * @date 2023/2/19 - 18:11
  */
 public class PageUtil {
+
     /**
      * 校验current和pagesize，如果不符合条件则赋上默认值并创建ipage返回
+     *
      * @param current
      * @param pageSize
      * @param <T>
      * @return
      */
     public static <T> IPage<T> vaildPageParam(long current, long pageSize) {
-        long checkCurrent = Optional.ofNullable(current).filter(c->c>0).orElse(PageConstant.defaultCurrent);
-        long checkPageSize = Optional.ofNullable(pageSize).filter(size->size>0).orElse(PageConstant.defaultPageSize);
+        long checkCurrent = Optional.ofNullable(current).filter(c -> c > 0).orElse(PageConstant.defaultCurrent);
+        long checkPageSize = Optional.ofNullable(pageSize).filter(size -> size > 0).orElse(PageConstant.defaultPageSize);
         IPage<T> iPage = new Page<>(checkCurrent, checkPageSize);
         return iPage;
     }
 
     /**
      * 处理QueryWrapper的排序
+     *
      * @param wrapper
      * @param sortField
      * @param sortOrder
@@ -42,25 +45,25 @@ public class PageUtil {
      * @return
      */
     public static <T> void dealSortWrapper(QueryWrapper<T> wrapper, String sortField, String sortOrder) {
+        //防止sql注入
+        String checkSortField = sqlInject(sortField);
         if (!StrUtil.isBlank(sortField)) {
-            //防止sql注入
-            String checkSortField = sqlInject(sortField);
-            if (sortOrder.equals(SortConstant.SORT_ORDER_DESC)) {
-                wrapper.orderByDesc(checkSortField);
-            } else if(sortOrder.equals(SortConstant.SORT_ORDER_ASC)){
+            if (sortOrder.equals(SortConstant.SORT_ORDER_ASC)) {
                 wrapper.orderByAsc(checkSortField);
-            }else {
-                throw new BusinessException(ErrorCode.PARAMS_ERROR);
+            } else {
+                wrapper.orderByDesc(checkSortField);
             }
         }
     }
+
     /**
      * SQL注入过滤
-     * @param str  待验证的字符串
+     *
+     * @param str 待验证的字符串
      * @throws
      */
-    public static String sqlInject(String str){
-        if(StringUtils.isBlank(str)){
+    public static String sqlInject(String str) {
+        if (StringUtils.isBlank(str)) {
             return null;
         }
         //去掉'|"|;|\字符
@@ -76,14 +79,15 @@ public class PageUtil {
         String[] keywords = {"master", "truncate", "insert", "select", "delete", "update", "declare", "alert", "drop"};
 
         //判断是否包含非法字符
-        for(String keyword : keywords){
-            if(str.indexOf(keyword) != -1){
+        for (String keyword : keywords) {
+            if (str.indexOf(keyword) != -1) {
                 throw new BusinessException(ErrorCode.SQL_ERROR);
             }
         }
 
         return str;
     }
+
 
 
 }

@@ -1,6 +1,7 @@
 package com.yhz.senbeiforummain.service;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.yhz.commonutil.common.PageRequest;
 import com.yhz.senbeiforummain.model.dto.topic.TopicDetailQueryRequest;
 import com.yhz.senbeiforummain.model.entity.Topic;
 import com.baomidou.mybatisplus.extension.service.IService;
@@ -21,9 +22,10 @@ public interface ITopicService extends IService<Topic> {
     /**
      * 分页查询
      * @param topicQueryRequest 查询条件
+     * @param userId
      * @return
      */
-    IPage<TopicVo> pageList(TopicQueryRequest topicQueryRequest) throws BusinessException;
+    IPage<TopicVo> pageList(TopicQueryRequest topicQueryRequest, Long userId) throws BusinessException;
 
     /**
      * 发布主贴
@@ -36,9 +38,10 @@ public interface ITopicService extends IService<Topic> {
     /**
      * 获取主贴详细信息
      * @param topicDetailQueryRequest
+     * @param
      * @return
      */
-    TopicDetailVo getTopicDetailVo(TopicDetailQueryRequest topicDetailQueryRequest);
+    TopicDetailVo getTopicDetailVo(TopicDetailQueryRequest topicDetailQueryRequest, Long currentUserId);
 
     /**
      * 点赞功能
@@ -47,4 +50,6 @@ public interface ITopicService extends IService<Topic> {
      * @return
      */
     Integer support(Long topicId, Long userId);
+
+    IPage<TopicVo> userTopicPage(PageRequest pageRequest, Long userId);
 }

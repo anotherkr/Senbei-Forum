@@ -36,6 +36,8 @@ public class TopicReplyVo {
 
     @ApiModelProperty("点赞数")
     private Integer supportNum;
+    @ApiModelProperty("是否点赞(0-未点赞 1-已点赞)")
+    private int isSupport;
 
     @ApiModelProperty("点踩数")
     private Integer unsupportNum;

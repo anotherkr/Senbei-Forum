@@ -51,15 +51,8 @@ public class ModuleServiceImpl extends ServiceImpl<ModuleMapper, Module>
         wrapper.eq(id != null, "id", id);
         wrapper.like(!StrUtil.isBlank(name), "name", name);
         wrapper.eq(userId != null, "user_id", userId);
-        if (!StrUtil.isBlank(sortField)) {
-            if (sortOrder.equals(SortConstant.SORT_ORDER_DESC)) {
-                wrapper.orderByDesc(sortField);
-            } else if (sortOrder.equals(SortConstant.SORT_ORDER_ASC)) {
-                wrapper.orderByAsc(sortField);
-            } else {
-                throw new BusinessException(ErrorCode.PARAMS_ERROR);
-            }
-        }
+        PageUtil.dealSortWrapper(wrapper,sortField,sortOrder);
+
         IPage<Module> page = this.page(iPage, wrapper);
         if (page.getRecords().size() == 0) {
             throw new BusinessException(ErrorCode.NULL_ERROR);

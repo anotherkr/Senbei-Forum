@@ -2,6 +2,7 @@ package com.yhz.senbeiforummain.controller;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.yhz.commonutil.common.BaseResponse;
+import com.yhz.commonutil.common.PageRequest;
 import com.yhz.commonutil.common.ResultUtils;
 import com.yhz.senbeiforummain.common.annotation.UserId;
 import com.yhz.senbeiforummain.model.dto.topic.TopicDetailQueryRequest;
@@ -37,42 +38,52 @@ import javax.validation.Valid;
 public class TopicController {
     @Resource
     private ITopicService topicService;
+
     @ApiOperation("分页查询接口")
     @PostMapping("/page")
-    public BaseResponse<IPage<TopicVo>> pageModuleTopic(@RequestBody TopicQueryRequest topicQueryRequest) throws BusinessException {
-        IPage<TopicVo> topicVoIPage = topicService.pageList(topicQueryRequest);
+    public BaseResponse<IPage<TopicVo>> pageModuleTopic(@RequestBody TopicQueryRequest topicQueryRequest,@UserId Long userId) throws BusinessException {
+        IPage<TopicVo> topicVoIPage = topicService.pageList(topicQueryRequest,userId);
         return ResultUtils.success(topicVoIPage);
     }
 
     @PostMapping("/publish")
     @ApiOperation("主贴发布接口")
-    //@PreAuthorize("hasRole('user')")
+    @PreAuthorize("hasRole('user')")
     public BaseResponse publish(@RequestBody @Valid TopicAddRequst topicAddRequst, @UserId Long userId, HttpServletRequest request) {
-        topicService.publish(topicAddRequst,userId,request);
+        topicService.publish(topicAddRequst, userId, request);
         return ResultUtils.success();
     }
 
     @PostMapping("/detail")
     @ApiOperation("主贴详细信息")
-    public BaseResponse<TopicDetailVo> detail(@Valid @RequestBody TopicDetailQueryRequest topicDetailQueryRequest) {
-        TopicDetailVo topicDetailVo = topicService.getTopicDetailVo(topicDetailQueryRequest);
+    public BaseResponse<TopicDetailVo> detail(@Valid @RequestBody TopicDetailQueryRequest topicDetailQueryRequest,@UserId Long userId) {
+        TopicDetailVo topicDetailVo = topicService.getTopicDetailVo(topicDetailQueryRequest,userId);
         return ResultUtils.success(topicDetailVo);
     }
+
     @ApiOperation(value = "点赞功能")
     @PostMapping("/support/{topicId}")
-    public BaseResponse support(@PathVariable("topicId") Long topicId,@UserId Long userId) {
+    @PreAuthorize("isAuthenticated()")
+    public BaseResponse support(@PathVariable("topicId") Long topicId, @UserId Long userId) {
         if (userId == null) {
             //-1代表匿名用户
-            userId=-1L;
+            userId = -1L;
         }
         //返回缓存中点赞状态，执行相反操作
         Integer support = topicService.support(topicId, userId);
-        System.out.println(support);
-        if (support==null||support.equals(SupportEnum.NO_SUPPORT.getCode())) {
+        if (support == null || support.equals(SupportEnum.NO_SUPPORT.getCode())) {
             return ResultUtils.success("点赞成功");
-        }else {
+        } else {
             return ResultUtils.success("点赞取消");
         }
-
     }
+
+    @ApiOperation(value = "获取用户最近发布的帖子")
+    @PostMapping("/user/page")
+    @PreAuthorize("hasRole('user')")
+    public BaseResponse getUserTopic(@RequestBody PageRequest pageRequest, @UserId Long userId) {
+        IPage<TopicVo> topicVoIPage = topicService.userTopicPage(pageRequest,userId);
+        return ResultUtils.success(topicVoIPage);
+    }
+
 }

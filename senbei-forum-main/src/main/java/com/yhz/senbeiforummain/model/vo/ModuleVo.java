@@ -58,7 +58,7 @@ public class ModuleVo {
     private String statement;
 
     /**
-     * 关注数
+     * user数
      */
     @ApiModelProperty("关注数")
     private Long concernNum;

@@ -8,6 +8,7 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.yhz.commonutil.common.ErrorCode;
 import com.yhz.commonutil.constant.SortConstant;
 import com.yhz.commonutil.util.ImgUrlUtil;
+import com.yhz.senbeiforummain.constant.ConcernConstant;
 import com.yhz.senbeiforummain.exception.BusinessException;
 import com.yhz.senbeiforummain.mapper.ModuleMapper;
 import com.yhz.senbeiforummain.mapper.TopicMapper;
@@ -47,6 +48,7 @@ public class IModuleConcernServiceImpl extends ServiceImpl<ModuleConcernMapper, 
 
     @Resource
     private TopicMapper topicMapper;
+
     @Transactional(rollbackFor = BusinessException.class)
     @Override
     public boolean addModuleConcern(ModuleConcernAddRequest moduleConcernAddRequest, Long userId) {
@@ -94,23 +96,13 @@ public class IModuleConcernServiceImpl extends ServiceImpl<ModuleConcernMapper, 
         Long userId = moduleConcernQueryRequest.getUserId();
         String sortField = moduleConcernQueryRequest.getSortField();
         String sortOrder = moduleConcernQueryRequest.getSortOrder();
-
-        //校验排序参数，防止sql注入，默认按时间降序排序
-        if (StrUtil.isBlank(sortField) ||
-                !StrUtil.equalsAny(sortField, "id", "reply_num", "click_num",
-                        "support_num", "unsupport_num", "heat")) {
-            //不符合上述条件，默认按时间排序
-            sortField = "create_time";
-        }
-        if (StrUtil.isBlank(sortOrder) || !StrUtil.equalsAny(sortOrder, SortConstant.SORT_ORDER_ASC, SortConstant.SORT_ORDER_DESC)) {
-            //默认按降序排序
-            sortOrder = SortConstant.SORT_ORDER_DESC;
-        }
+        sortField = PageUtil.sqlInject(sortField);
         if (userId <= 0) {
             throw new BusinessException(ErrorCode.PARAMS_ERROR);
         }
         QueryWrapper<ModuleConcern> moduleConcernQueryWrapper = new QueryWrapper<>();
         moduleConcernQueryWrapper.eq("user_id", userId);
+        moduleConcernQueryWrapper.eq("is_concern", ConcernConstant.CONCERN);
         List<ModuleConcern> moduleConcernList = this.baseMapper.selectList(moduleConcernQueryWrapper);
         if (moduleConcernList.size() <= 0) {
             throw new BusinessException(ErrorCode.NULL_ERROR);
@@ -132,7 +124,6 @@ public class IModuleConcernServiceImpl extends ServiceImpl<ModuleConcernMapper, 
     }
 
 
-
     @Transactional(rollbackFor = BusinessException.class)
     @Override
     public void cancelModuleConcern(Long moduleId, Long userId) {
@@ -149,7 +140,6 @@ public class IModuleConcernServiceImpl extends ServiceImpl<ModuleConcernMapper, 
             throw new BusinessException(ErrorCode.DELETE_ERROR);
         }
         //模块关注数减1
-
         Module module = moduleMapper.selectById(moduleId);
         module.setConcernNum(module.getConcernNum() - 1);
         int result = moduleMapper.updateById(module);
@@ -158,6 +148,58 @@ public class IModuleConcernServiceImpl extends ServiceImpl<ModuleConcernMapper, 
         }
     }
 
+    @Override
+    public void concernModule(Long moduleId, Long userId, Integer concern) {
+        if (userId == null || moduleId == null || userId <= 0 || moduleId <= 0) {
+            throw new BusinessException(ErrorCode.PARAMS_ERROR);
+        }
+        //检查用户,模块是否存在
+        QueryWrapper<User> userQueryWrapper = new QueryWrapper<>();
+        userQueryWrapper.eq("id", userId);
+        User user = userMapper.selectOne(userQueryWrapper);
+        Optional.ofNullable(user).orElseThrow(() -> new BusinessException(ErrorCode.PARAMS_ERROR));
+        QueryWrapper<Module> moduleQueryWrapper = new QueryWrapper<>();
+        moduleQueryWrapper.eq("id", moduleId);
+        Module module = moduleMapper.selectOne(moduleQueryWrapper);
+        Optional.ofNullable(module).orElseThrow(() -> new BusinessException(ErrorCode.PARAMS_ERROR));
+        //检查模块关注表中，两者的关注关系是否已经存在
+        QueryWrapper<ModuleConcern> concernQueryWrapper = new QueryWrapper<>();
+        concernQueryWrapper.eq("module_id", moduleId);
+        concernQueryWrapper.eq("user_id", userId);
+        ModuleConcern moduleConcern = this.baseMapper.selectOne(concernQueryWrapper);
+        if (!ObjectUtil.isEmpty(moduleConcern)) {
+            moduleConcern.setIsConcern(concern);
+            boolean update = this.updateById(moduleConcern);
+            if (!update) {
+                throw new BusinessException(ErrorCode.UPDATE_ERROR);
+            }
+        } else {
+            moduleConcern = new ModuleConcern();
+            moduleConcern.setModuleId(moduleId);
+            moduleConcern.setUserId(userId);
+            moduleConcern.setIsConcern(concern);
+            boolean save = this.save(moduleConcern);
+            if (!save) {
+                throw new BusinessException(ErrorCode.SAVE_ERROR);
+            }
+        }
+        //修改模块关注数
+        //模块关注数减1
+
+    }
+
+    private void updateModuleConcernNum(Long moduleId, Integer concern) {
+        Module module = moduleMapper.selectById(moduleId);
+        if (ConcernConstant.CONCERN.equals(concern)) {
+            module.setConcernNum(module.getConcernNum() + 1);
+        } else if (ConcernConstant.NOT_CONCERN.equals(concern)) {
+            module.setConcernNum(module.getConcernNum() - 1);
+        }
+        int result = moduleMapper.updateById(module);
+        if (result <= 0) {
+            throw new BusinessException(ErrorCode.UPDATE_ERROR);
+        }
+    }
 
 }
 

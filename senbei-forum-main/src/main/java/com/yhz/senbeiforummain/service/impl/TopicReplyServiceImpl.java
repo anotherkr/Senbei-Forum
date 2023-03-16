@@ -69,7 +69,7 @@ public class TopicReplyServiceImpl extends ServiceImpl<TopicReplyMapper, TopicRe
         redisScript.setResultType(Integer.class);
         String[] keys = {RedisTopicReplyKey.getSupportInfo.getPrefix(),
                 RedisTopicReplyKey.getSupportCount.getPrefix()};
-        Integer res = (Integer) redisTemplate.execute(redisScript, Arrays.asList(keys), topicReplyId.intValue(), userId.intValue());
+        Integer res = (Integer) redisTemplate.execute(redisScript, Arrays.asList(keys), topicReplyId.toString(), userId.toString());
         return res;
     }
 }

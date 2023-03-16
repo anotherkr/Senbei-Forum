@@ -35,4 +35,6 @@ public interface IModuleConcernService extends IService<ModuleConcern> {
      * @param userId
      */
     void cancelModuleConcern(Long moduleId, Long userId);
+
+    void concernModule(Long moduleId, Long userId, Integer concern);
 }

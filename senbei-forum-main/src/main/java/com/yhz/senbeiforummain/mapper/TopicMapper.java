@@ -42,6 +42,7 @@ public interface TopicMapper extends BaseMapper<Topic> {
      * @return
      */
     List<Module> getTopicNumByModuleIdList(@Param("moduleIdList") List<Long> moduleIdList);
+
 }
 
 

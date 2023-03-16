@@ -21,6 +21,8 @@ public class TopicVo {
      */
     @ApiModelProperty("模块id")
     private Long moduleId;
+    @ApiModelProperty("模块名")
+    private String moduleName;
     /**
      * 主贴标题
      */
@@ -46,6 +48,8 @@ public class TopicVo {
     @ApiModelProperty("回复数")
     private Integer replyNum;
 
+    @ApiModelProperty("是否已点赞(0-未点赞,1-已点赞)")
+    private int isSupport;
     @ApiModelProperty("点赞数")
     private Integer supportNum;
 

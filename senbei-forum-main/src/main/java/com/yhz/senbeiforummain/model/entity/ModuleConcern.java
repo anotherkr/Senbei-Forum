@@ -31,8 +31,10 @@ public class ModuleConcern extends BaseEntity implements Serializable {
      * 用户id
      */
     private Long userId;
-
-
+    /**
+     * 是否关注(0-未关注 1-关注)
+     */
+    private Integer isConcern;
 
     @TableField(exist = false)
     private static final long serialVersionUID = 1L;
