@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.yhz.senbeiforummain.mapper.RoomChatRecordMapper">
+
+    <resultMap id="BaseResultMap" type="com.yhz.senbeiforummain.model.entity.RoomChatRecord">
+            <id property="id" column="id" jdbcType="BIGINT"/>
+            <result property="roomId" column="room_id" jdbcType="VARCHAR"/>
+            <result property="userId" column="user_id" jdbcType="BIGINT"/>
+            <result property="username" column="username" jdbcType="VARCHAR"/>
+            <result property="nickname" column="nickname" jdbcType="VARCHAR"/>
+            <result property="headUrl" column="head_url" jdbcType="VARCHAR"/>
+            <result property="content" column="message" jdbcType="VARCHAR"/>
+            <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+            <result property="createBy" column="create_by" jdbcType="VARCHAR"/>
+            <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
+            <result property="updateBy" column="update_by" jdbcType="VARCHAR"/>
+            <result property="isDeleted" column="is_deleted" jdbcType="INTEGER"/>
+            <result property="version" column="version" jdbcType="INTEGER"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,room_id,user_id,
+        username,nickname,head_url,
+        content,create_time,create_by,
+        update_time,update_by,is_deleted,
+        version
+    </sql>
+</mapper>
