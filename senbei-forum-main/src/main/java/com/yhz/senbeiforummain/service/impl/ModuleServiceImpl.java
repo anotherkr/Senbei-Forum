@@ -78,13 +78,11 @@ public class ModuleServiceImpl extends ServiceImpl<ModuleMapper, Module>
             moduleConcernQueryWrapper.eq("module_id", moduleId);
             moduleConcernQueryWrapper.eq("user_id", userId);
             ModuleConcern moduleConcern = moduleConcernMapper.selectOne(moduleConcernQueryWrapper);
-            if (!ObjectUtil.isEmpty(moduleConcern)) {
-                moduleVo.setIsConcern(ConcernConstant.CONCERN);
-            } else {
+            if (moduleConcern == null || moduleConcern.getIsConcern() == null || ConcernConstant.NOT_CONCERN.equals(moduleConcern.getIsConcern())) {
                 moduleVo.setIsConcern(ConcernConstant.NOT_CONCERN);
+            }else {
+                moduleVo.setIsConcern(ConcernConstant.CONCERN);
             }
-        }else {
-            moduleVo.setIsConcern(ConcernConstant.NOT_CONCERN);
         }
         return moduleVo;
     }

@@ -34,7 +34,7 @@ import java.util.Optional;
 * @createDate 2022-11-13 16:08:53
 */
 @Service
-@RabbitListener(queues = {"hello-java-queue"})
+//@RabbitListener(queues = {"hello-java-queue"})
 public class UserServiceImpl extends ServiceImpl<UserMapper, User>
     implements IUserService {
     @Value("${jwt.tokenHeader}")

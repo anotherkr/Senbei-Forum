@@ -27,7 +27,7 @@ public class RequestInterceptor {
     /**
      * 请求响应日志
      */
-    @Around("execution(* com.yhz.senbeiforummain.controller.*.*(..))")
+    //@Around("execution(* com.yhz.senbeiforummain.controller.*.*(..))")
     public Object logInterceptor(ProceedingJoinPoint point) throws Throwable {
         // count time
         StopWatch stopWatch = new StopWatch();

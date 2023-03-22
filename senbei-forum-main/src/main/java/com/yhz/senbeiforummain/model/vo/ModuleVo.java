@@ -69,6 +69,6 @@ public class ModuleVo {
     private Integer heat;
 
     @ApiModelProperty("是否已关注(0-未关注,1-关注)")
-    private Integer isConcern;
+    private int isConcern;
 
 }

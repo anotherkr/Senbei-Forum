@@ -30,7 +30,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(BusinessException.class)
     public BaseResponse businessExceptionHandler(BusinessException e, HttpServletResponse response) {
         response.setStatus(errorCode);
-        log.error("BusinessException:{} ",e);
+        log.error("BusinessException:",e);
         return ResultUtils.error(e.getCode(), e.getMessage(), e.getDescription());
     }
     @ExceptionHandler({MethodArgumentNotValidException.class})
@@ -52,13 +52,13 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(RuntimeException.class)
     public BaseResponse runtimeExceptionHandler(RuntimeException e,HttpServletResponse response) {
         response.setStatus(errorCode);
-        log.error("RuntimeException:{}", e);
+        log.error("RuntimeException:", e);
         return ResultUtils.error(ErrorCode.SYSTEM_ERROR, e.getMessage(), "");
     }
     @ExceptionHandler(Exception.class)
     public BaseResponse ExceptionHandler(Exception e,HttpServletResponse response) {
         response.setStatus(errorCode);
-        log.error("Exception:{}", e);
+        log.error("Exception:", e);
         return ResultUtils.error(ErrorCode.SYSTEM_ERROR, e.getMessage(), "");
     }
     /**

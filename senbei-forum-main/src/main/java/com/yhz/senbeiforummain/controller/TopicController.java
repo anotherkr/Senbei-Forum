@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.yhz.commonutil.common.BaseResponse;
 import com.yhz.commonutil.common.PageRequest;
 import com.yhz.commonutil.common.ResultUtils;
+import com.yhz.senbeiforummain.common.annotation.ClickNum;
 import com.yhz.senbeiforummain.common.annotation.UserId;
 import com.yhz.senbeiforummain.model.dto.topic.TopicDetailQueryRequest;
 import com.yhz.senbeiforummain.model.dto.topic.TopicQueryRequest;
@@ -56,6 +57,7 @@ public class TopicController {
 
     @PostMapping("/detail")
     @ApiOperation("主贴详细信息")
+    @ClickNum
     public BaseResponse<TopicDetailVo> detail(@Valid @RequestBody TopicDetailQueryRequest topicDetailQueryRequest,@UserId Long userId) {
         TopicDetailVo topicDetailVo = topicService.getTopicDetailVo(topicDetailQueryRequest,userId);
         return ResultUtils.success(topicDetailVo);

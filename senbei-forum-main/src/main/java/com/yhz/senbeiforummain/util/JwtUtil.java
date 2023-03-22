@@ -1,9 +1,12 @@
 package com.yhz.senbeiforummain.util;
 
+import com.yhz.commonutil.common.ErrorCode;
+import com.yhz.senbeiforummain.exception.BusinessException;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtBuilder;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
+import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -19,6 +22,7 @@ import java.util.UUID;
  * @author 吉良吉影
  */
 @Component
+@Slf4j
 public class JwtUtil {
 
     private static final Logger logger = LoggerFactory.getLogger(JwtUtil.class);
@@ -28,7 +32,10 @@ public class JwtUtil {
     private static Long EXPIRATION_TIME;
 
 
-    //对于静态变量，需要使用set方法才能使用设置好的字段值
+    /**
+     * 对于静态变量，需要使用set方法才能使用设置好的字段值
+     * @param SECRET_KEY
+     */
     @Value("${jwt.secret}")
     public void setSECRET_KEY(String SECRET_KEY) {
         JwtUtil.SECRET_KEY = SECRET_KEY;
@@ -44,6 +51,16 @@ public class JwtUtil {
         return token;
     }
 
+    public static String getUsername(String authorization) {
+        Claims claims;
+        try {
+            claims = JwtUtil.parseJWT(authorization);
+        } catch (Exception e) {
+            log.error("jwt parse error:{}", e);
+            throw new BusinessException(ErrorCode.SYSTEM_ERROR);
+        }
+        return claims.getSubject();
+    }
     /**
      * 生成jwt
      *

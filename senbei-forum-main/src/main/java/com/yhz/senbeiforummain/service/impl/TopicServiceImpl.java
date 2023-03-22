@@ -181,6 +181,9 @@ public class TopicServiceImpl extends ServiceImpl<TopicMapper, Topic>
         Long userId = topicDetailQueryRequest.getUserId();
         sortField = PageUtil.sqlInject(sortField);
         Topic topic = this.getById(topicId);
+        if (topic == null) {
+            throw new BusinessException(ErrorCode.NULL_ERROR);
+        }
         TopicDetailVo topicDetailVo = new TopicDetailVo();
         BeanUtils.copyProperties(topic, topicDetailVo);
         //处理图片
