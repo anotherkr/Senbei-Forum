@@ -75,7 +75,7 @@ public class WebSocketServerEndpoint {
         int countOnline = getCountOnline(roomId);
         MessageDTO messageDTO = GsonUtil.strToJavaBean(message, MessageDTO.class);
         String messageText = messageDTO.getMessage();
-        String messageVoJson = MessageUtils.getMessageVo(false, userInfoVo, messageText, countOnline, null, null);
+        String messageVoJson = MessageUtils.getMessageVo(false, userInfoVo, messageText, countOnline, null);
         broadcastAllUsers(messageVoJson, roomId);
         //添加聊天记录
         saveRoomChatRecord(roomId, messageText, userInfoVo);
@@ -100,13 +100,16 @@ public class WebSocketServerEndpoint {
         roomChatRecordVo.setCreateTime(new Date(System.currentTimeMillis()));
         roomChatRecordVo.setMessage(messageText);
         roomChatRecordVo.setUserId(userInfoVo.getId());
-        BeanUtils.copyProperties(userInfoVo, roomChatRecordVo);
+        roomChatRecordVo.setNickname(userInfoVo.getNickname());
+        roomChatRecordVo.setHeadUrl(userInfoVo.getHeadUrl());
+        roomChatRecordVo.setUsername(userInfoVo.getUsername());
         roomChatRecordVos.offer(roomChatRecordVo);
+        log.info("收到一条消息:{}", roomChatRecordVo);
         //每当内存中存储10条消息，存入redis中
         if (roomChatRecordVos.size() % 10 == 0) {
             RedisCache redisCache = SpringUtil.getBean(RedisCache.class);
             String recordsJson = GsonUtil.toJsonString(roomChatRecordVos);
-            redisCache.setCacheMapValue(RedisRoomChatRecordKey.getRoomChatRecord,"", roomId, recordsJson);
+            redisCache.setCacheMapValue(RedisRoomChatRecordKey.getRoomChatRecord, "", roomId, recordsJson);
         }
     }
 
@@ -139,7 +142,7 @@ public class WebSocketServerEndpoint {
         //获取用户列表
         List<UserInfoVo> userInfoVoList = new ArrayList<>(userInfoVoMap.values());
         String onlineMessage = getOnlineMessage(userInfoVo.getNickname());
-        String message = MessageUtils.getMessageVo(true, null, onlineMessage, countOnline, roomChatRecordVos, userInfoVoList);
+        String message = MessageUtils.getMessageVo(true, null, onlineMessage, countOnline, userInfoVoList);
 
         // 发送上线通知
         broadcastAllUsers(message, roomId);
@@ -211,7 +214,7 @@ public class WebSocketServerEndpoint {
             if (userInfoVo != null) {
                 List<UserInfoVo> userInfoVoList = new ArrayList<>(userInfoVoMap.values());
                 // 发送离线通知
-                String message = MessageUtils.getMessageVo(true, null, getOutlineMessage(userInfoVo.getNickname()), countOnline, null, userInfoVoList);
+                String message = MessageUtils.getMessageVo(true, null, getOutlineMessage(userInfoVo.getNickname()), countOnline,userInfoVoList);
                 broadcastAllUsers(message, roomId);
             }
         }

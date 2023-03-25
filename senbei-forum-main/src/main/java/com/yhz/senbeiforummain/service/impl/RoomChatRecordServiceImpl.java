@@ -13,6 +13,7 @@ import com.yhz.senbeiforummain.mapper.RoomChatRecordMapper;
 import com.yhz.senbeiforummain.util.GsonUtil;
 import com.yhz.senbeiforummain.util.RedisCache;
 import com.yhz.senbeiforummain.ws.WebSocketServerEndpoint;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
@@ -32,6 +33,7 @@ import java.util.Map;
  * @createDate 2023-03-20 17:10:44
  */
 @Service
+@Slf4j
 public class RoomChatRecordServiceImpl extends ServiceImpl<RoomChatRecordMapper, RoomChatRecord>
         implements RoomChatRecordService {
     @Resource
@@ -57,7 +59,7 @@ public class RoomChatRecordServiceImpl extends ServiceImpl<RoomChatRecordMapper,
                 String json = cacheMap.get(roomId);
                 roomChatRecordVos = GsonUtil.strToList(json, RoomChatRecordVo.class);
             }
-
+            WebSocketServerEndpoint.roomChatRecordMap.put(roomId, new ArrayDeque<>(roomChatRecordVos));
         }
         if (roomChatRecordVos == null || roomChatRecordVos.isEmpty()) {
             //如果还是为空则从数据库拿
@@ -70,12 +72,13 @@ public class RoomChatRecordServiceImpl extends ServiceImpl<RoomChatRecordMapper,
                 BeanUtils.copyProperties(item, roomChatRecordVo);
                 return roomChatRecordVo;
             });
+            WebSocketServerEndpoint.roomChatRecordMap.put(roomId, new ArrayDeque<>(roomChatRecordVos));
         }
         Collections.sort(roomChatRecordVos,(a,b)->{
             if (a.getCreateTime().getTime() > b.getCreateTime().getTime()) {
-                return -1;
-            }else {
                 return 1;
+            }else {
+                return -1;
             }
         });
         List<RoomChatRecordVo> res = new ArrayList<>();

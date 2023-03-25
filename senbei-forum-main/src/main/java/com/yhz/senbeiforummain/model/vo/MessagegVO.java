@@ -33,10 +33,6 @@ public class MessagegVO {
      */
     private Boolean isSystem;
     /**
-     * 聊天记录
-     */
-    private Deque<RoomChatRecordVo> roomChatRecords;
-    /**
      * 用户列表
      */
     private List<UserInfoVo> userInfoVoList;

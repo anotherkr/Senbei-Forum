@@ -14,7 +14,7 @@ import java.util.List;
  * @date 2023/3/20 - 1:40
  */
 public class MessageUtils {
-    public static String getMessageVo(boolean isSystemMessage, UserInfoVo userInfoVo, Object message, int count, Deque<RoomChatRecordVo> roomChatRecordVos, List<UserInfoVo> userInfoVoList) {
+    public static String getMessageVo(boolean isSystemMessage, UserInfoVo userInfoVo, Object message, int count, List<UserInfoVo> userInfoVoList) {
         MessagegVO messagegVO = new MessagegVO();
         if (userInfoVo != null) {
             BeanUtils.copyProperties(userInfoVo,messagegVO);
@@ -22,7 +22,6 @@ public class MessageUtils {
         messagegVO.setIsSystem(isSystemMessage);
         messagegVO.setMessage(message);
         messagegVO.setCount(count);
-        messagegVO.setRoomChatRecords(roomChatRecordVos);
         messagegVO.setUserInfoVoList(userInfoVoList);
         String messageVoJson = GsonUtil.toJsonString(messagegVO);
         return messageVoJson;
