@@ -5,21 +5,24 @@
 <mapper namespace="com.yhz.senbeiforummain.mapper.RoleMapper">
 
     <resultMap id="BaseResultMap" type="com.yhz.senbeiforummain.model.entity.Role">
-            <id property="id" column="id" jdbcType="BIGINT"/>
-            <result property="roleName" column="role_name" jdbcType="VARCHAR"/>
-            <result property="roleDecription" column="role_decription" jdbcType="VARCHAR"/>
+        <id property="id" column="id" jdbcType="BIGINT"/>
+        <result property="roleName" column="role_name" jdbcType="VARCHAR"/>
+        <result property="roleDecription" column="role_decription" jdbcType="VARCHAR"/>
     </resultMap>
 
     <sql id="Base_Column_List">
-        id,role_name,role_decription
+        id
+        ,role_name,role_decription
     </sql>
     <insert id="attachRoleByUserId">
-        INSERT INTO user_role(role_id,user_id,create_time,update_time) VALUES(#{roleId},#{userId},now(),now())
+        INSERT INTO user_role(role_id, user_id, create_time, update_time)
+        VALUES (#{roleId}, #{userId}, now(), now())
     </insert>
-    <select id="getRolesByUserName" resultType="com.yhz.senbeiforummain.model.entity.Role">
+    <select id="getRolesByUserId" resultType="com.yhz.senbeiforummain.model.entity.Role">
         SELECT r.id,r.role_name,r.role_decription
-        FROM (SELECT id FROM user WHERE username=#{username}) AS u
-        LEFT JOIN user_role AS ur on (u.id=ur.user_id)
-        LEFT JOIN role AS r on (r.id=ur.role_id)
+        FROM role r
+                 LEFT JOIN user_role AS ur ON ur.role_id = r.id
+        WHERE user_id=#{userId}
     </select>
+
 </mapper>

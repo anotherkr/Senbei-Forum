@@ -1,14 +1,18 @@
 package com.yhz.senbeiforummain.service.impl;
 
 import cn.hutool.core.collection.CollUtil;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.yhz.commonutil.common.ErrorCode;
+import com.yhz.senbeiforummain.mapper.UserMapper;
 import com.yhz.senbeiforummain.model.entity.Role;
 import com.yhz.senbeiforummain.exception.BusinessException;
+import com.yhz.senbeiforummain.model.entity.User;
 import com.yhz.senbeiforummain.service.IRoleService;
 import com.yhz.senbeiforummain.mapper.RoleMapper;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.Resource;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -20,10 +24,14 @@ import java.util.stream.Collectors;
 @Service
 public class RoleServiceImpl extends ServiceImpl<RoleMapper, Role>
         implements IRoleService {
-
+    @Resource
+    private UserMapper userMapper;
     @Override
     public List<String> getRolesByUserName(String username) {
-        List<Role> roleList = this.baseMapper.getRolesByUserName(username);
+        QueryWrapper<User> userQueryWrapper = new QueryWrapper<>();
+        userQueryWrapper.eq("username", username);
+        User user = userMapper.selectOne(userQueryWrapper);
+        List<Role> roleList = this.baseMapper.getRolesByUserId(user.getId());
         List<String> roleNameList = roleList.stream().map(role -> role.getRoleName()).collect(Collectors.toList());
         if (CollUtil.isEmpty(roleList)) {
             throw new BusinessException(ErrorCode.NO_AUTH);

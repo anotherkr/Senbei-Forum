@@ -13,13 +13,6 @@ import com.yhz.senbeiforummain.model.vo.ModuleConcernTopicVo;
 * @createDate 2023-02-20 13:09:54
 */
 public interface IModuleConcernService extends IService<ModuleConcern> {
-    /**
-     * 关注模块
-     * @param moduleConcernAddRequest
-     * @param userId
-     * @return
-     */
-    boolean addModuleConcern(ModuleConcernAddRequest moduleConcernAddRequest, Long userId);
 
     /**
      * 获取用户所关注模块的主贴并分页
@@ -29,12 +22,11 @@ public interface IModuleConcernService extends IService<ModuleConcern> {
     IPage<ModuleConcernTopicVo> getModuleConcernTopicByPage(ModuleConcernQueryRequest moduleConcernQueryRequest);
 
 
-
     /**
-     * 取消关注模块
+     * 关注或取消关注模块
+     * @param moduleId
      * @param userId
+     * @param concern
      */
-    void cancelModuleConcern(Long moduleId, Long userId);
-
     void concernModule(Long moduleId, Long userId, Integer concern);
 }

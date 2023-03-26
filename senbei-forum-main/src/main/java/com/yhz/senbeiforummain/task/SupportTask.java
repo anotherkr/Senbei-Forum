@@ -86,9 +86,11 @@ public class SupportTask {
             String key = next.getKey();
             Integer value = next.getValue();
             TopicReply topicReply = topicReplyService.getById(key);
-            Integer supportNum = topicReply.getSupportNum()+value;
-            topicReply.setSupportNum(supportNum);
-            replyArrayList.add(topicReply);
+            if(topicReply!=null){
+                Integer supportNum = topicReply.getSupportNum()+value;
+                topicReply.setSupportNum(supportNum);
+                replyArrayList.add(topicReply);
+            }
             redisCache.delCacheMapValue(RedisTopicReplyKey.getSupportCount, "",key);
         }
         topicReplyService.updateBatchById(replyArrayList);

@@ -156,7 +156,7 @@ public class WebSocketServerEndpoint {
      * @return
      */
     public String getOnlineMessage(String nickname) {
-        return "用户{".concat(nickname).concat("}加入房间");
+        return "{".concat(nickname).concat("}加入房间");
     }
 
     /**
@@ -221,7 +221,7 @@ public class WebSocketServerEndpoint {
     }
 
     public String getOutlineMessage(String nickname) {
-        return "用户{".concat(nickname).concat("}离开房间");
+        return "{".concat(nickname).concat("}离开房间");
     }
 
     /**

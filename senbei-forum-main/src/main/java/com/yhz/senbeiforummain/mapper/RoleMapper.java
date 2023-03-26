@@ -13,12 +13,7 @@ import java.util.List;
 * @Entity com.yhz.senbeiforummain.domain.Role
 */
 public interface RoleMapper extends BaseMapper<Role> {
-    /**
-     * 根据用户名获取角色
-     * @param username
-     * @return
-     */
-    List<Role> getRolesByUserName(@Param("username")String username);
+
 
     /**
      * 根据用户id关联角色
@@ -27,6 +22,8 @@ public interface RoleMapper extends BaseMapper<Role> {
      * @return
      */
     int attachRoleByUserId(@Param("roleId") Long roleId,@Param("userId") Long userId);
+
+    List<Role> getRolesByUserId(@Param("userId")Long userId);
 }
 
 

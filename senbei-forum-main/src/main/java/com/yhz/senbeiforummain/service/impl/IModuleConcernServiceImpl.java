@@ -49,45 +49,6 @@ public class IModuleConcernServiceImpl extends ServiceImpl<ModuleConcernMapper, 
     @Resource
     private TopicMapper topicMapper;
 
-    @Transactional(rollbackFor = BusinessException.class)
-    @Override
-    public boolean addModuleConcern(ModuleConcernAddRequest moduleConcernAddRequest, Long userId) {
-
-        Long moduleId = moduleConcernAddRequest.getModuleId();
-        if (userId == null || moduleId == null || userId <= 0 || moduleId <= 0) {
-            throw new BusinessException(ErrorCode.PARAMS_ERROR);
-        }
-        //检查用户,模块是否存在
-        QueryWrapper<User> userQueryWrapper = new QueryWrapper<>();
-        userQueryWrapper.eq("id", userId);
-        User user = userMapper.selectOne(userQueryWrapper);
-        Optional.ofNullable(user).orElseThrow(() -> new BusinessException(ErrorCode.PARAMS_ERROR));
-        QueryWrapper<Module> moduleQueryWrapper = new QueryWrapper<>();
-        moduleQueryWrapper.eq("id", moduleId);
-        Module module = moduleMapper.selectOne(moduleQueryWrapper);
-        Optional.ofNullable(module).orElseThrow(() -> new BusinessException(ErrorCode.PARAMS_ERROR));
-        //检查模块关注表中，两者的关注关系是否已经存在
-        QueryWrapper<ModuleConcern> concernQueryWrapper = new QueryWrapper<>();
-        concernQueryWrapper.eq("module_id", moduleId);
-        concernQueryWrapper.eq("user_id", userId);
-        ModuleConcern moduleConcern = this.baseMapper.selectOne(concernQueryWrapper);
-        if (!ObjectUtil.isEmpty(moduleConcern)) {
-            return true;
-        }
-        ModuleConcern newModuleConcern = new ModuleConcern();
-        newModuleConcern.setUserId(userId);
-        BeanUtils.copyProperties(moduleConcernAddRequest, newModuleConcern);
-        int insert = this.baseMapper.insert(newModuleConcern);
-        if (insert > 0) {
-            //给模块增加关注数
-            module.setConcernNum(module.getConcernNum() + 1);
-            moduleMapper.updateById(module);
-            return true;
-        } else {
-            return false;
-        }
-
-    }
 
     @Override
     public IPage<ModuleConcernTopicVo> getModuleConcernTopicByPage(ModuleConcernQueryRequest moduleConcernQueryRequest) {
@@ -126,29 +87,6 @@ public class IModuleConcernServiceImpl extends ServiceImpl<ModuleConcernMapper, 
 
     @Transactional(rollbackFor = BusinessException.class)
     @Override
-    public void cancelModuleConcern(Long moduleId, Long userId) {
-
-        if (userId == null || moduleId == null || userId <= 0 || moduleId <= 0) {
-            throw new BusinessException(ErrorCode.PARAMS_ERROR);
-        }
-
-        QueryWrapper<ModuleConcern> wrapper = new QueryWrapper<>();
-        wrapper.eq("user_id", userId);
-        wrapper.eq("module_id", moduleId);
-        boolean remove = this.remove(wrapper);
-        if (!remove) {
-            throw new BusinessException(ErrorCode.DELETE_ERROR);
-        }
-        //模块关注数减1
-        Module module = moduleMapper.selectById(moduleId);
-        module.setConcernNum(module.getConcernNum() - 1);
-        int result = moduleMapper.updateById(module);
-        if (result <= 0) {
-            throw new BusinessException(ErrorCode.UPDATE_ERROR);
-        }
-    }
-
-    @Override
     public void concernModule(Long moduleId, Long userId, Integer concern) {
         if (userId == null || moduleId == null || userId <= 0 || moduleId <= 0) {
             throw new BusinessException(ErrorCode.PARAMS_ERROR);
@@ -184,12 +122,11 @@ public class IModuleConcernServiceImpl extends ServiceImpl<ModuleConcernMapper, 
             }
         }
         //修改模块关注数
-        //模块关注数减1
-
+        //模块关注数加减
+        updateModuleConcernNum(module, concern);
     }
 
-    private void updateModuleConcernNum(Long moduleId, Integer concern) {
-        Module module = moduleMapper.selectById(moduleId);
+    private void updateModuleConcernNum(Module module, Integer concern) {
         if (ConcernConstant.CONCERN.equals(concern)) {
             module.setConcernNum(module.getConcernNum() + 1);
         } else if (ConcernConstant.NOT_CONCERN.equals(concern)) {
