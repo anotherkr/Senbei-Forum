@@ -25,7 +25,9 @@ import com.yhz.senbeiforummain.util.RedisCache;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.http.HttpHeaders;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -59,7 +61,8 @@ public class GithubLoginHandler implements OauthLoginHandler {
     private TransactionTemplate transactionTemplate;
     @Resource
     GithubAuthConfig githubAuthConfig;
-
+    @Resource
+    private AuthenticationManager authenticationManager;
     @Override
     public LoginChannelEnum getChannel() {
         return LoginChannelEnum.GITHUB_LOGIN;
@@ -133,12 +136,10 @@ public class GithubLoginHandler implements OauthLoginHandler {
             });
 
         }
-        Long userId = thirdUser.get().getUserId();
-        User user = userService.getById(userId);
-        AuthUser authUser = new AuthUser();
-        authUser.setUser(user);
         String token = JwtUtil.createJWT(username);
         UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(username,password);
+        Authentication authenticate = authenticationManager.authenticate(authenticationToken);
+        AuthUser authUser = (AuthUser) authenticate.getPrincipal();
         //将用户存入上下文中
         SecurityContextHolder.getContext().setAuthentication(authenticationToken);
         redisCache.setCacheObject(RedisUserKey.getUserToken, username, token);

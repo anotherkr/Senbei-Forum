@@ -41,7 +41,7 @@ public class ClickNumTask {
      */
 
     /**
-     * 记录访问数(每15分钟执行一次)
+     * 记录帖子访问数(每15分钟执行一次)
      */
     @Scheduled(cron = "0 0/15 * * * ?")
     public void clickNumTask() {

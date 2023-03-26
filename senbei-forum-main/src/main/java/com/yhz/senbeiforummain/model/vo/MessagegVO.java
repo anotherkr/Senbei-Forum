@@ -19,9 +19,11 @@ public class MessagegVO {
 
     @ApiModelProperty(value = "用户名")
     private String username;
-
+    @ApiModelProperty(value = "用户昵称")
+    private String nickname;
     @ApiModelProperty(value = "用户头像")
-    private String headUrl;;
+    private String headUrl;
+    ;
 
     @ApiModelProperty(value = "消息")
     private Object message;

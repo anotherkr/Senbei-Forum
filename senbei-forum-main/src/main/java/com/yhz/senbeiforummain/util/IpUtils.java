@@ -48,18 +48,18 @@ public class IpUtils {
             cityInfo = cityInfo.replace("|", " ");
             String[] cityList = cityInfo.split(" ");
             if (cityList.length > 0) {
-                // 国内的显示到具体的省
+                // 国内的显示到具体的省市
                 if ("中国".equals(cityList[0])) {
                     if (cityList.length > 3) {
                         StringBuilder stringBuilder = new StringBuilder();
-                        stringBuilder.append(cityList[0]).append(cityList[1]).append(cityList[2]).append(cityList[3]);
+                        stringBuilder.append(cityList[1]).append(cityList[2]);
                         return stringBuilder.toString();
                     } else {
                         StringBuilder stringBuilder = new StringBuilder();
                         stringBuilder.append(cityList[0]).append(cityList[1]).append(cityList[2]);
                         return stringBuilder.toString();
                     }
-                    // 国外也显示到省
+                    // 国外显示到省
                 } else {
                     if (cityList.length > 2) {
                         StringBuilder stringBuilder = new StringBuilder();

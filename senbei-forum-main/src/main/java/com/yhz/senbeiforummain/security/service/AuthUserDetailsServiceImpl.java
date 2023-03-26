@@ -58,7 +58,6 @@ public class AuthUserDetailsServiceImpl implements UserDetailsService, UserDetai
             if (CollUtil.isEmpty(roleNameList)) {
                 throw new BusinessException(ErrorCode.NO_AUTH);
             }
-
             List<SimpleGrantedAuthority> authorities = roleNameList.stream()
                     .map(roleName -> new SimpleGrantedAuthority(roleName)).collect(Collectors.toList());
             return new AuthUser(user, authorities);

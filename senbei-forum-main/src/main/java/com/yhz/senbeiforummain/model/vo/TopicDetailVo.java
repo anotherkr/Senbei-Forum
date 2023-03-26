@@ -60,6 +60,9 @@ public class TopicDetailVo {
     @ApiModelProperty("热度")
     private Integer heat;
 
+    @ApiModelProperty("是否已点赞(0-未点赞,1-已点赞)")
+    private int isSupport;
+
     @ApiModelProperty("创建时间")
     private Date createTime;
 }

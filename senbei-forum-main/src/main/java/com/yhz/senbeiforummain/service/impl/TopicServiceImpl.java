@@ -1,5 +1,6 @@
 package com.yhz.senbeiforummain.service.impl;
 
+import cn.hutool.core.util.RandomUtil;
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
@@ -17,6 +18,7 @@ import com.yhz.senbeiforummain.model.entity.Topic;
 import com.yhz.senbeiforummain.model.entity.User;
 import com.yhz.senbeiforummain.model.dto.topic.TopicQueryRequest;
 import com.yhz.senbeiforummain.model.dto.topic.TopicAddRequst;
+import com.yhz.senbeiforummain.model.enums.SupportEnum;
 import com.yhz.senbeiforummain.model.to.TopicReplyTo;
 import com.yhz.senbeiforummain.model.to.TopicTo;
 import com.yhz.senbeiforummain.model.vo.TopicVo;
@@ -126,7 +128,7 @@ public class TopicServiceImpl extends ServiceImpl<TopicMapper, Topic>
         topicVoIPage.getRecords().forEach(topicVo -> {
             topicVo.setModuleName(moduleNameMap.get(topicVo.getModuleId()));
             //设置是否点赞
-            setIsSupport(topicVo,userId);
+            topicVo.setIsSupport(judgeIsSupport(topicVo.getId(),userId));
         });
 
         return topicVoIPage;
@@ -163,8 +165,8 @@ public class TopicServiceImpl extends ServiceImpl<TopicMapper, Topic>
         }
         Module module = moduleMapper.selectById(moduleId);
         Optional.ofNullable(module).orElseThrow(() -> new BusinessException(ErrorCode.PARAMS_ERROR));
-        long concernNum = module.getConcernNum() + 1;
-        module.setConcernNum(concernNum);
+        long topicNum = module.getTopicNum() + 1;
+        module.setTopicNum(topicNum);
         int update = moduleMapper.updateById(module);
         if (update <= 0) {
             throw new BusinessException(ErrorCode.UPDATE_ERROR);
@@ -206,16 +208,19 @@ public class TopicServiceImpl extends ServiceImpl<TopicMapper, Topic>
             topicReplyVo.setImgUrlArray(toArray);
             BeanUtils.copyProperties(item, topicReplyVo);
             if (currentUserId != null) {
+                //设置是否点赞
                 String hKey = item.getId().toString().concat("::").concat(currentUserId.toString());
                 Map<String, Integer> cacheMap = redisCache.getCacheMap(RedisTopicReplyKey.getSupportInfo, "");
                 if (cacheMap != null) {
                     Integer isSupport = cacheMap.get(hKey);
-                    topicReplyVo.setIsSupport(isSupport!=null?isSupport:0);
+                    topicReplyVo.setIsSupport(isSupport != null ? isSupport : 0);
                 }
             }
             return topicReplyVo;
         });
         topicDetailVo.setTopicReplyVoIPage(topicReplyVoIPage);
+        //设置帖子是否点赞
+        topicDetailVo.setIsSupport(judgeIsSupport(topicId,currentUserId));
         return topicDetailVo;
     }
 
@@ -265,7 +270,7 @@ public class TopicServiceImpl extends ServiceImpl<TopicMapper, Topic>
         topicVoIPage.getRecords().forEach(topicVo -> {
             topicVo.setModuleName(moduleNameMap.get(topicVo.getModuleId()));
             //設置是否點贊
-            setIsSupport(topicVo,userId);
+            topicVo.setIsSupport(judgeIsSupport(topicVo.getId(),userId));
         });
         //设置用户信息
         User user = userMapper.selectById(userId);
@@ -277,15 +282,23 @@ public class TopicServiceImpl extends ServiceImpl<TopicMapper, Topic>
         return topicVoIPage;
     }
 
-    private void setIsSupport(TopicVo topicVo, Long userId) {
+
+    /**
+     * 判断是否点赞
+     * @param
+     * @param userId
+     * @return
+     */
+    private int judgeIsSupport(Long topicId, Long userId) {
         if (userId != null) {
-            String hKey = topicVo.getId().toString().concat("::").concat(userId.toString());
+            String hKey = topicId.toString().concat("::").concat(userId.toString());
             Map<String, Integer> cacheMap = redisCache.getCacheMap(RedisTopicKey.getSupportInfo, "");
             if (cacheMap != null) {
-                Integer isSupport =  cacheMap.get(hKey);
-                topicVo.setIsSupport(isSupport!=null?isSupport:0);
+                Integer isSupport = cacheMap.get(hKey);
+                return isSupport!=null? isSupport:SupportEnum.NO_SUPPORT.getCode();
             }
         }
+        return SupportEnum.NO_SUPPORT.getCode();
     }
 }
 

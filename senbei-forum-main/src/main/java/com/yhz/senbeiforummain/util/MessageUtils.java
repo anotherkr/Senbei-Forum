@@ -5,8 +5,6 @@ import com.yhz.senbeiforummain.model.vo.RoomChatRecordVo;
 import com.yhz.senbeiforummain.model.vo.UserInfoVo;
 import org.springframework.beans.BeanUtils;
 
-import java.util.ArrayList;
-import java.util.Deque;
 import java.util.List;
 
 /**

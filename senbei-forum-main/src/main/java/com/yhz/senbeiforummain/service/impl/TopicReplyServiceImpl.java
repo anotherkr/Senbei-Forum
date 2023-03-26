@@ -4,6 +4,8 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.yhz.commonutil.common.ErrorCode;
 import com.yhz.commonutil.util.ImgUrlUtil;
 import com.yhz.senbeiforummain.constant.rediskey.RedisTopicReplyKey;
+import com.yhz.senbeiforummain.mapper.TopicMapper;
+import com.yhz.senbeiforummain.model.entity.Topic;
 import com.yhz.senbeiforummain.model.entity.TopicReply;
 import com.yhz.senbeiforummain.model.dto.topicreply.TopicReplyAddRequst;
 import com.yhz.senbeiforummain.exception.BusinessException;
@@ -18,6 +20,7 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.script.DefaultRedisScript;
 import org.springframework.scripting.support.ResourceScriptSource;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
@@ -35,9 +38,12 @@ public class TopicReplyServiceImpl extends ServiceImpl<TopicReplyMapper, TopicRe
     private RedisCache redisCache;
     @Resource
     private RedisTemplate redisTemplate;
-
+    @Resource
+    private TopicMapper topicMapper;
+    @Transactional(rollbackFor = BusinessException.class)
     @Override
     public void reply(TopicReplyAddRequst topicReplyAddRequst, Long userId, HttpServletRequest request) {
+        Long topicId = topicReplyAddRequst.getTopicId();
         String city;
         try {
             city = IpUtils.getCity(request);
@@ -55,11 +61,14 @@ public class TopicReplyServiceImpl extends ServiceImpl<TopicReplyMapper, TopicRe
             String imgUrls = ImgUrlUtil.imgUrlArrayToJson(imgUrlArray);
             topicReply.setImgUrls(imgUrls);
         }
-
         boolean save = this.save(topicReply);
         if (!save) {
             throw new BusinessException(ErrorCode.SAVE_ERROR);
         }
+        //帖子回复数加1
+        Topic topic = topicMapper.selectById(topicId);
+        topic.setReplyNum(topic.getReplyNum()+1);
+        topicMapper.insert(topic);
     }
 
     @Override

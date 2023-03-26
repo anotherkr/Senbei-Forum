@@ -1,12 +1,14 @@
 package com.yhz.senbeiforummain.service.impl;
 
 import cn.hutool.core.util.ObjectUtil;
+import cn.hutool.core.util.RandomUtil;
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.yhz.commonutil.common.ErrorCode;
 import com.yhz.commonutil.constant.SortConstant;
+import com.yhz.commonutil.util.ImgUrlUtil;
 import com.yhz.senbeiforummain.constant.ConcernConstant;
 import com.yhz.senbeiforummain.exception.BusinessException;
 import com.yhz.senbeiforummain.mapper.ModuleConcernMapper;
@@ -22,8 +24,10 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.ThreadLocalRandom;
 import java.util.stream.Collectors;
 
 
@@ -103,6 +107,30 @@ public class ModuleServiceImpl extends ServiceImpl<ModuleMapper, Module>
         int res = this.baseMapper.updateBatchById(newModuleList);
         return res;
     }
+
+    @Override
+    public List<ModuleVo> getRecommendTopic(Integer count) {
+        QueryWrapper<Module> queryWrapper = new QueryWrapper<>();
+        queryWrapper.orderByDesc("heat");
+        queryWrapper.last("limit 100");
+        List<Module> modules = baseMapper.selectList(queryWrapper);
+        int size = modules.size();
+        int i=0;
+        List<Module> selectModule = new ArrayList<>();
+        while (i < count) {
+            ThreadLocalRandom random = RandomUtil.getRandom();
+            int randomIndex = random.nextInt(size);
+            Module module = modules.remove(randomIndex);
+            selectModule.add(module);
+        }
+        List<ModuleVo> moduleVoList = selectModule.stream().map(item -> {
+            ModuleVo moduleVo = new ModuleVo();
+            BeanUtils.copyProperties(item, moduleVo);
+            return moduleVo;
+        }).collect(Collectors.toList());
+        return moduleVoList;
+    }
+
 }
 
 

@@ -23,7 +23,9 @@ import com.yhz.senbeiforummain.service.IThirdUserService;
 import com.yhz.senbeiforummain.util.JwtUtil;
 import com.yhz.senbeiforummain.util.RedisCache;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -57,6 +59,8 @@ public class GiteeLoginHandler implements OauthLoginHandler {
     private TransactionTemplate transactionTemplate;
     @Resource
     GiteeAuthConfig giteeAuthConfig;
+    @Resource
+    private AuthenticationManager authenticationManager;
     @Override
     public LoginChannelEnum getChannel() {
         return LoginChannelEnum.GITEE_LOGIN;
@@ -134,12 +138,10 @@ public class GiteeLoginHandler implements OauthLoginHandler {
             });
 
         }
-        Long userId = thirdUser.get().getUserId();
-        User user = userService.getById(userId);
-        AuthUser authUser = new AuthUser();
-        authUser.setUser(user);
         String token = JwtUtil.createJWT(username);
         UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(username,password);
+        Authentication authenticate = authenticationManager.authenticate(authenticationToken);
+        AuthUser authUser = (AuthUser) authenticate.getPrincipal();
         //将用户存入上下文中
         SecurityContextHolder.getContext().setAuthentication(authenticationToken);
 

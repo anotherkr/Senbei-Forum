@@ -28,6 +28,7 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
+import java.util.List;
 
 /**
  * @author yanhuanzhan
@@ -81,11 +82,12 @@ public class TopicController {
     }
 
     @ApiOperation(value = "获取用户最近发布的帖子")
-    @PostMapping("/user/page")
-    @PreAuthorize("hasRole('user')")
-    public BaseResponse getUserTopic(@RequestBody PageRequest pageRequest, @UserId Long userId) {
+    @PostMapping("/user/{userId}")
+    public BaseResponse getUserTopic(@RequestBody PageRequest pageRequest, @PathVariable("userId") Long userId) {
         IPage<TopicVo> topicVoIPage = topicService.userTopicPage(pageRequest,userId);
         return ResultUtils.success(topicVoIPage);
     }
+
+
 
 }

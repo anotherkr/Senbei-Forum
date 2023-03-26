@@ -12,6 +12,7 @@ import com.yhz.senbeiforummain.model.vo.TopicDetailVo;
 import com.yhz.senbeiforummain.exception.BusinessException;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.List;
 
 /**
 * @author 吉良吉影
@@ -52,4 +53,6 @@ public interface ITopicService extends IService<Topic> {
     Integer support(Long topicId, Long userId);
 
     IPage<TopicVo> userTopicPage(PageRequest pageRequest, Long userId);
+
+
 }
