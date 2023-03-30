@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.Date;
 
 import com.yhz.senbeiforummain.common.BaseEntity;
@@ -51,7 +52,7 @@ public class PaymentInfo extends BaseEntity implements Serializable {
     /**
      * 支付金额
      */
-    private Integer payerTotal;
+    private BigDecimal payerTotal;
 
     /**
      * 通知参数

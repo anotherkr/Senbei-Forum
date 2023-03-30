@@ -1,6 +1,7 @@
 package com.yhz.senbeiforummain;
 
 import com.yhz.senbeiforummain.model.entity.Topic;
+import com.yhz.senbeiforummain.model.enums.QueueEnum;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 import org.springframework.amqp.core.AmqpAdmin;
@@ -19,7 +20,7 @@ import java.util.UUID;
  * @author yanhuanzhan
  * @date 2022/12/1 - 17:16
  */
-@SpringBootTest
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @Slf4j
 @ActiveProfiles("dev")
 public class RabbitMqTest {
@@ -38,30 +39,35 @@ public class RabbitMqTest {
         rabbitTemplate.convertAndSend("hello-java-exchange", "hello.java", topic, new CorrelationData(UUID.randomUUID().toString()));
         log.info("消息发送完成");
     }
-    @Test
-    public void createExchange() {
-        DirectExchange directExchange = new DirectExchange("hello-java-exchange", true, false);
-        amqpAdmin.declareExchange(directExchange);
-        log.info("exchange[{}]创建成功", directExchange.getName());
-    }
+    //@Test
+    //public void createExchange() {
+    //    DirectExchange directExchange = new DirectExchange("hello-java-exchange", true, false);
+    //    amqpAdmin.declareExchange(directExchange);
+    //    log.info("exchange[{}]创建成功", directExchange.getName());
+    //}
+    //
+    //@Test
+    //public void createQueue() {
+    //    Queue queue = new Queue("hello-java-queue", true, false, false);
+    //    amqpAdmin.declareQueue(queue);
+    //    log.info("queue[{}]创建成功",queue.getName());
+    //}
+    //@Test
+    //public void createBinding() {
+    //    //String destination 【目的地】
+    //    //DestinationType destinationType【目的地类型】
+    //    // String exchange【交换机】
+    //    // String routingKey【路由键】
+    //    Binding binding = new Binding("hello-java-queue",
+    //            Binding.DestinationType.QUEUE,
+    //            "hello-java-exchange",
+    //            "hello.java",null);
+    //    amqpAdmin.declareBinding(binding);
+    //    log.info("Binding[{}]创建成功", "hello-java-binding");
+    //}
 
     @Test
-    public void createQueue() {
-        Queue queue = new Queue("hello-java-queue", true, false, false);
-        amqpAdmin.declareQueue(queue);
-        log.info("queue[{}]创建成功",queue.getName());
-    }
-    @Test
-    public void createBinding() {
-        //String destination 【目的地】
-        //DestinationType destinationType【目的地类型】
-        // String exchange【交换机】
-        // String routingKey【路由键】
-        Binding binding = new Binding("hello-java-queue",
-                Binding.DestinationType.QUEUE,
-                "hello-java-exchange",
-                "hello.java",null);
-        amqpAdmin.declareBinding(binding);
-        log.info("Binding[{}]创建成功", "hello-java-binding");
+    public void testCancelOrderSend() {
+        rabbitTemplate.convertAndSend(QueueEnum.QUEUE_TTL_ORDER_CANCEL.getExchange(),QueueEnum.QUEUE_TTL_ORDER_CANCEL.getRouteKey(),"abc");
     }
 }

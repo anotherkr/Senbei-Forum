@@ -29,5 +29,10 @@ public interface IModuleService extends IService<Module> {
      */
     int calibrationTopicNum();
 
+    /**
+     * 获取推荐模块
+     * @param count
+     * @return
+     */
     List<ModuleVo> getRecommendTopic(Integer count);
 }

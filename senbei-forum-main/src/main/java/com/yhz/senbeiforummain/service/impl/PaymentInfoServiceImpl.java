@@ -35,7 +35,7 @@ public class PaymentInfoServiceImpl extends ServiceImpl<PaymentInfoMapper, Payme
             paymentInfo.setTradeType("PC");
             paymentInfo.setTradeState(TradeStateEnum.SUCCESS.getCode());
             paymentInfo.setTransactionId(payNotify.getTradeNo());
-            paymentInfo.setPayerTotal(payNotify.getTotalAmount().multiply(new BigDecimal(100)).intValue());
+            paymentInfo.setPayerTotal(payNotify.getTotalAmount());
             paymentInfo.setContent(decryptData);
         }
         if (!ObjectUtils.isEmpty(paymentInfo)) {

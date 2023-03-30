@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.Date;
 
 import com.yhz.senbeiforummain.common.BaseEntity;
@@ -41,7 +42,7 @@ public class OrderInfo extends BaseEntity implements Serializable {
     /**
      * 订单金额
      */
-    private Integer totalFee;
+    private BigDecimal totalFee;
 
     /**
      * 订单状态(0:支付成功,1:转入退款,2:未支付,3:已关闭，4:支付失败,5:退款成功，6:退款失败）

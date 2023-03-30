@@ -1,7 +1,5 @@
 package com.yhz.senbeiforummain.service.impl;
 
-import cn.hutool.core.util.RandomUtil;
-import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -33,7 +31,6 @@ import com.yhz.senbeiforummain.service.ITopicService;
 import com.yhz.senbeiforummain.util.IpUtils;
 import com.yhz.senbeiforummain.util.PageUtil;
 import com.yhz.senbeiforummain.util.RedisCache;
-import io.swagger.models.auth.In;
 import org.apache.commons.lang3.ArrayUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Value;
@@ -99,36 +96,19 @@ public class TopicServiceImpl extends ServiceImpl<TopicMapper, Topic>
             topicVo.setImgUrlArray(ImgUrlUtil.imgUrlJsonToArray(item.getImgUrls()));
             return topicVo;
         });
-        //加入模块名信息
-        if (moduleId != null) {
-            Module module = moduleMapper.selectById(moduleId);
-            String moduleName = module.getName();
-            topicVoIPage.getRecords().forEach(record -> {
-                Long moduleId2 = record.getModuleId();
-                if (moduleId2 != null) {
-                    record.setModuleName(moduleName);
-                }
-            });
-        }
-        //设置模块名
-        List<Long> moduleIdList = topicVoIPage.getRecords().stream().map(topicVo ->
-                topicVo.getModuleId()
-        ).collect(Collectors.toList());
-        HashMap<Long, String> moduleNameMap = new HashMap<>();
-        if (moduleIdList.size() > 0) {
-            List<Module> moduleList = moduleMapper.selectBatchIds(moduleIdList);
-            moduleList.forEach(module -> {
-                String moduleName = module.getName();
-                Long id = module.getId();
-                if (StrUtil.isNotBlank(moduleName)) {
-                    moduleNameMap.put(id, moduleName);
-                }
-            });
-        }
+        //添加模块信息
+        List<Long> moduleIdList = topicVoIPage.getRecords().stream().map(item -> item.getModuleId()).collect(Collectors.toList());
+        Map<Long, Module> moduleMap = getModuleByModuleIdList(moduleIdList);
         topicVoIPage.getRecords().forEach(topicVo -> {
-            topicVo.setModuleName(moduleNameMap.get(topicVo.getModuleId()));
-            //设置是否点赞
-            topicVo.setIsSupport(judgeIsSupport(topicVo.getId(),userId));
+            Module module = moduleMap.get(topicVo.getModuleId());
+            if (module != null) {
+                topicVo.setModuleName(module.getName());
+                topicVo.setModuleId(module.getId());
+                //设置是否点赞
+                topicVo.setIsSupport(judgeIsSupport(topicVo.getId(), userId));
+            }
+            //加上缓存中的点赞数
+            topicVo.setSupportNum(topicVo.getSupportNum() + getRedisTopicSupportNum(topicVo.getId()));
         });
 
         return topicVoIPage;
@@ -184,9 +164,10 @@ public class TopicServiceImpl extends ServiceImpl<TopicMapper, Topic>
         sortField = PageUtil.sqlInject(sortField);
         Topic topic = this.getById(topicId);
         if (topic == null) {
-            throw new BusinessException(ErrorCode.NULL_ERROR);
+            throw new BusinessException("帖子不存在",50000,"");
         }
         TopicDetailVo topicDetailVo = new TopicDetailVo();
+        topicDetailVo.setTopicId(topicId);
         BeanUtils.copyProperties(topic, topicDetailVo);
         //处理图片
         String imgUrls = topic.getImgUrls();
@@ -216,11 +197,15 @@ public class TopicServiceImpl extends ServiceImpl<TopicMapper, Topic>
                     topicReplyVo.setIsSupport(isSupport != null ? isSupport : 0);
                 }
             }
+            //设置点赞数
+            topicReplyVo.setSupportNum(topicReplyVo.getSupportNum() + getRedisTopicReplySupportNum(topicReplyVo.getId()));
             return topicReplyVo;
         });
         topicDetailVo.setTopicReplyVoIPage(topicReplyVoIPage);
         //设置帖子是否点赞
-        topicDetailVo.setIsSupport(judgeIsSupport(topicId,currentUserId));
+        topicDetailVo.setIsSupport(judgeIsSupport(topicId, currentUserId));
+        //加上缓存中的点赞数
+        topicDetailVo.setSupportNum(topicDetailVo.getSupportNum() + getRedisTopicSupportNum(topicId));
         return topicDetailVo;
     }
 
@@ -252,25 +237,18 @@ public class TopicServiceImpl extends ServiceImpl<TopicMapper, Topic>
             BeanUtils.copyProperties(topic, topicVo);
             return topicVo;
         });
+        //获取模块信息
         List<Long> moduleIdList = topicVoIPage.getRecords().stream().map(topicVo ->
                 topicVo.getModuleId()
         ).collect(Collectors.toList());
-        HashMap<Long, String> moduleNameMap = new HashMap<>();
-        if (moduleIdList.size() > 0) {
-            List<Module> moduleList = moduleMapper.selectBatchIds(moduleIdList);
-
-            moduleList.forEach(module -> {
-                String moduleName = module.getName();
-                Long id = module.getId();
-                if (StrUtil.isNotBlank(moduleName)) {
-                    moduleNameMap.put(id, moduleName);
-                }
-            });
-        }
+        Map<Long, Module> moduleMap = getModuleByModuleIdList(moduleIdList);
         topicVoIPage.getRecords().forEach(topicVo -> {
-            topicVo.setModuleName(moduleNameMap.get(topicVo.getModuleId()));
+            String moduleName = Optional.ofNullable(moduleMap.get(topicVo.getModuleId())).map(Module::getName).orElse("未知");
+            topicVo.setModuleName(moduleName);
             //設置是否點贊
-            topicVo.setIsSupport(judgeIsSupport(topicVo.getId(),userId));
+            topicVo.setIsSupport(judgeIsSupport(topicVo.getId(), userId));
+            //加上缓存中的点赞数
+            topicVo.setSupportNum(topicVo.getSupportNum() + getRedisTopicSupportNum(topicVo.getId()));
         });
         //设置用户信息
         User user = userMapper.selectById(userId);
@@ -285,6 +263,7 @@ public class TopicServiceImpl extends ServiceImpl<TopicMapper, Topic>
 
     /**
      * 判断是否点赞
+     *
      * @param
      * @param userId
      * @return
@@ -293,12 +272,52 @@ public class TopicServiceImpl extends ServiceImpl<TopicMapper, Topic>
         if (userId != null) {
             String hKey = topicId.toString().concat("::").concat(userId.toString());
             Map<String, Integer> cacheMap = redisCache.getCacheMap(RedisTopicKey.getSupportInfo, "");
-            if (cacheMap != null) {
+            if (cacheMap != null && !cacheMap.isEmpty()) {
                 Integer isSupport = cacheMap.get(hKey);
-                return isSupport!=null? isSupport:SupportEnum.NO_SUPPORT.getCode();
+                return isSupport != null ? isSupport : SupportEnum.NO_SUPPORT.getCode();
             }
         }
         return SupportEnum.NO_SUPPORT.getCode();
+    }
+
+    private int getRedisTopicSupportNum(Long topicId) {
+        if (topicId == null) {
+            return 0;
+        }
+        Map<String, Integer> cacheMap = redisCache.getCacheMap(RedisTopicKey.getSupportCount, "");
+        if (cacheMap != null && !cacheMap.isEmpty()) {
+            if (cacheMap.containsKey(topicId.toString())) {
+                return cacheMap.get(topicId.toString());
+            }
+        }
+        return 0;
+    }
+
+    private int getRedisTopicReplySupportNum(Long topicReplyId) {
+        if (topicReplyId == null) {
+            return 0;
+        }
+        Map<String, Integer> cacheMap = redisCache.getCacheMap(RedisTopicReplyKey.getSupportCount, "");
+        if (cacheMap != null && !cacheMap.isEmpty()) {
+            if (cacheMap.containsKey(topicReplyId.toString())) {
+                return cacheMap.get(topicReplyId.toString());
+            }
+        }
+        return 0;
+    }
+
+    private Map<Long, Module> getModuleByModuleIdList(List<Long> moduleIdList) {
+        HashMap<Long, Module> moduleMap = new HashMap<>();
+        if (moduleIdList.size() > 0) {
+            List<Module> moduleList = moduleMapper.selectBatchIds(moduleIdList);
+            moduleList.forEach(module -> {
+                Long id = module.getId();
+                if (module!=null) {
+                    moduleMap.put(id, module);
+                }
+            });
+        }
+        return moduleMap;
     }
 }
 

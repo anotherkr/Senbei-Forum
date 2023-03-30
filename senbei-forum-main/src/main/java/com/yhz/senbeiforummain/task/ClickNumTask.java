@@ -53,8 +53,11 @@ public class ClickNumTask {
             Long topicId = Long.valueOf(key);
             Integer clickNum = entry.getValue();
             Topic topic = topicService.getById(topicId);
-            topic.setClickNum(topic.getClickNum()+clickNum);
-            topics.add(topic);
+            if (topic != null) {
+                topic.setClickNum(topic.getClickNum()+clickNum);
+                topics.add(topic);
+            }
+
             redisCache.delCacheMapValue(RedisTopicKey.getClickNum, "", topicId.toString());
         }
         topicService.updateBatchById(topics);

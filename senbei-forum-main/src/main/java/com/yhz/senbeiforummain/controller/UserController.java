@@ -1,5 +1,6 @@
 package com.yhz.senbeiforummain.controller;
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.yhz.commonutil.common.BaseResponse;
 import com.yhz.commonutil.common.ErrorCode;
 import com.yhz.commonutil.common.ResultUtils;
@@ -7,10 +8,12 @@ import com.yhz.senbeiforummain.common.annotation.UserId;
 import com.yhz.senbeiforummain.exception.BusinessException;
 import com.yhz.senbeiforummain.model.dto.register.EmailRegisterRequest;
 import com.yhz.senbeiforummain.model.dto.login.DoLoginRequest;
+import com.yhz.senbeiforummain.model.dto.user.UserReplyRequest;
 import com.yhz.senbeiforummain.model.dto.user.UserUpdateRequest;
 import com.yhz.senbeiforummain.model.entity.User;
 import com.yhz.senbeiforummain.model.vo.CaptchaImageVo;
 import com.yhz.senbeiforummain.model.vo.UserInfoVo;
+import com.yhz.senbeiforummain.model.vo.UserReplyVo;
 import com.yhz.senbeiforummain.service.ILoginService;
 import com.yhz.senbeiforummain.service.IUserService;
 import io.swagger.annotations.Api;
@@ -47,16 +50,18 @@ public class UserController {
     @ApiOperation("用户登录接口")
     @PostMapping("/login")
     public BaseResponse<String> doLogin(@Valid @RequestBody DoLoginRequest doLoginRequest, String rememberMe, HttpServletRequest request, HttpServletResponse response) {
-        String token = loginService.doLogin(doLoginRequest,request,response);
+        String token = loginService.doLogin(doLoginRequest, request, response);
 
         return ResultUtils.success(token);
     }
+
     @ApiOperation("用户注销登录接口")
     @GetMapping("/logout")
     public BaseResponse doLogout() {
         loginService.doLogout();
         return ResultUtils.success();
     }
+
     @ApiOperation("邮箱验证码发送接口")
     @GetMapping("/email/send")
     public BaseResponse mailSend(@RequestParam("email") String email) {
@@ -70,6 +75,7 @@ public class UserController {
         loginService.emailRegister(registerDto);
         return ResultUtils.success();
     }
+
     @GetMapping("/captchaImage")
     @ApiOperation(value = "获取验证码（数学表达式）")
     public BaseResponse captchaImage() {
@@ -82,19 +88,22 @@ public class UserController {
     public BaseResponse getUserInfo(@UserId Long userId) {
         User user = userService.getById(userId);
         UserInfoVo userInfoVo = new UserInfoVo();
-        if (user != null) {
-            BeanUtils.copyProperties(user,userInfoVo);
+        if (user == null) {
+            throw new BusinessException(ErrorCode.NOT_LOGIN);
         }
+        BeanUtils.copyProperties(user, userInfoVo);
         return ResultUtils.success(userInfoVo);
     }
+
     @GetMapping("/info/{userId}")
     @ApiOperation(value = "通过userId获取用户信息")
     public BaseResponse getUserInfoByUserId(@PathVariable("userId") Long userId) {
         User user = userService.getById(userId);
         UserInfoVo userInfoVo = new UserInfoVo();
-        BeanUtils.copyProperties(user,userInfoVo);
+        BeanUtils.copyProperties(user, userInfoVo);
         return ResultUtils.success(userInfoVo);
     }
+
     @ApiOperation(value = "更新用户信息")
     @PostMapping("/update")
     public BaseResponse updateUserInfo(@RequestBody UserUpdateRequest userUpdateRequest, @UserId Long userId) {
@@ -106,6 +115,13 @@ public class UserController {
             throw new BusinessException(ErrorCode.UPDATE_ERROR);
         }
         return ResultUtils.success();
+    }
+
+    @ApiOperation(value = "获取用户的评论")
+    @PostMapping("/reply")
+    public BaseResponse getUserReply(@RequestBody UserReplyRequest userReplyRequest) {
+        IPage<UserReplyVo> userReplyVoIPage = userService.getUserReplyVoPage(userReplyRequest);
+        return ResultUtils.success(userReplyVoIPage);
     }
 }
 

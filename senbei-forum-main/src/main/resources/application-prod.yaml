@@ -48,17 +48,17 @@ spring:
       oss:
         endpoint: oss-cn-guangzhou.aliyuncs.com
         bucket: mail-yhz
-#  rabbitmq:
-#    host: 192.168.0.193
-#    port: 5672
-#    virtual-host: /
-#    publisher-returns: true #开启发送端确认
-#    publisher-confirm-type: CORRELATED #开启发送端消息抵达队列的回调
-#    template:
-#      mandatory: true #只要抵达队列，以异步发送优先回调return confirm
-#    listener:
-#      simple:
-#        acknowledge-mode: manual #手动确认消息
+  rabbitmq:
+    host: 111.230.243.152
+    port: 5672
+    virtual-host: /
+    publisher-returns: true #开启发送端确认
+    publisher-confirm-type: CORRELATED #开启发送端消息抵达队列的回调
+    template:
+      mandatory: true #只要抵达队列，以异步发送优先回调return confirm
+    listener:
+      simple:
+        acknowledge-mode: manual #手动确认消息
 
 
 

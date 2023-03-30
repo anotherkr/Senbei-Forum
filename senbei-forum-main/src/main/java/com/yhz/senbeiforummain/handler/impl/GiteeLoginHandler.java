@@ -27,6 +27,8 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.support.TransactionTemplate;
@@ -61,6 +63,8 @@ public class GiteeLoginHandler implements OauthLoginHandler {
     GiteeAuthConfig giteeAuthConfig;
     @Resource
     private AuthenticationManager authenticationManager;
+    @Resource
+    private UserDetailsService userDetailsService;
     @Override
     public LoginChannelEnum getChannel() {
         return LoginChannelEnum.GITEE_LOGIN;
@@ -98,11 +102,9 @@ public class GiteeLoginHandler implements OauthLoginHandler {
         Long thirdUserId = giteeUserRequest.getId();
         String thirdUserAvatarUrl = giteeUserRequest.getAvatarUrl();
         String thirdUserNickname = giteeUserRequest.getName();
-
         //第三方用户的用户名和密码使用uuid
-
-        String username = UUID.randomUUID().toString().replace("_", "").substring(20);
-        String password = UUID.randomUUID().toString().replace("_", "").substring(10);
+        String username;
+        String password ="";
         //查看是否已经注册过
         QueryWrapper<ThirdUser> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("third_id", thirdUserId);
@@ -110,6 +112,7 @@ public class GiteeLoginHandler implements OauthLoginHandler {
         AtomicReference<ThirdUser> thirdUser = new AtomicReference<>(thirdUserService.getOne(queryWrapper));
         AtomicReference<User> finalUser = new AtomicReference<>();
         if (ObjectUtil.isEmpty(thirdUser.get())) {
+            username=UUID.randomUUID().toString().replace("_", "").substring(20);
             //如果没有注册过，则进行注册
             transactionTemplate.execute(transactionStatus -> {
                 //保存本地用户
@@ -132,19 +135,25 @@ public class GiteeLoginHandler implements OauthLoginHandler {
                 //保存第三方用户
                 thirdUser.set(new ThirdUser());
                 thirdUser.get().setUserId(finalUser.get().getId())
-                        .setThirdId(thirdUserId).setNickname(thirdUserNickname).setChannel(this.getChannel().getCode());
+                        .setThirdId(thirdUserId).setNickname(thirdUserNickname).setUsername(username).setChannel(this.getChannel().getCode());
                 thirdUserService.save(thirdUser.get());
                 return null;
             });
 
+        }else {
+            //如果有注册过
+            username = thirdUser.get().getUsername();
+            User user = userService.getUserByUserName(username);
+            finalUser.set(user);
         }
         String token = JwtUtil.createJWT(username);
+        UserDetails userDetails = userDetailsService.loadUserByUsername(username);
         UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(username,password);
-        Authentication authenticate = authenticationManager.authenticate(authenticationToken);
-        AuthUser authUser = (AuthUser) authenticate.getPrincipal();
+        AuthUser authUser = new AuthUser();
+        authUser.setAuthorities(userDetails.getAuthorities());
+        authUser.setUser(finalUser.get());
         //将用户存入上下文中
         SecurityContextHolder.getContext().setAuthentication(authenticationToken);
-
         redisCache.setCacheObject(RedisUserKey.getUserToken,username,token);
         redisCache.setCacheObject(RedisUserKey.getUserInfo,username,authUser);
         //重定向到前端

@@ -1,5 +1,7 @@
 package com.yhz.senbeiforummain.controller;
 
+import cn.hutool.http.HttpUtil;
+import com.alibaba.fastjson.JSONObject;
 import com.yhz.commonutil.common.BaseResponse;
 import com.yhz.commonutil.common.ResultUtils;
 import com.yhz.senbeiforummain.model.enums.LoginChannelEnum;
@@ -13,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.Map;
 
 /**
  * oauth认证控制器
@@ -49,4 +52,5 @@ public class OauthController {
     public void giteeRedirect(String code, HttpServletResponse response) throws IOException {
         loginService.oauthLogin(LoginChannelEnum.GITEE_LOGIN, code, response);
     }
+
 }

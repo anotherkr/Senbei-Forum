@@ -86,10 +86,10 @@
                 user_id=#{topicQueryRequest.userId} AND
             </if>
             <if test="topicQueryRequest.title!=null and topicQueryRequest.title!=''">
-                title LIKE #{topicQueryRequest.title} AND
+                title LIKE concat('%',#{topicQueryRequest.title},'%') AND
             </if>
             <if test="topicQueryRequest.content!=null and topicQueryRequest.content!=''">
-                content LIKE #{topicQueryRequest.content} AND
+                content LIKE concat('%',#{topicQueryRequest.content},'%') AND
             </if>
         </trim>
         ORDER BY ${topicQueryRequest.sortField} ${topicQueryRequest.sortOrder}

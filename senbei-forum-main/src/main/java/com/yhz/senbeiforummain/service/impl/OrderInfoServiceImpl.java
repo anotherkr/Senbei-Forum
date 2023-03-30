@@ -15,6 +15,7 @@ import com.yhz.senbeiforummain.model.enums.TradeStateEnum;
 import com.yhz.senbeiforummain.service.IOrderInfoService;
 import com.yhz.senbeiforummain.mapper.OrderInfoMapper;
 import com.yhz.senbeiforummain.service.IPaymentInfoService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
 
@@ -27,6 +28,7 @@ import java.math.BigDecimal;
  * @createDate 2023-03-03 14:22:23
  */
 @Service
+@Slf4j
 public class OrderInfoServiceImpl extends ServiceImpl<OrderInfoMapper, OrderInfo>
         implements IOrderInfoService {
     @Resource
@@ -44,9 +46,8 @@ public class OrderInfoServiceImpl extends ServiceImpl<OrderInfoMapper, OrderInfo
         }
         //2 判断 total_amount 是否确实为该订单的实际金额（即商户订单创建时的金额）
         BigDecimal totalAmount = payNotify.getTotalAmount();
-        int totalAmountInt = totalAmount.multiply(new BigDecimal(100)).intValue();
-        int totalFeeInt = order.getTotalFee();
-        if (totalAmountInt != totalFeeInt) {
+        BigDecimal orderTotalFee = order.getTotalFee();
+        if (totalAmount!=null&&totalAmount.equals(orderTotalFee)) {
             log.error("金额校验失败");
             return false;
         }
@@ -92,10 +93,11 @@ public class OrderInfoServiceImpl extends ServiceImpl<OrderInfoMapper, OrderInfo
         if (TradeStateEnum.SUCCESS.getCode().equals(orderInfo.getOrderStatus())) {
             return;
         }
+        log.info("receive pay notify,tradeStatus:{}",payNotify.getTradeStatus());
         //处理支付成功的情况
-        if (AlipayTradeStatus.TRADE_SUCCESS.equals(payNotify.getTradeStatus()) || AlipayTradeStatus.TRADE_FINISHED.equals(payNotify.getTradeStatus())) {
+        if (AlipayTradeStatus.TRADE_SUCCESS.getType().equals(payNotify.getTradeStatus()) || AlipayTradeStatus.TRADE_FINISHED.getType().equals(payNotify.getTradeStatus())) {
             orderInfo.setOrderStatus(TradeStateEnum.SUCCESS.getCode());
-        } else if (AlipayTradeStatus.TRADE_CLOSED.equals(payNotify.getTradeStatus())) {
+        } else if (AlipayTradeStatus.TRADE_CLOSED.getType().equals(payNotify.getTradeStatus())) {
             orderInfo.setOrderStatus(TradeStateEnum.CLOSED.getCode());
         }
         //更新订单状态

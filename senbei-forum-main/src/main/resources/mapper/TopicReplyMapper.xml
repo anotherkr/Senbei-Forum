@@ -45,7 +45,7 @@
     <select id="selectTopicReplyVoIPageByTopicId" resultMap="TopicReplyVoresultMap">
         SELECT id,user_id,content,support_num,unsupport_num,create_time,img_urls
         FROM topic_reply
-        WHERE topic_id=#{topicId}
+        WHERE is_deleted=0 AND topic_id=#{topicId}
         <if test="userId!=null">
             AND user_id=#{userId}
         </if>

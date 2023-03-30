@@ -7,12 +7,12 @@ import com.yhz.commonutil.common.RedisBasePrefixKey;
  * @date 2023/2/21 - 20:58
  */
 public class RedisCaptchaKey extends RedisBasePrefixKey {
-    public static final String Captcha = "captcha";
+    public static final String CAPTCHA = "captcha";
 
     /**
      * 前缀+uuid
      */
-    public static RedisCaptchaKey getCaptchaCode = new RedisCaptchaKey(Captcha,300L);
+    public static RedisCaptchaKey getCaptchaCode = new RedisCaptchaKey(CAPTCHA,300L);
 
     private RedisCaptchaKey(String prefix) {
         super(prefix);

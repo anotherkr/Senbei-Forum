@@ -7,7 +7,9 @@ package com.yhz.senbeiforummain.model.enums;
  */
 public enum LoginChannelEnum {
     GITEE_LOGIN(1, "gitee","Gitee登录"),
-    GITHUB_LOGIN(0,"github", "GitHub登录");
+    GITHUB_LOGIN(0,"github", "GitHub登录"),
+    QQ_LOGIN(1, "qq","qq登录"),
+    ;
 
     LoginChannelEnum(int code,String value, String desc) {
         this.code = code;

@@ -50,7 +50,7 @@ public class RedisConfig {
         RedisSerializer redisSerializer = new StringRedisSerializer();
         //key
         redisTemplate.setKeySerializer(redisSerializer);
-        redisTemplate.setHashKeySerializer(redisSerializer);
+        redisTemplate.setHashKeySerializer(new StringRedisSerializer());
         //value
         redisTemplate.setValueSerializer(jackson2JsonRedisSerializer);
         redisTemplate.setHashValueSerializer(jackson2JsonRedisSerializer);

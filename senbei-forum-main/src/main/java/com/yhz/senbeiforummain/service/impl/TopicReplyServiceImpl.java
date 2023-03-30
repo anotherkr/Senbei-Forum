@@ -68,7 +68,7 @@ public class TopicReplyServiceImpl extends ServiceImpl<TopicReplyMapper, TopicRe
         //帖子回复数加1
         Topic topic = topicMapper.selectById(topicId);
         topic.setReplyNum(topic.getReplyNum()+1);
-        topicMapper.insert(topic);
+        topicMapper.updateById(topic);
     }
 
     @Override

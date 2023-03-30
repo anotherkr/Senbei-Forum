@@ -29,7 +29,7 @@ public interface PaymentHandler {
 
 
     /**
-     * 调用关单接口
+     * 调用关单接口(注意:只有用户输入正确用户名的用户名和密码后，支付宝才正式创建订单，否则关单会返回交易不存在)
      * @param orderNo
      * @return
      */
