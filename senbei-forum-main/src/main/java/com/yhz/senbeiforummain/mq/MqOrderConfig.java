@@ -14,13 +14,13 @@ import org.springframework.context.annotation.Configuration;
  * @author 吉良吉影
  */
 @Configuration
-public class MqConcelOrderConfig {
+public class MqOrderConfig {
 
     /**
      * 订单消息实际消费队列所绑定的交换机
      */
     @Bean
-    DirectExchange orderDirect() {
+    DirectExchange orderCancelDirect() {
         return ExchangeBuilder
                 .directExchange(QueueEnum.QUEUE_ORDER_CANCEL.getExchange())
                 .durable(true)
@@ -42,7 +42,7 @@ public class MqConcelOrderConfig {
      * 订单取消死信队列
      */
     @Bean
-    public Queue orderQueue() {
+    public Queue orderCancelQueue() {
         return QueueBuilder.durable(QueueEnum.QUEUE_ORDER_CANCEL.getName()).build();
     }
 
@@ -63,13 +63,13 @@ public class MqConcelOrderConfig {
     }
 
     /**
-     * 将订单队列绑定到交换机
+     * 将订单取消死信队列绑定到交换机
      */
     @Bean
-    Binding orderBinding(DirectExchange orderDirect, Queue orderQueue) {
+    Binding orderBinding(DirectExchange orderCancelDirect, Queue orderCancelQueue) {
         return BindingBuilder
-                .bind(orderQueue)
-                .to(orderDirect)
+                .bind(orderCancelQueue)
+                .to(orderCancelDirect)
                 .with(QueueEnum.QUEUE_ORDER_CANCEL.getRouteKey());
     }
 
@@ -82,5 +82,35 @@ public class MqConcelOrderConfig {
                 .bind(orderTtlQueue)
                 .to(orderTtlDirect)
                 .with(QueueEnum.QUEUE_TTL_ORDER_CANCEL.getRouteKey());
+    }
+
+    /**
+     * 订单创建队列
+     */
+    @Bean
+    public Queue orderCreateQueue() {
+        return QueueBuilder.durable(QueueEnum.QUEUE_ORDER_CREATE.getName()).build();
+    }
+
+    /**
+     * 订单创建 队列所绑定的交换机
+     */
+    @Bean
+    DirectExchange orderCreateDirect() {
+        return ExchangeBuilder
+                .directExchange(QueueEnum.QUEUE_ORDER_CREATE.getExchange())
+                .durable(true)
+                .build();
+    }
+
+    /**
+     * 将订单创建绑定到交换机
+     */
+    @Bean
+    Binding orderCreateBinding(DirectExchange orderCreateDirect, Queue orderCreateQueue) {
+        return BindingBuilder
+                .bind(orderCreateQueue)
+                .to(orderCreateDirect)
+                .with(QueueEnum.QUEUE_ORDER_CREATE.getRouteKey());
     }
 }

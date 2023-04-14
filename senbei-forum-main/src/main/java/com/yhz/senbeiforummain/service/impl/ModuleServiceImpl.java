@@ -114,14 +114,16 @@ public class ModuleServiceImpl extends ServiceImpl<ModuleMapper, Module>
         queryWrapper.orderByDesc("heat");
         queryWrapper.last("limit 100");
         List<Module> modules = baseMapper.selectList(queryWrapper);
-        int size = modules.size();
+
         int i=0;
         List<Module> selectModule = new ArrayList<>();
-        while (i < count) {
+        while (i < count&&modules.size()>0) {
+            int size = modules.size();
             ThreadLocalRandom random = RandomUtil.getRandom();
             int randomIndex = random.nextInt(size);
             Module module = modules.remove(randomIndex);
             selectModule.add(module);
+            i++;
         }
         List<ModuleVo> moduleVoList = selectModule.stream().map(item -> {
             ModuleVo moduleVo = new ModuleVo();

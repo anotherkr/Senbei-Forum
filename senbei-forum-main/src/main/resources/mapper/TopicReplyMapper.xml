@@ -43,7 +43,7 @@
     </resultMap>
 
     <select id="selectTopicReplyVoIPageByTopicId" resultMap="TopicReplyVoresultMap">
-        SELECT id,user_id,content,support_num,unsupport_num,create_time,img_urls
+        SELECT id,user_id,content,support_num,unsupport_num,create_time,img_urls,city
         FROM topic_reply
         WHERE is_deleted=0 AND topic_id=#{topicId}
         <if test="userId!=null">

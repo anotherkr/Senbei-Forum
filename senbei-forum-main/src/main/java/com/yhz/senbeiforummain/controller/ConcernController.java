@@ -12,6 +12,7 @@ import com.yhz.senbeiforummain.service.IModuleConcernService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -34,18 +35,21 @@ public class ConcernController {
 
     @PostMapping("/module")
     @ApiOperation("关注模块")
+    @PreAuthorize("hasRole('user')")
     public BaseResponse concernModule(@RequestBody ModuleConcernAddRequest moduleConcernAddRequest, @UserId Long userId) {
         moduleConcernService.concernModule(moduleConcernAddRequest.getModuleId(), userId, ConcernConstant.CONCERN);
         return ResultUtils.success();
     }
     @GetMapping("/cancel")
     @ApiOperation("取消关注模块")
+    @PreAuthorize("hasRole('user')")
     public BaseResponse cancelConcernModule( Long moduleId,@UserId Long userId) {
         moduleConcernService.concernModule(moduleId,userId,ConcernConstant.NOT_CONCERN);
         return ResultUtils.success();
     }
     @PostMapping("/module/page")
     @ApiOperation(value = "获取关注模块的帖子并分页")
+    @PreAuthorize("hasRole('user')")
     public BaseResponse getModuleConcernTopicByPage(@RequestBody ModuleConcernQueryRequest moduleConcernQueryRequest) {
         IPage<ModuleConcernTopicVo> iPage = moduleConcernService.getModuleConcernTopicByPage(moduleConcernQueryRequest);
         return ResultUtils.success(iPage);

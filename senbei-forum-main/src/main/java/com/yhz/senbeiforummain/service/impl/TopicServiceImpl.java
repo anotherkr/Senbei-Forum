@@ -193,8 +193,8 @@ public class TopicServiceImpl extends ServiceImpl<TopicMapper, Topic>
                 String hKey = item.getId().toString().concat("::").concat(currentUserId.toString());
                 Map<String, Integer> cacheMap = redisCache.getCacheMap(RedisTopicReplyKey.getSupportInfo, "");
                 if (cacheMap != null) {
-                    Integer isSupport = cacheMap.get(hKey);
-                    topicReplyVo.setIsSupport(isSupport != null ? isSupport : 0);
+                    Integer isSupport = cacheMap.getOrDefault(hKey,SupportEnum.NO_SUPPORT.getCode());
+                    topicReplyVo.setIsSupport(isSupport);
                 }
             }
             //设置点赞数
@@ -273,7 +273,7 @@ public class TopicServiceImpl extends ServiceImpl<TopicMapper, Topic>
             String hKey = topicId.toString().concat("::").concat(userId.toString());
             Map<String, Integer> cacheMap = redisCache.getCacheMap(RedisTopicKey.getSupportInfo, "");
             if (cacheMap != null && !cacheMap.isEmpty()) {
-                Integer isSupport = cacheMap.get(hKey);
+                Integer isSupport = cacheMap.getOrDefault(hKey,SupportEnum.NO_SUPPORT.getCode());
                 return isSupport != null ? isSupport : SupportEnum.NO_SUPPORT.getCode();
             }
         }
@@ -287,7 +287,7 @@ public class TopicServiceImpl extends ServiceImpl<TopicMapper, Topic>
         Map<String, Integer> cacheMap = redisCache.getCacheMap(RedisTopicKey.getSupportCount, "");
         if (cacheMap != null && !cacheMap.isEmpty()) {
             if (cacheMap.containsKey(topicId.toString())) {
-                return cacheMap.get(topicId.toString());
+                return cacheMap.getOrDefault(topicId.toString(),SupportEnum.NO_SUPPORT.getCode());
             }
         }
         return 0;
@@ -300,7 +300,7 @@ public class TopicServiceImpl extends ServiceImpl<TopicMapper, Topic>
         Map<String, Integer> cacheMap = redisCache.getCacheMap(RedisTopicReplyKey.getSupportCount, "");
         if (cacheMap != null && !cacheMap.isEmpty()) {
             if (cacheMap.containsKey(topicReplyId.toString())) {
-                return cacheMap.get(topicReplyId.toString());
+                return cacheMap.getOrDefault(topicReplyId.toString(),SupportEnum.NO_SUPPORT.getCode());
             }
         }
         return 0;

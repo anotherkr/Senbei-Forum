@@ -9,6 +9,7 @@ import com.yhz.commonutil.common.ErrorCode;
 import com.yhz.commonutil.constant.SortConstant;
 import com.yhz.commonutil.util.ImgUrlUtil;
 import com.yhz.senbeiforummain.constant.ConcernConstant;
+import com.yhz.senbeiforummain.constant.rediskey.RedisTopicKey;
 import com.yhz.senbeiforummain.exception.BusinessException;
 import com.yhz.senbeiforummain.mapper.ModuleMapper;
 import com.yhz.senbeiforummain.mapper.TopicMapper;
@@ -19,17 +20,20 @@ import com.yhz.senbeiforummain.model.entity.Module;
 import com.yhz.senbeiforummain.model.entity.ModuleConcern;
 import com.yhz.senbeiforummain.model.entity.Topic;
 import com.yhz.senbeiforummain.model.entity.User;
+import com.yhz.senbeiforummain.model.enums.SupportEnum;
 import com.yhz.senbeiforummain.model.to.ModuleConcernTopicTo;
 import com.yhz.senbeiforummain.model.vo.ModuleConcernTopicVo;
 import com.yhz.senbeiforummain.service.IModuleConcernService;
 import com.yhz.senbeiforummain.mapper.ModuleConcernMapper;
 import com.yhz.senbeiforummain.util.PageUtil;
+import com.yhz.senbeiforummain.util.RedisCache;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -48,7 +52,8 @@ public class IModuleConcernServiceImpl extends ServiceImpl<ModuleConcernMapper, 
 
     @Resource
     private TopicMapper topicMapper;
-
+    @Resource
+    private RedisCache redisCache;
 
     @Override
     public IPage<ModuleConcernTopicVo> getModuleConcernTopicByPage(ModuleConcernQueryRequest moduleConcernQueryRequest) {
@@ -73,12 +78,30 @@ public class IModuleConcernServiceImpl extends ServiceImpl<ModuleConcernMapper, 
 
         IPage<Topic> topicIPage = PageUtil.vaildPageParam(current, pageSize);
         IPage<ModuleConcernTopicTo> topicToPage = topicMapper.selectModuleConcernToPage(topicIPage, moduleIdList, sortField, sortOrder);
+        //从redis中获取缓存信息
+        Map<String, Integer> supportInfoCacheMap = redisCache.getCacheMap(RedisTopicKey.getSupportInfo, "");
+        Map<String, Integer> supportCountCacheMap = redisCache.getCacheMap(RedisTopicKey.getSupportCount, "");
         IPage<ModuleConcernTopicVo> topicVoIPage = topicToPage.convert(item -> {
+            Long topicId = item.getId();
             String imgUrls = item.getImgUrls();
             String[] imgUrlJsonToArray = ImgUrlUtil.imgUrlJsonToArray(imgUrls);
             ModuleConcernTopicVo moduleConcernTopicVo = new ModuleConcernTopicVo();
             BeanUtils.copyProperties(item, moduleConcernTopicVo);
             moduleConcernTopicVo.setImgUrlArray(imgUrlJsonToArray);
+            //判断用户是否点赞
+            if (supportInfoCacheMap != null) {
+                String hKey = topicId.toString().concat("::").concat(userId.toString());
+                Integer isSupport = supportInfoCacheMap.getOrDefault(hKey,0);
+                moduleConcernTopicVo.setIsSupport(isSupport);
+            } else {
+                moduleConcernTopicVo.setIsSupport(SupportEnum.NO_SUPPORT.getCode());
+            }
+            //将缓存中的点赞数加入主贴信息
+            if (supportCountCacheMap != null) {
+                Integer supportNum = Optional.ofNullable(supportCountCacheMap.get(topicId)).orElse(SupportEnum.NO_SUPPORT.getCode());
+                moduleConcernTopicVo.setSupportNum(moduleConcernTopicVo.getSupportNum() + supportNum);
+
+            }
             return moduleConcernTopicVo;
         });
         return topicVoIPage;

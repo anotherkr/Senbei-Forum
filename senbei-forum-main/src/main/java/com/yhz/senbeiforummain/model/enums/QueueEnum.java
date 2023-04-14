@@ -7,6 +7,10 @@ package com.yhz.senbeiforummain.model.enums;
  */
 public enum QueueEnum {
     /**
+     * 订单创建队列
+     */
+    QUEUE_ORDER_CREATE("order-create-queue", "order-create-exchange", "order.create"),
+    /**
      * 订单取消死信队列
      */
     QUEUE_ORDER_CANCEL("order-cancel-queue","order-cancel-exchange","order.cancel"),

@@ -59,7 +59,9 @@ public class RoomChatRecordServiceImpl extends ServiceImpl<RoomChatRecordMapper,
                 String json = cacheMap.get(roomId);
                 roomChatRecordVos = GsonUtil.strToList(json, RoomChatRecordVo.class);
             }
-            WebSocketServerEndpoint.roomChatRecordMap.put(roomId, new ArrayDeque<>(roomChatRecordVos));
+            if (roomChatRecordVos != null) {
+                WebSocketServerEndpoint.roomChatRecordMap.put(roomId, new ArrayDeque<>(roomChatRecordVos));
+            }
         }
         if (roomChatRecordVos == null || roomChatRecordVos.isEmpty()) {
             //如果还是为空则从数据库拿
@@ -72,7 +74,9 @@ public class RoomChatRecordServiceImpl extends ServiceImpl<RoomChatRecordMapper,
                 BeanUtils.copyProperties(item, roomChatRecordVo);
                 return roomChatRecordVo;
             });
-            WebSocketServerEndpoint.roomChatRecordMap.put(roomId, new ArrayDeque<>(roomChatRecordVos));
+            if (roomChatRecordVos != null) {
+                WebSocketServerEndpoint.roomChatRecordMap.put(roomId, new ArrayDeque<>(roomChatRecordVos));
+            }
         }
         Collections.sort(roomChatRecordVos,(a,b)->{
             if (a.getCreateTime().getTime() > b.getCreateTime().getTime()) {

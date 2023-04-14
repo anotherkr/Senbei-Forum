@@ -11,7 +11,7 @@ import java.util.Date;
  * @date 2022/11/25 - 19:13
  */
 @Data
-@ApiModel("主贴展示项")
+@ApiModel("关注模块的主贴展示项")
 public class ModuleConcernTopicVo {
 
     private Long id;
@@ -45,9 +45,8 @@ public class ModuleConcernTopicVo {
     @ApiModelProperty("点赞数")
     private Integer supportNum;
 
-    @ApiModelProperty("点踩数")
-    private Integer unsupportNum;
-
+    @ApiModelProperty
+    private Integer isSupport;
     @ApiModelProperty("热度")
     private Integer heat;
 

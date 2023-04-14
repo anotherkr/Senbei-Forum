@@ -40,6 +40,7 @@ public class TopicReplyController {
 
     @ApiOperation(value = "点赞功能")
     @PostMapping("/support/{topicReplyId}")
+    @PreAuthorize("hasRole('user')")
     public BaseResponse support(@PathVariable("topicReplyId") Long topicReplyId,@UserId Long userId) {
         if (userId == null) {
             //-1代表匿名用户

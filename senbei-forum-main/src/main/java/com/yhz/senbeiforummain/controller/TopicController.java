@@ -66,7 +66,7 @@ public class TopicController {
 
     @ApiOperation(value = "点赞功能")
     @PostMapping("/support/{topicId}")
-    @PreAuthorize("isAuthenticated()")
+    @PreAuthorize("hasRole('user')")
     public BaseResponse support(@PathVariable("topicId") Long topicId, @UserId Long userId) {
         if (userId == null) {
             //-1代表匿名用户
